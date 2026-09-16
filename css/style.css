@@ -299,14 +299,37 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   z-index: 0;
 }
 
+.note-photo {
+  position: absolute;
+  left: 130px;
+  top: 60px;
+  width: 190px;
+  height: 210px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #d8d4c8;
+  box-shadow: 0 14px 28px rgba(24, 36, 73, 0.22);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--navy-soft);
+  padding: 10px;
+}
+.note-photo img { width: 100%; height: 100%; object-fit: cover; }
+
 @media (max-width: 480px) {
-  .sticky-board { max-width: 300px; height: 340px; }
+  .sticky-board { max-width: 300px; height: 420px; }
   .note-name { width: 230px; left: 0; top: 0; }
   .note-name .tag-body { font-size: 18px; padding: 16px 14px 20px; }
+  .note-photo { left: 60px; top: 130px; width: 170px; height: 190px; }
   .note-empathy { width: 130px; right: 0; top: 100px; font-size: 12px; padding: 16px 12px; }
   .note-empathy strong { font-size: 14px; }
-  .note-blurb { width: 170px; right: 10px; top: 210px; font-size: 11px; padding: 14px; }
-  .note-shadow-stain { top: 320px; left: 30%; }
+  .note-blurb { width: 170px; right: 10px; top: 340px; font-size: 11px; padding: 14px; }
+  .note-shadow-stain { top: 400px; left: 30%; }
 }
 
 .featured-tag {
@@ -653,6 +676,82 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   font-size: 12px;
   color: var(--gray-text);
 }
+
+/* ---------------------------------- About collage + shared contact blurb -- */
+
+.about-collage {
+  position: relative;
+  max-width: 280px;
+  margin: 0 auto;
+  height: 420px;
+}
+.about-collage figure {
+  position: absolute;
+  margin: 0;
+  width: 220px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 12px 24px rgba(24, 36, 73, 0.18);
+  background: #e7e4db;
+}
+.about-collage figure img { width: 100%; display: block; aspect-ratio: 4/3; object-fit: cover; }
+.about-collage .ph { aspect-ratio: 4/3; }
+.about-collage figure:nth-child(1) { top: 0; left: 0; transform: rotate(-4deg); z-index: 3; }
+.about-collage figure:nth-child(2) { top: 130px; left: 40px; transform: rotate(3deg); z-index: 2; }
+.about-collage figure:nth-child(3) { top: 260px; left: 5px; transform: rotate(-2deg); z-index: 1; }
+
+.contact-blurb {
+  padding: 60px 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 40px;
+  align-items: center;
+}
+@media (max-width: 640px) {
+  .contact-blurb { grid-template-columns: 1fr; }
+}
+.contact-blurb p { font-size: 17px; color: var(--navy); }
+.contact-blurb .email-line { font-weight: 600; margin-top: 8px; }
+
+.icon-links {
+  display: flex;
+  gap: 14px;
+  margin-top: 20px;
+}
+.icon-links a {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+.icon-links a:hover { transform: translateY(-3px); }
+.icon-links .fill { background: var(--navy); color: #fff; }
+.icon-links .outline { border: 2px solid var(--navy); color: var(--navy); }
+
+/* ---------------------------------- Review / quote cards ------------------ */
+
+.quote-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 18px 0;
+}
+@media (max-width: 640px) {
+  .quote-row { grid-template-columns: 1fr; }
+}
+.quote-card {
+  background: var(--yellow-soft);
+  border: 1px solid #d8c98a;
+  border-radius: 10px;
+  padding: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--navy-soft);
+}
+.quote-card .stars { color: #d8a300; letter-spacing: 2px; margin-top: 10px; }
 
 /* ---------------------------------- Contact page -------------------------- */
 
