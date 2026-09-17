@@ -39,30 +39,4 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     revealTargets.forEach((el) => el.classList.add('in-view'));
   }
-
-  // Pencil doodles: draw themselves in once visible
-  const doodles = document.querySelectorAll('.doodle');
-  const immediateDoodles = document.querySelectorAll('.doodle-underline, .doodle-spark');
-  const scrollDoodles = document.querySelectorAll('.doodle-arrow');
-
-  window.setTimeout(() => {
-    immediateDoodles.forEach((d) => d.classList.add('drawn'));
-  }, 500);
-
-  if ('IntersectionObserver' in window && scrollDoodles.length) {
-    const doodleObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('drawn');
-            doodleObserver.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.4 }
-    );
-    scrollDoodles.forEach((d) => doodleObserver.observe(d));
-  } else {
-    doodles.forEach((d) => d.classList.add('drawn'));
-  }
 });

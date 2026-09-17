@@ -219,142 +219,56 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 .note-name {
   left: 0;
   top: 10px;
-  width: 300px;
-  background: #fffdf8;
-  border-radius: 3px;
-  overflow: visible;
+  width: 280px;
   transform: rotate(-6deg);
   z-index: 3;
   box-shadow: 0 12px 22px rgba(24, 36, 73, 0.18);
+  border-radius: 16px;
 }
-.note-name .tag-top {
-  background: var(--orange);
-  background-image: linear-gradient(rgba(255,255,255,0.08), transparent 40%);
-  color: #fff;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  padding: 10px 16px 26px;
-  position: relative;
-  border-radius: 3px 3px 0 0;
-  overflow: hidden;
-}
-.note-name .tag-top strong { display: block; font-size: 15px; letter-spacing: 0.04em; }
-/* peeling corner: curled flap + shadow it casts on the card */
-.note-name .tag-top::before {
-  content: '';
-  position: absolute;
-  top: 0; right: 0;
-  width: 30px; height: 30px;
-  background: radial-gradient(circle at 0 100%, rgba(0,0,0,0.28), transparent 70%);
-  z-index: 1;
-}
-.note-name .tag-top::after {
-  content: '';
-  position: absolute;
-  top: 0; right: 0;
-  width: 26px; height: 26px;
-  background: linear-gradient(135deg, #ffb08a 45%, #fffdf8 46%, #f3ede0 100%);
-  clip-path: polygon(100% 0, 0 0, 100% 100%);
-  box-shadow: -3px 3px 6px rgba(24,36,73,0.25);
-  z-index: 2;
-}
-.note-name .tag-body {
-  position: relative;
-  padding: 20px 16px 26px;
-  font-family: var(--font-head);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--navy);
-  border-radius: 0 0 3px 3px;
-}
-.note-name .tag-body .longhorn {
+.note-name .nametag-img {
   display: block;
-  margin-top: 12px;
-  width: 46px;
-  height: 30px;
+  width: 100%;
+  border-radius: 16px;
 }
-.note-name .tag-body .longhorn path,
-.note-name .tag-body .longhorn ellipse { fill: var(--orange); }
 
 .note-empathy {
   right: 10px;
   top: 0;
-  width: 190px;
-  background: var(--pink);
-  background-image: linear-gradient(160deg, rgba(255,255,255,0.35), transparent 45%);
-  border-radius: 2px;
-  padding: 26px 18px 20px;
+  width: 180px;
   transform: rotate(7deg);
-  font-family: var(--font-mono);
-  font-size: 14px;
-  color: var(--navy);
   z-index: 2;
   box-shadow: 2px 14px 20px rgba(24, 36, 73, 0.16);
 }
-.note-empathy strong {
-  color: var(--pink-text);
+.note-empathy img {
   display: block;
-  font-size: 16px;
-}
-/* pushpin: metal head with highlight + the tiny shadow it drops on the paper */
-.note-empathy::before {
-  content: '';
-  position: absolute;
-  top: -9px; left: 50%;
-  transform: translateX(-50%);
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #c9a4f2 0%, #9a5fd6 38%, #6b2fae 75%, #4a1d82 100%);
-  box-shadow: 0 3px 4px rgba(24,36,73,0.45), 0 5px 8px rgba(24,36,73,0.3);
-  z-index: 2;
-}
-.note-empathy::after {
-  content: '';
-  position: absolute;
-  top: -4px; left: 50%;
-  transform: translateX(-46%);
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.85);
-  z-index: 3;
+  width: 100%;
+  border-radius: 4px;
 }
 
 .note-blurb {
   right: 60px;
   top: 150px;
-  width: 210px;
-  background: var(--blue);
-  background-image:
-    repeating-linear-gradient(to bottom, transparent 0 21px, rgba(255,255,255,0.22) 21px 22px),
-    linear-gradient(160deg, rgba(255,255,255,0.12), transparent 50%);
-  color: #fff;
-  border-radius: 2px;
-  padding: 20px 16px 16px;
+  width: 200px;
   transform: rotate(-4deg);
-  font-family: var(--font-mono);
-  font-size: 12.5px;
   z-index: 1;
   box-shadow: 0 10px 18px rgba(24, 36, 73, 0.18);
 }
-/* punched-hole edge along the top, like a torn index card */
-.note-blurb::before {
-  content: '';
-  position: absolute;
-  top: 4px; left: 10px; right: 10px;
-  height: 4px;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.55) 1.4px, transparent 1.6px);
-  background-size: 10px 4px;
-  background-repeat: repeat-x;
+.note-blurb img {
+  display: block;
+  width: 100%;
+  border-radius: 4px;
 }
 
 .note-shadow-stain {
   position: absolute;
-  left: 44%;
-  top: 260px;
-  width: 120px;
-  height: 60px;
-  background: radial-gradient(ellipse at center, rgba(200, 170, 120, 0.35), transparent 70%);
+  left: 48%;
+  top: 255px;
+  width: 110px;
+  height: 110px;
   z-index: 0;
+  mix-blend-mode: multiply;
+  opacity: 0.8;
+  pointer-events: none;
 }
 
 .note-photo {
@@ -383,11 +297,9 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   .sticky-board { max-width: 300px; height: 340px; }
   .sticky-board.has-photo { height: 420px; }
   .note-name { width: 230px; left: 0; top: 0; }
-  .note-name .tag-body { font-size: 18px; padding: 16px 14px 20px; }
   .note-photo { left: 60px; top: 130px; width: 170px; height: 190px; }
-  .note-empathy { width: 130px; right: 0; top: 100px; font-size: 12px; padding: 16px 12px; }
-  .note-empathy strong { font-size: 14px; }
-  .note-blurb { width: 170px; right: 10px; top: 210px; font-size: 11px; padding: 14px; }
+  .note-empathy { width: 130px; right: 0; top: 100px; }
+  .note-blurb { width: 170px; right: 10px; top: 210px; }
   .has-photo .note-blurb { top: 340px; }
   .note-shadow-stain { top: 260px; left: 30%; }
   .has-photo .note-shadow-stain { top: 400px; }
@@ -417,52 +329,6 @@ p { margin: 0 0 1em; color: var(--gray-text); }
     10% 82%, 7.5% 100%, 5% 70%, 2.5% 96%, 0% 78%
   );
 }
-
-/* ---------------------------------- Pencil doodles ----------------------- */
-
-.doodle {
-  position: absolute;
-  pointer-events: none;
-  overflow: visible;
-}
-.doodle path {
-  fill: none;
-  stroke: #4b4b55;
-  stroke-width: 2.1;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.55;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 1.3s ease-out;
-}
-.doodle.drawn path { stroke-dashoffset: 0; }
-
-.doodle-underline {
-  width: 150px;
-  height: 16px;
-  left: 16px;
-  bottom: -4px;
-  z-index: 5;
-}
-.doodle-underline path { stroke: var(--orange); }
-
-.doodle-arrow {
-  width: 90px;
-  height: 90px;
-  left: 20px;
-  top: 100%;
-  z-index: 1;
-}
-
-.doodle-spark {
-  width: 26px;
-  height: 26px;
-  right: -6px;
-  top: -16px;
-  z-index: 5;
-}
-.doodle-spark path { stroke: var(--pink-text); stroke-width: 1.6; opacity: 0.6; }
 
 /* ---------------------------------- Project cards ----------------------- */
 
@@ -725,22 +591,6 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   font-family: var(--font-mono);
   text-align: center;
   padding: 10px;
-}
-
-.feedback-block {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 18px 0;
-}
-.feedback-block .icon-box {
-  flex: 0 0 60px;
-  height: 60px;
-  border-radius: 10px;
-  background: var(--blue);
 }
 
 .two-col {
