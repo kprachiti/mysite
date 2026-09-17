@@ -590,6 +590,32 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   .reflection img, .reflection .ph { width: 100%; height: auto; aspect-ratio: 4/3; }
 }
 
+/* Fanned-out overlapping screenshots, like a hand of cards */
+.fan-stack {
+  position: relative;
+  height: 400px;
+  max-width: 520px;
+  margin: 30px auto;
+}
+.fan-stack img {
+  position: absolute;
+  top: 10px;
+  height: 380px;
+  width: auto;
+  filter: drop-shadow(0 16px 26px rgba(24, 36, 73, 0.22));
+  transition: transform 0.3s ease;
+}
+.fan-stack img:nth-child(1) { left: 10px; z-index: 1; }
+.fan-stack img:nth-child(2) { left: 50%; transform: translateX(-50%); z-index: 3; top: 0; }
+.fan-stack img:nth-child(3) { right: 10px; left: auto; z-index: 2; }
+.fan-stack:hover img:nth-child(1) { transform: translate(-6px, -4px); }
+.fan-stack:hover img:nth-child(2) { transform: translateX(-50%) translateY(-8px); }
+.fan-stack:hover img:nth-child(3) { transform: translate(6px, -4px); }
+@media (max-width: 640px) {
+  .fan-stack { height: 320px; }
+  .fan-stack img { height: 300px; }
+}
+
 .case-nav {
   display: flex;
   justify-content: space-between;

@@ -82,10 +82,10 @@
       <p>When an IMS is newly installed or updated, an Installation Verification Program (<span class="highlight">IVP</span>) runs a series of tests to confirm the system — the database/transaction manager — is configured and functioning properly.</p>
       <p>On day one at IBM, I learned the IVP flow had remained essentially unchanged since IMS's development in the 1960s. With IBM investing in IMS modernization, my co-intern and I were tasked with giving the IVP a well-deserved makeover — refreshing the process from keyboard-driven and text-only to visually modern.</p>
       <div class="img-grid">
-        <img src="../images/projects/ibm/ivp-environment-options.png" alt="IVP Environment Options green-screen menu, selecting a database/transaction management option" loading="lazy">
-        <img src="../images/projects/ibm/ivp-suboption-selection.png" alt="IVP Sub-Option Selection green-screen menu for IRLM, Fast Path, RACF security, and other applications" loading="lazy">
-        <img src="../images/projects/ibm/ivp-table-merge-progress.png" alt="IVP Table Merge progress indicator for Variable Gathering, File Tailoring, and Execution tables" loading="lazy">
-        <img src="../images/projects/ibm/ivp-variable-gathering.png" alt="IVP Variable Gathering list-mode screen showing DSNAME qualifier variables" loading="lazy">
+        <img src="../images/projects/ibm/ivp-environment-options.png" alt="IVP Environment Options green-screen menu, selecting a database/transaction management option" loading="lazy" width="484" height="269">
+        <img src="../images/projects/ibm/ivp-suboption-selection.png" alt="IVP Sub-Option Selection green-screen menu for IRLM, Fast Path, RACF security, and other applications" loading="lazy" width="484" height="269">
+        <img src="../images/projects/ibm/ivp-table-merge-progress.png" alt="IVP Table Merge progress indicator for Variable Gathering, File Tailoring, and Execution tables" loading="lazy" width="484" height="265">
+        <img src="../images/projects/ibm/ivp-variable-gathering.png" alt="IVP Variable Gathering list-mode screen showing DSNAME qualifier variables" loading="lazy" width="484" height="265">
       </div>
     </section>
 
@@ -99,19 +99,19 @@
         <li><strong>File Sorting</strong> — place the variables into job templates</li>
         <li><strong>Execution</strong> — run the created jobs</li>
       </ul>
-      <img src="../images/projects/ibm/user-journey-flow.png" alt="IVP user journey flow diagram mapping Initialization, Variable Gathering, File Tailoring, and Execution phases" loading="lazy" style="border-radius:10px;">
+      <img src="../images/projects/ibm/user-journey-flow.png" alt="IVP user journey flow diagram mapping Initialization, Variable Gathering, File Tailoring, and Execution phases" loading="lazy" style="border-radius:10px;" width="1011" height="403">
     </section>
 
     <section class="case-section">
       <h2>Iteration #1 — Manual Translation</h2>
       <p>Initially, our focus was modernizing the UI of the existing IVP. To get comfortable visualizing IVP components in web UI, we created a page-by-page "translation" of the legacy IVP using the mapped flow and existing green screens, built with <span class="highlight highlight-blue">IBM's Carbon Design System</span>.</p>
       <div class="img-grid">
-        <img src="../images/projects/ibm/iter1-phase-selection-green.png" alt="Legacy green-screen IVP Phase Selection menu" loading="lazy">
-        <img src="../images/projects/ibm/iter1-phase-selection-ui.png" alt="Web UI translation of Phase selection with tabs for Initialization, Variable gathering, File tailoring, and Execution" loading="lazy">
-        <img src="../images/projects/ibm/iter1-environment-green.png" alt="Legacy green-screen IVP Environment Options menu" loading="lazy">
-        <img src="../images/projects/ibm/iter1-environment-ui.png" alt="Web UI translation letting users choose their IVP environment from cards" loading="lazy">
-        <img src="../images/projects/ibm/iter1-variable-gathering-green.png" alt="Legacy green-screen Variable Gathering list-mode screen" loading="lazy">
-        <img src="../images/projects/ibm/iter1-variable-display-ui.png" alt="Web UI translation of Variable display as an editable table" loading="lazy">
+        <img src="../images/projects/ibm/iter1-phase-selection-green.png" alt="Legacy green-screen IVP Phase Selection menu" loading="lazy" width="494" height="271">
+        <img src="../images/projects/ibm/iter1-phase-selection-ui.png" alt="Web UI translation of Phase selection with tabs for Initialization, Variable gathering, File tailoring, and Execution" loading="lazy" width="476" height="271">
+        <img src="../images/projects/ibm/iter1-environment-green.png" alt="Legacy green-screen IVP Environment Options menu" loading="lazy" width="494" height="271">
+        <img src="../images/projects/ibm/iter1-environment-ui.png" alt="Web UI translation letting users choose their IVP environment from cards" loading="lazy" width="476" height="271">
+        <img src="../images/projects/ibm/iter1-variable-gathering-green.png" alt="Legacy green-screen Variable Gathering list-mode screen" loading="lazy" width="494" height="269">
+        <img src="../images/projects/ibm/iter1-variable-display-ui.png" alt="Web UI translation of Variable display as an editable table" loading="lazy" width="476" height="269">
       </div>
     </section>
 
@@ -119,7 +119,7 @@
       <h2>Client Demo Feedback</h2>
       <div class="two-col">
         <p>After a few demo sessions and a "temperature check" with the IMS client, we surfaced key pain points in both the current IVP and our first iteration: the <span class="highlight highlight-blue">UI transition learning curve</span>, a lack of process guidance, and the fact that the IVP was rarely even used. These pain points shaped an entirely new direction for the following iterations.</p>
-        <img src="../images/projects/ibm/demo-feedback-sticky.png" alt="Sticky note reading: UI transition learning curve, lack of process guidance, IVP rarely even used" loading="lazy" style="max-width:220px; margin:0 auto;">
+        <img src="../images/projects/ibm/demo-feedback-sticky.png" alt="Sticky note reading: UI transition learning curve, lack of process guidance, IVP rarely even used" loading="lazy" style="max-width:220px; margin:0 auto;" width="299" height="296">
       </div>
     </section>
 
@@ -133,21 +133,21 @@
     <section class="case-section">
       <h2>Final Designs</h2>
       <div class="img-grid">
-        <img src="../images/projects/ibm/final-config-center.png" alt="Final design: Configuration Center with configuration method options" loading="lazy">
-        <img src="../images/projects/ibm/final-create-new-system.png" alt="Final design: Create a new system with Discover, Template, or Apply your own options" loading="lazy">
-        <img src="../images/projects/ibm/final-discover-existing.png" alt="Final design: Discover an existing system by entering the IMS library name" loading="lazy">
-        <img src="../images/projects/ibm/final-upload-config.png" alt="Final design: Upload configuration YAML file" loading="lazy">
-        <img src="../images/projects/ibm/final-edit-raw-config.png" alt="Final design: Edit configuration with a raw YAML file view side by side" loading="lazy">
-        <img src="../images/projects/ibm/final-edit-validation.png" alt="Final design: Edit configuration table with an inline validation error" loading="lazy">
-        <img src="../images/projects/ibm/final-apply-ready.png" alt="Final design: Apply configuration screen ready to run jobs" loading="lazy">
-        <img src="../images/projects/ibm/final-apply-failed.png" alt="Final design: Apply configuration screen showing a failed job with AI-suggested fix" loading="lazy">
+        <img src="../images/projects/ibm/final-config-center.png" alt="Final design: Configuration Center with configuration method options" loading="lazy" width="494" height="249">
+        <img src="../images/projects/ibm/final-create-new-system.png" alt="Final design: Create a new system with Discover, Template, or Apply your own options" loading="lazy" width="476" height="250">
+        <img src="../images/projects/ibm/final-discover-existing.png" alt="Final design: Discover an existing system by entering the IMS library name" loading="lazy" width="494" height="249">
+        <img src="../images/projects/ibm/final-upload-config.png" alt="Final design: Upload configuration YAML file" loading="lazy" width="476" height="249">
+        <img src="../images/projects/ibm/final-edit-raw-config.png" alt="Final design: Edit configuration with a raw YAML file view side by side" loading="lazy" width="494" height="249">
+        <img src="../images/projects/ibm/final-edit-validation.png" alt="Final design: Edit configuration table with an inline validation error" loading="lazy" width="476" height="249">
+        <img src="../images/projects/ibm/final-apply-ready.png" alt="Final design: Apply configuration screen ready to run jobs" loading="lazy" width="494" height="248">
+        <img src="../images/projects/ibm/final-apply-failed.png" alt="Final design: Apply configuration screen showing a failed job with AI-suggested fix" loading="lazy" width="476" height="248">
       </div>
     </section>
 
     <section class="case-section">
       <h2>Learnings and Reflections</h2>
       <div class="reflection">
-        <img src="../images/projects/ibm/intern-summit-photo.png" alt="Prachiti and fellow IBM interns posing with a photo frame at the IBM intern summit" loading="lazy">
+        <img src="../images/projects/ibm/intern-summit-photo.png" alt="Prachiti and fellow IBM interns posing with a photo frame at the IBM intern summit" loading="lazy" width="405" height="277">
         <div>
           <p>IMS is an extremely technical product, and approaching it with a friendly, design-driven lens was initially intimidating — it meant reading through pages of documentation just to understand the existing setup process.</p>
           <p>Throughout my twelve weeks at IBM, I learned the most valuable resources were often just a few desks over (or a Teams DM away). Working with experienced systems engineers and design mentors showed me that the best insights come from careful, iterative conversation — especially when the change is as large as a leap to web UI.</p>
