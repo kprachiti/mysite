@@ -220,36 +220,9 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 .note-name {
   left: 0;
   top: 0;
-  width: 336px;
+  width: 340px;
   transform: rotate(-6deg);
   z-index: 1;
-}
-
-/* Washi tape holding the nametag to the board, with a peeled-up corner */
-.note-name::before {
-  content: '';
-  position: absolute;
-  top: -14px;
-  left: 22px;
-  width: 78px;
-  height: 30px;
-  background: rgba(255, 253, 246, 0.7);
-  box-shadow: 0 3px 7px rgba(24, 36, 73, 0.2);
-  transform: rotate(-42deg);
-  z-index: 2;
-}
-.note-name::after {
-  content: '';
-  position: absolute;
-  top: -14px;
-  left: 22px;
-  width: 78px;
-  height: 30px;
-  background: linear-gradient(100deg, transparent 0 66%, rgba(214, 208, 190, 0.55) 67% 78%, rgba(214, 208, 190, 0.85) 79%);
-  clip-path: polygon(66% 0, 100% 0, 100% 100%, 66% 100%);
-  transform: rotate(-42deg) translateX(1px);
-  z-index: 3;
-  box-shadow: -2px 2px 4px rgba(24, 36, 73, 0.15);
 }
 
 .note-empathy {
@@ -275,20 +248,20 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 
 .note-shadow-stain {
   position: absolute;
-  left: 345px;
-  top: 285px;
-  width: 125px;
-  height: 125px;
+  left: 220px;
+  top: 218px;
+  width: 308px;
+  height: 308px;
   z-index: 0;
   mix-blend-mode: multiply;
   opacity: 0.85;
   pointer-events: none;
 }
 .has-photo .note-shadow-stain {
-  left: 310px;
-  top: 320px;
-  width: 115px;
-  height: 115px;
+  left: 40px;
+  top: 346px;
+  width: 308px;
+  height: 308px;
 }
 
 .note-photo {
@@ -308,13 +281,12 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   .sticky-board { max-width: 300px; height: 340px; }
   .sticky-board.has-photo { height: 560px; }
   .note-name { width: 230px; left: 0; top: 0; }
-  .note-name::before, .note-name::after { top: -10px; left: 14px; width: 54px; height: 20px; }
   .note-photo { left: 40px; top: 140px; width: 170px; height: 185px; }
   .note-empathy { width: 130px; right: 0; top: 100px; }
   .note-blurb { left: 100px; top: 165px; width: 165px; }
   .has-photo .note-blurb { left: 10px; top: 400px; width: 190px; }
-  .note-shadow-stain { left: 215px; top: 210px; width: 90px; height: 90px; }
-  .has-photo .note-shadow-stain { left: 130px; top: 370px; }
+  .note-shadow-stain { left: 100px; top: 161px; width: 158px; height: 158px; }
+  .has-photo .note-shadow-stain { left: 10px; top: 396px; width: 158px; height: 158px; }
 }
 
 /* Duct-tape label: matte yellow strip with a torn/frayed edge on each end */
