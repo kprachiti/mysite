@@ -218,16 +218,16 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 .note img { display: block; width: 100%; }
 
 .note-name {
-  left: 0;
-  top: 0;
+  left: 9px;
+  top: -6px;
   width: 340px;
   transform: rotate(-6deg);
   z-index: 1;
 }
 
 .note-empathy {
-  right: 0;
-  top: 0;
+  right: 7px;
+  top: 10px;
   width: 260px;
   transform: rotate(7deg);
   z-index: 3;
@@ -235,7 +235,7 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 
 .note-blurb {
   left: 220px;
-  top: 222px;
+  top: 199px;
   width: 232px;
   transform: rotate(-4deg);
   z-index: 2;
@@ -249,7 +249,7 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 .note-shadow-stain {
   position: absolute;
   left: 220px;
-  top: 218px;
+  top: 195px;
   width: 308px;
   height: 308px;
   z-index: 0;
