@@ -225,6 +225,33 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   z-index: 1;
 }
 
+/* Washi tape holding the nametag to the board, with a peeled-up corner */
+.note-name::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 22px;
+  width: 78px;
+  height: 30px;
+  background: rgba(255, 253, 246, 0.7);
+  box-shadow: 0 3px 7px rgba(24, 36, 73, 0.2);
+  transform: rotate(-42deg);
+  z-index: 2;
+}
+.note-name::after {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 22px;
+  width: 78px;
+  height: 30px;
+  background: linear-gradient(100deg, transparent 0 66%, rgba(214, 208, 190, 0.55) 67% 78%, rgba(214, 208, 190, 0.85) 79%);
+  clip-path: polygon(66% 0, 100% 0, 100% 100%, 66% 100%);
+  transform: rotate(-42deg) translateX(1px);
+  z-index: 3;
+  box-shadow: -2px 2px 4px rgba(24, 36, 73, 0.15);
+}
+
 .note-empathy {
   right: 0;
   top: 0;
@@ -281,6 +308,7 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   .sticky-board { max-width: 300px; height: 340px; }
   .sticky-board.has-photo { height: 560px; }
   .note-name { width: 230px; left: 0; top: 0; }
+  .note-name::before, .note-name::after { top: -10px; left: 14px; width: 54px; height: 20px; }
   .note-photo { left: 40px; top: 140px; width: 170px; height: 185px; }
   .note-empathy { width: 130px; right: 0; top: 100px; }
   .note-blurb { left: 100px; top: 165px; width: 165px; }
