@@ -876,6 +876,76 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .reveal.in-view { opacity: 1; transform: translateY(0); }
 
+/* ---------------------------------- Intro stamp animation ------------------ */
+
+#intro-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  pointer-events: none;
+}
+html.intro-run #intro-overlay { display: flex; }
+
+html.intro-run .page-wrap {
+  opacity: 0;
+  transform: scale(1.08);
+  animation: introPageReveal 0.8s cubic-bezier(0.22, 0.7, 0.3, 1) 1.15s forwards;
+}
+
+.intro-stamp {
+  width: 150px;
+  height: auto;
+  opacity: 0;
+  transform: translateY(-70vh) rotate(-16deg) scale(1.2);
+  filter: drop-shadow(0 18px 26px rgba(24, 36, 73, 0.35));
+}
+html.intro-run .intro-stamp {
+  animation: introStampDrop 0.6s cubic-bezier(0.34, 0.6, 0.4, 1) 0.1s forwards,
+             introStampSettle 0.45s ease-out 0.68s forwards;
+}
+
+.ink-ring {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid var(--navy);
+  opacity: 0;
+  transform: scale(0.4);
+}
+html.intro-run .ink-ring {
+  animation: introInkRing 0.55s ease-out 0.68s forwards;
+}
+
+@keyframes introStampDrop {
+  0% { opacity: 0; transform: translateY(-70vh) rotate(-16deg) scale(1.2); }
+  65% { opacity: 1; transform: translateY(6px) rotate(-3deg) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) rotate(-4deg) scale(1); }
+}
+@keyframes introStampSettle {
+  0% { transform: translateY(0) rotate(-4deg) scale(1, 1); }
+  35% { transform: translateY(2px) rotate(-4deg) scale(0.92, 1.06); }
+  60% { transform: translateY(-1px) rotate(-4deg) scale(1.04, 0.95); }
+  100% { transform: translateY(0) rotate(-4deg) scale(1, 1); }
+}
+@keyframes introInkRing {
+  0% { opacity: 0.5; transform: scale(0.3); }
+  100% { opacity: 0; transform: scale(4.2); }
+}
+@keyframes introPageReveal {
+  to { opacity: 1; transform: scale(1); }
+}
+html.intro-run #intro-overlay {
+  animation: introOverlayFade 0.6s ease 1.2s forwards;
+}
+@keyframes introOverlayFade {
+  to { opacity: 0; visibility: hidden; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }

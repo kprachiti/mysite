@@ -1,3 +1,12 @@
+// Intro stamp animation cleanup
+if (document.documentElement.classList.contains('intro-run')) {
+  setTimeout(() => {
+    document.documentElement.classList.remove('intro-run');
+    const overlay = document.getElementById('intro-overlay');
+    if (overlay) overlay.remove();
+  }, 2000);
+}
+
 // Mobile nav toggle
 document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.querySelector('.nav-toggle');
