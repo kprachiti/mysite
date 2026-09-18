@@ -106,20 +106,14 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 }
 
 .brand-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--navy) 60%, var(--blue) 140%);
-  color: #fff;
-  font-family: var(--font-head);
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 0.02em;
-  box-shadow: 0 3px 8px rgba(24, 36, 73, 0.25);
+  width: 36px;
+  height: auto;
+  display: block;
+  transform: rotate(-5deg);
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 3px 6px rgba(24, 36, 73, 0.3));
 }
+.brand:hover .brand-avatar { transform: rotate(0deg) scale(1.06); }
 
 .main-nav {
   display: flex;
