@@ -44,6 +44,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body.dotted-bg {
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, rgba(24, 36, 73, 0.16) 1px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
 img { max-width: 100%; display: block; }
 
 a { color: inherit; text-decoration: none; }
@@ -890,22 +896,55 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 }
 html.intro-run #intro-overlay { display: flex; }
 
+/* the page fades/zooms in from behind the stamp as it heads to the corner */
 html.intro-run .page-wrap {
   opacity: 0;
-  transform: scale(1.08);
-  animation: introPageReveal 0.8s cubic-bezier(0.22, 0.7, 0.3, 1) 1.15s forwards;
+  transform: scale(1.06);
+  animation: introPageReveal 0.85s cubic-bezier(0.22, 0.7, 0.3, 1) 1.05s forwards;
+}
+@keyframes introPageReveal {
+  to { opacity: 1; transform: scale(1); }
 }
 
+/* outer: handles the move from center screen to the header's logo slot */
+.intro-stamp-pos { will-change: transform; }
+html.intro-run .intro-stamp-pos {
+  animation: introMoveToCorner 0.85s cubic-bezier(0.5, 0, 0.25, 1) 1.05s forwards;
+}
+@keyframes introMoveToCorner {
+  to { transform: translate(calc(-50vw + 42px), calc(-50vh + 50px)); }
+}
+
+/* inner: the stamp-down fall, bounce, and the shrink to header size */
 .intro-stamp {
   width: 150px;
   height: auto;
   opacity: 0;
-  transform: translateY(-70vh) rotate(-16deg) scale(1.2);
+  transform: translateY(-32vh) rotate(-11deg) scale(1.1);
   filter: drop-shadow(0 18px 26px rgba(24, 36, 73, 0.35));
+  will-change: transform;
 }
 html.intro-run .intro-stamp {
-  animation: introStampDrop 0.6s cubic-bezier(0.34, 0.6, 0.4, 1) 0.1s forwards,
-             introStampSettle 0.45s ease-out 0.68s forwards;
+  animation: introStampDown 0.36s cubic-bezier(0.55, 0, 1, 0.45) 0.05s forwards,
+             introStampBounce 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) 0.41s forwards,
+             introStampShrink 0.85s cubic-bezier(0.5, 0, 0.25, 1) 1.05s forwards;
+}
+
+@keyframes introStampDown {
+  0% { opacity: 0; transform: translateY(-32vh) rotate(-11deg) scale(1.1); }
+  100% { opacity: 1; transform: translateY(0) rotate(-4deg) scale(1.1); }
+}
+@keyframes introStampBounce {
+  0% { transform: translateY(0) rotate(-4deg) scale(1.1, 1.1); }
+  28% { transform: translateY(5px) rotate(-4deg) scale(1.22, 0.8); }
+  50% { transform: translateY(-10px) rotate(-4deg) scale(0.88, 1.16); }
+  70% { transform: translateY(3px) rotate(-4deg) scale(1.06, 0.95); }
+  88% { transform: translateY(-2px) rotate(-4deg) scale(0.98, 1.02); }
+  100% { transform: translateY(0) rotate(-4deg) scale(1, 1); }
+}
+@keyframes introStampShrink {
+  0% { transform: translateY(0) rotate(-4deg) scale(1); }
+  100% { transform: translateY(0) rotate(-5deg) scale(0.24); }
 }
 
 .ink-ring {
@@ -918,29 +957,15 @@ html.intro-run .intro-stamp {
   transform: scale(0.4);
 }
 html.intro-run .ink-ring {
-  animation: introInkRing 0.55s ease-out 0.68s forwards;
-}
-
-@keyframes introStampDrop {
-  0% { opacity: 0; transform: translateY(-70vh) rotate(-16deg) scale(1.2); }
-  65% { opacity: 1; transform: translateY(6px) rotate(-3deg) scale(1.02); }
-  100% { opacity: 1; transform: translateY(0) rotate(-4deg) scale(1); }
-}
-@keyframes introStampSettle {
-  0% { transform: translateY(0) rotate(-4deg) scale(1, 1); }
-  35% { transform: translateY(2px) rotate(-4deg) scale(0.92, 1.06); }
-  60% { transform: translateY(-1px) rotate(-4deg) scale(1.04, 0.95); }
-  100% { transform: translateY(0) rotate(-4deg) scale(1, 1); }
+  animation: introInkRing 0.5s ease-out 0.41s forwards;
 }
 @keyframes introInkRing {
   0% { opacity: 0.5; transform: scale(0.3); }
   100% { opacity: 0; transform: scale(4.2); }
 }
-@keyframes introPageReveal {
-  to { opacity: 1; transform: scale(1); }
-}
+
 html.intro-run #intro-overlay {
-  animation: introOverlayFade 0.6s ease 1.2s forwards;
+  animation: introOverlayFade 0.3s ease 1.68s forwards;
 }
 @keyframes introOverlayFade {
   to { opacity: 0; visibility: hidden; }
