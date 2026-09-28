@@ -13,16 +13,10 @@
   to = "/index.html"
   status = 301
 
-# Keep non-site folders private. The repo root is the publish directory, so
-# without these rules /archive/dolldress.html and /framer/* would be public.
+# Keep the archived pages private. The repo root is the publish directory, so
+# without this rule /archive/dolldress.html would be public.
 [[redirects]]
   from = "/archive/*"
-  to = "/404.html"
-  status = 404
-  force = true
-
-[[redirects]]
-  from = "/framer/*"
   to = "/404.html"
   status = 404
   force = true
