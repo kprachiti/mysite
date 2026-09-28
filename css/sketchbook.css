@@ -1,0 +1,146 @@
+/* ==========================================================================
+   Sketchbook layer: pencil cursor, doodle mode, self-drawing sketches.
+   Loaded after style.css on every page. All three scripts are progressive:
+   without JS the site looks exactly as before, plus a static pencil cursor.
+   ========================================================================== */
+
+/* ---------- Pencil cursor ---------- */
+
+@media (hover: hover) and (pointer: fine) {
+  html,
+  a, button, [role="button"], label, summary {
+    cursor: url('../images/cursor/pencil.svg') 2 26, auto;
+  }
+  html.pencil-on,
+  html.pencil-on a,
+  html.pencil-on button,
+  html.pencil-on [role="button"],
+  html.pencil-on label,
+  html.pencil-on summary {
+    cursor: none;
+  }
+}
+
+/* Embedded prototypes can't report the mouse to us, so they keep the system cursor. */
+iframe { cursor: auto; }
+
+.pencil-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  will-change: transform;
+}
+.pencil-cursor.visible { opacity: 1; }
+
+/* rotation / lift / press all pivot on the graphite tip */
+.pencil-cursor .pencil-body {
+  display: block;
+  width: 48px;
+  height: 48px;
+  overflow: visible;
+  transform-origin: 3.4px 44.6px;
+  transition: transform 0.18s cubic-bezier(0.3, 1.4, 0.5, 1);
+  filter: drop-shadow(1px 2px 0 rgba(24, 36, 73, 0.18));
+}
+.pencil-cursor.lifted .pencil-body { transform: translate(3px, -5px) rotate(-8deg) scale(1.06); }
+.pencil-cursor.pressed .pencil-body { transform: translate(-1px, 1px) scale(0.9); }
+
+/* ---------- Doodle mode ---------- */
+
+.doodle-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9990;
+  overflow: visible;
+}
+.doodle-layer path {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+.doodle-layer.erasing path {
+  transition: opacity 0.45s ease, stroke-width 0.45s ease;
+  opacity: 0;
+  stroke-width: 6;
+}
+html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
+
+.doodle-chip {
+  position: fixed;
+  right: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 9995;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--navy);
+  background: #f7ecab;
+  border: 0;
+  padding: 10px 16px;
+  transform: rotate(-2deg);
+  box-shadow: 0 8px 16px rgba(24, 36, 73, 0.16);
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+.doodle-chip[hidden] { display: none; }
+.doodle-chip.hint { pointer-events: none; background: #fff; }
+.doodle-chip.fade { opacity: 0; }
+button.doodle-chip:hover { transform: rotate(0deg) translateY(-2px); }
+button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.doodle-chip svg { width: 18px; height: 18px; flex: none; }
+
+/* ---------- Self-drawing sketches (home page) ---------- */
+
+.sketch {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.2s ease 0.5s;   /* fade only after the lines retract */
+  z-index: 6;
+}
+.sketch.drawn { opacity: 1; transition-delay: 0s; }
+.sketch path {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.55s ease-in-out var(--d, 0s);
+}
+.sketch path.pink { stroke: var(--pink-text); }
+.sketch path.thin { stroke-width: 1.4; }
+.sketch.drawn path { stroke-dashoffset: 0; }
+
+.sticky-board .sketch-bubble { left: -9%;  top: 1%;  width: 12.5%; }
+.sticky-board .sketch-hearts { left: 87%;  top: 3%;  width: 10%; }
+.sticky-board .sketch-steam  { left: 79.5%; top: 55%; width: 7.5%; }
+
+.featured-tag .sketch-arrow { left: calc(100% + 10px); top: 4px; width: 120px; }
+
+.project-card { position: relative; }
+.project-card .sketch-corner { top: -34px; right: -14px; width: 76px; transform: rotate(8deg); }
+.project-card:nth-child(even) .sketch-corner { transform: rotate(-6deg); }
+.project-card .meta h3 { position: relative; display: inline-block; }
+.project-card .sketch-underline { left: -4px; right: -4px; bottom: -8px; width: calc(100% + 8px); height: 12px; }
+
+@media (max-width: 640px) {
+  .sticky-board .sketch-bubble { left: -2%; top: -8%; width: 20%; }
+  .project-card .sketch-corner { width: 56px; top: -26px; right: -6px; }
+  .featured-tag .sketch-arrow { width: 80px; }
+}

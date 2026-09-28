@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 56 56">
+  <!-- Static fallback of the sketched pencil cursor. Tip (hotspot) sits at 4,52 in this viewBox. -->
+  <g transform="translate(4 52) rotate(-45) scale(1.08)" stroke="#182449" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M10 -4.5 L3.6 -1.7 L0 0 L3.6 1.7 L10 4.5 Q8.6 3 10 1.5 Q8.6 0 10 -1.5 Q8.6 -3 10 -4.5 Z" fill="#f3dcb4"/>
+    <path d="M0 0 L3.6 -1.7 L3.6 1.7 Z" fill="#182449"/>
+    <path d="M10 -4.5 H38 V4.5 H10" fill="#f0dd8c"/>
+    <path d="M10 -1.5 H38 M10 1.5 H38" stroke-width="0.6" opacity="0.55"/>
+    <path d="M13 4.2 l2 -2.2 M17 4.2 l2 -2.2 M21 4.2 l2 -2.2 M25 4.2 l2 -2.2 M29 4.2 l2 -2.2 M33 4.2 l2 -2.2" stroke-width="0.55" opacity="0.6"/>
+    <path d="M38 -4.5 H43 V4.5 H38 Z" fill="#cfd3d8"/>
+    <path d="M39.7 -4.5 V4.5 M41.3 -4.5 V4.5" stroke-width="0.55"/>
+    <path d="M43 -4.5 H47 Q49.5 -4.5 49.5 -2 V2 Q49.5 4.5 47 4.5 H43 Z" fill="#f0a8d4"/>
+  </g>
+</svg>
