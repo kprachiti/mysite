@@ -4,9 +4,8 @@
 //    (empathize → define → ideate → prototype → test → back again) appears by the sticky note,
 //    and a coffee receipt prints out from under the notecard.
 //  - "featured projects": an arrow sketches toward the work as it scrolls into view.
-//  - Project cards: a themed doodle draws on the corner when the card scrolls in; hovering
-//    sketches a white-pencil outline around the blurred thumbnail and
-//    underlines its title.
+//  - Project cards: a themed doodle draws on the corner when the card scrolls in;
+//    hovering a card underlines its title.
 //  - About page: each painting gets a hand-doodled hanging frame when it scrolls into view.
 (function () {
   const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -329,53 +328,6 @@
     }, 0.3);
   }
 
-  // White-pencil outline over a project thumbnail's hover blur: a loose hand-drawn frame just
-  // inside the tile's edge, sketched in two passes with corners that overshoot, like a pencil
-  // rough. Coordinates are in the thumbnail's 1151x302 box.
-  const THUMB_W = 1151, THUMB_H = 302;
-
-  function thumbOutline(seed) {
-    const r = rng(seed);
-    const f = (n) => n.toFixed(1);
-    const strokes = [];
-    // one pass = four slightly bowed sides, each running a little past the corners
-    const pass = (inset, over, wobble) => {
-      const x1 = inset + r() * 4, y1 = inset + r() * 4;
-      const x2 = THUMB_W - inset + r() * 4, y2 = THUMB_H - inset + r() * 4;
-      const side = (ax, ay, bx, by) => {
-        const len = Math.hypot(bx - ax, by - ay), ux = (bx - ax) / len, uy = (by - ay) / len;
-        const sx = ax - ux * over * (0.6 + r()), sy = ay - uy * over * (0.6 + r());
-        const ex = bx + ux * over * (0.6 + r()), ey = by + uy * over * (0.6 + r());
-        const mx = (sx + ex) / 2 - uy * wobble * r() * 2, my = (sy + ey) / 2 + ux * wobble * r() * 2;
-        return `M${f(sx)} ${f(sy)} Q${f(mx)} ${f(my)} ${f(ex)} ${f(ey)}`;
-      };
-      strokes.push(side(x1, y1, x2, y1), side(x2, y1, x2, y2), side(x2, y2, x1, y2), side(x1, y2, x1, y1));
-    };
-    pass(22, 14, 5);
-    pass(27, 9, 7);
-    return strokes;
-  }
-
-  function thumbDoodle(seed) {
-    const svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', `0 0 ${THUMB_W} ${THUMB_H}`);
-    svg.setAttribute('preserveAspectRatio', 'none');
-    svg.setAttribute('class', 'sketch sketch-thumb');
-    svg.setAttribute('aria-hidden', 'true');
-    const g = document.createElementNS(SVG_NS, 'g');
-    g.setAttribute('filter', 'url(#graphite)');
-    svg.append(g);
-    thumbOutline(seed).forEach((d, i) => {
-      const p = document.createElementNS(SVG_NS, 'path');
-      p.setAttribute('d', d);
-      p.setAttribute('pathLength', '1');
-      if (i >= 4) p.setAttribute('class', 'thin');
-      p.style.setProperty('--d', `${(i * 0.12).toFixed(2)}s`);
-      g.append(p);
-    });
-    return svg;
-  }
-
   const draw = (el, on) => el.classList.toggle('drawn', on);
 
   function onScrollIn(target, cb, threshold = 0.4) {
@@ -479,15 +431,6 @@
         const corner = sketch(CARD_DOODLE[slug], 'sketch-corner');
         card.append(corner);
         onScrollIn(card, () => setTimeout(() => draw(corner, true), 350), 0.35);
-      }
-      const thumb = card.querySelector('.thumb');
-      const scribbles = canHover && thumb && thumbDoodle(97 + slug.length * 131);
-      if (scribbles) {
-        thumb.querySelector('.case-cta').before(scribbles);
-        card.addEventListener('mouseenter', () => draw(scribbles, true));
-        card.addEventListener('mouseleave', () => draw(scribbles, false));
-        card.addEventListener('focus', () => draw(scribbles, true));
-        card.addEventListener('blur', () => draw(scribbles, false));
       }
       const title = card.querySelector('.meta h3');
       if (title && canHover) {
