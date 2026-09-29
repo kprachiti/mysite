@@ -17,7 +17,10 @@
 (function () {
   try {
     var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduced && !sessionStorage.getItem('introShown')) {
+    // play when the site is opened or refreshed, not when navigating back to home from another page
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    var reload = nav && nav.type === 'reload';
+    if (!reduced && (reload || !sessionStorage.getItem('introShown'))) {
       document.documentElement.classList.add('intro-run');
       sessionStorage.setItem('introShown', '1');
     }
