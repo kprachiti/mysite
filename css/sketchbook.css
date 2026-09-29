@@ -196,7 +196,7 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
 
 /* narrower screens have no left margin, so the IBM note moves above the nametag */
 @media (max-width: 1060px) {
-  .sticky-board .sketch-ibm { left: 14%; top: -14%; }
+  .sticky-board .sketch-ibm { left: 14%; top: -17%; }
 }
 
 /* Coffee receipt fed out from under the notecard (it lives inside .note-blurb, behind the card).
@@ -249,6 +249,9 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
 
 .about-collage .sketch-frame { left: 0; top: 0; z-index: 0; }
 
+/* heart-cornered frame around the About headshot: drawn on the page, so the notes sit on top of it */
+.sticky-board .sketch-photo-frame { z-index: 0; }
+
 /* handwritten notes in the open space beside each painting */
 .about-collage .sketch-art-note { width: 190px; z-index: 6; }
 .about-collage .art-note-still-life { left: 250px; top: 60px; }
@@ -271,7 +274,7 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
 
 /* phone layout of the sticky board (see style.css @480px) */
 @media (max-width: 480px) {
-  .sticky-board .sketch-ibm   { left: 33%; top: -62px; width: 28%; }
+  .sticky-board .sketch-ibm   { left: 33%; top: -76px; width: 28%; }
   /* no free space around the notes on phones: the board grows and the loop sits below the notecard */
   .sticky-board.has-cycle { height: 585px; }
   .sticky-board .sketch-cycle { left: 38%; top: 79%; width: 200px; }

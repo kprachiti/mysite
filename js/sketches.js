@@ -1,6 +1,6 @@
 // Home page scrapbook extras and pencil sketches.
 //  - Hero: move the pointer near a note (or scroll the hero into view on touch):
-//    "prev. UX @ IBM" is written beside the nametag, a one-line "my design loop" doodle
+//    "prev. UX @ IBM" is written beside the nametag, a one-line design-loop doodle
 //    (empathize → define → ideate → prototype → test → back again) appears by the sticky note,
 //    and a coffee receipt prints out from under the notecard.
 //  - "featured projects": an arrow sketches toward the work as it scrolls into view.
@@ -30,13 +30,13 @@
     '<feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="2" result="warp"/>' +
     '<feDisplacementMap in="grainy" in2="warp" scale="1.8"/></filter>';
 
-  // "my design loop": one continuous pencil line that curls once per stage (labels alternate
+  // Design loop: one continuous pencil line that curls once per stage (labels alternate
   // above and below), then swoops back underneath to the start, as if drawn without lifting the pencil.
   function designLoop() {
     const words = ['empathize', 'define', 'ideate', 'prototype', 'test'];
     const B = 70;                                     // baseline
     let d = `M8 ${B} L20 ${B}`;
-    const strokes = [['text', 'my design loop:', { x: 6, y: 16, size: 19 }]];
+    const strokes = [];
     words.forEach((word, i) => {
       const cx = 35 + i * 40, s = i % 2 ? 1 : -1;     // curl above (-1) or below (+1) the line
       d += ` C${cx + 2} ${B} ${cx + 10} ${B + 14 * s} ${cx + 2} ${B + 20 * s}` +
@@ -56,11 +56,12 @@
   // Each doodle: viewBox + strokes, drawn one after another.
   // ['path', d, className?, fill?], ['text', words, { x, y, size, anchor?, cls? }] or ['blob', { cx, cy, r, color }]
   const DOODLES = {
-    cycle: ['0 0 240 140', designLoop()],
-    ibm: ['0 0 110 80', [
+    cycle: ['0 20 240 120', designLoop()],
+    ibm: ['0 0 110 104', [
       ['text', 'prev. UX', { x: 4, y: 26, size: 26 }],
       ['text', '@ IBM', { x: 14, y: 54, size: 28 }],
-      ['path', 'M62 64 C80 72 96 66 104 56 M96 56 L104 55 L102 63', 'thin'],
+      // arrow curling down toward the nametag
+      ['path', 'M58 62 C60 78 72 88 90 96 M80 97 L91 96 L86 86', 'thin'],
     ]],
     arrow: ['0 0 120 90', [
       ['path', 'M6 14 C40 2 92 10 100 44 C104 60 98 72 90 82'],
@@ -185,15 +186,25 @@
       line(x - o, y - o, x + w + o, y - o) + ' ' + line(x + w + o, y - o, x + w + o, y + h + o) + ' ' +
       line(x + w + o, y + h + o, x - o, y + h + o) + ' ' + line(x - o, y + h + o, x - o, y - o);
 
-    const out = style === 'scallop' ? 12 : style === 'ornate' ? 18 : 16;
-    // nail + string (the frames hang, like the reference sheet)
-    const nx = x + w / 2, ny = y - out - Math.min(34, h * 0.18);
-    const strokes = [
-      ['path', `M${f(nx - 3)} ${f(ny)} a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 M${f(nx)} ${f(ny)} l0.4 0.4`, 'thin'],
-      ['path', line(nx, ny + 3, x + w * 0.22, y - out) + ' ' + line(nx, ny + 3, x + w * 0.78, y - out), 'thin'],
-    ];
+    const out = style === 'scallop' ? 12 : style === 'ornate' || style === 'hearts' ? 18 : 16;
+    const strokes = [];
+    if (style !== 'hearts') {
+      // nail + string (the painting frames hang, like the reference sheet)
+      const nx = x + w / 2, ny = y - out - Math.min(34, h * 0.18);
+      strokes.push(['path', `M${f(nx - 3)} ${f(ny)} a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 M${f(nx)} ${f(ny)} l0.4 0.4`, 'thin']);
+      strokes.push(['path', line(nx, ny + 3, x + w * 0.22, y - out) + ' ' + line(nx, ny + 3, x + w * 0.78, y - out), 'thin']);
+    }
 
-    if (style === 'bevel') {
+    if (style === 'hearts') {
+      // double-line frame with a little heart on each corner
+      strokes.push(['path', rect(8)]);
+      strokes.push(['path', rect(out), 'thin']);
+      const heart = (cx, cy) =>
+        `M${f(cx)} ${f(cy + 10)} C${f(cx - 15)} ${f(cy)} ${f(cx - 11)} ${f(cy - 14)} ${f(cx)} ${f(cy - 6)} ` +
+        `C${f(cx + 11)} ${f(cy - 14)} ${f(cx + 15)} ${f(cy)} ${f(cx)} ${f(cy + 10)} Z`;
+      strokes.push(['path', [heart(x - out, y - out), heart(x + w + out, y - out),
+        heart(x + w + out, y + h + out), heart(x - out, y + h + out)].join(' ')]);
+    } else if (style === 'bevel') {
       strokes.push(['path', rect(out)]);
       strokes.push(['path', rect(4)]);
       strokes.push(['path',
@@ -277,6 +288,32 @@
         onScrollIn(fig, () => setTimeout(() => note.classList.add('drawn'), 1600), 0.5);
       }
     }
+  }
+
+  // About hero: heart-cornered frame doodled around the headshot. The photo clips its own
+  // overflow, so the frame is a sibling on the board, sized and placed to match the photo.
+  function framePhoto(photo) {
+    const board = photo.parentElement;
+    let svg = null, wantDrawn = false;
+    const build = () => {
+      const w = photo.offsetWidth, h = photo.offsetHeight;
+      if (!w || !h) return;
+      const pad = 36;
+      DOODLES['frame-photo'] = [`${-pad} ${-pad} ${w + pad * 2} ${h + pad * 2}`, frameStrokes('hearts', 0, 0, w, h, rng(4242))];
+      const next = sketch('frame-photo', 'sketch-photo-frame');
+      Object.assign(next.style, {
+        left: `${photo.offsetLeft - pad}px`, top: `${photo.offsetTop - pad}px`,
+        width: `${w + pad * 2}px`, height: `${h + pad * 2}px`,
+      });
+      const wasDrawn = !!svg && svg.classList.contains('drawn');
+      if (svg) svg.replaceWith(next); else board.append(next);
+      svg = next;
+      if (wasDrawn) svg.classList.add('drawn');
+      else if (wantDrawn) requestAnimationFrame(() => requestAnimationFrame(() => svg.classList.add('drawn')));
+    };
+    build();
+    if ('ResizeObserver' in window) new ResizeObserver(build).observe(photo);
+    onScrollIn(photo, () => setTimeout(() => { wantDrawn = true; if (svg) svg.classList.add('drawn'); }, 300), 0.3);
   }
 
   const draw = (el, on) => el.classList.toggle('drawn', on);
@@ -368,6 +405,8 @@
 
     // About page: doodled frames around each painting
     document.querySelectorAll('.about-collage .art').forEach(frameArt);
+    const photo = document.querySelector('.sticky-board.has-photo .note-photo');
+    if (photo) framePhoto(photo);
 
     // Arrow from "featured projects" down to the work (home page only)
     const tag = document.querySelector('.projects') && document.querySelector('.featured-tag');
