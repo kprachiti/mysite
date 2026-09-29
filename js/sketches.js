@@ -5,7 +5,7 @@
 //    and a coffee receipt prints out from under the notecard.
 //  - "featured projects": an arrow sketches toward the work as it scrolls into view.
 //  - Project cards: a themed doodle draws on the corner when the card scrolls in; hovering
-//    sketches white-pencil doodles (hatching, stippling, spirals...) over the blurred thumbnail and
+//    sketches a white-pencil outline around the blurred thumbnail and
 //    underlines its title.
 //  - About page: each painting gets a hand-doodled hanging frame when it scrolls into view.
 (function () {
@@ -329,175 +329,48 @@
     }, 0.3);
   }
 
-  // White-pencil doodles over a project thumbnail's hover blur. Each card mixes a few
-  // drawing techniques (cross-hatching, stippling, spirals, little sketches...) in the space
-  // to either side of the "See case study" pill. Coordinates are in the thumbnail's 1151x302 box.
+  // White-pencil outline over a project thumbnail's hover blur: a loose hand-drawn frame just
+  // inside the tile's edge, sketched in two passes with corners that overshoot, like a pencil
+  // rough. Coordinates are in the thumbnail's 1151x302 box.
   const THUMB_W = 1151, THUMB_H = 302;
-  const f1 = (n) => n.toFixed(1);
 
-  const TECHNIQUES = {
-    // two layers of diagonal hatching clipped to a loose ellipse
-    crosshatch(r, cx, cy, rx, ry) {
-      const layer = (angle, gap) => {
-        let d = '';
-        const ca = Math.cos(angle), sa = Math.sin(angle);
-        for (let t = -Math.max(rx, ry); t <= Math.max(rx, ry); t += gap) {
-          // line: points p = c + t*n + s*dir, clip to the ellipse
-          const nx = -sa, ny = ca;
-          const px = t * nx, py = t * ny;
-          const A = (ca * ca) / (rx * rx) + (sa * sa) / (ry * ry);
-          const B = 2 * ((px * ca) / (rx * rx) + (py * sa) / (ry * ry));
-          const C = (px * px) / (rx * rx) + (py * py) / (ry * ry) - 1;
-          const disc = B * B - 4 * A * C;
-          if (disc <= 0) continue;
-          const s1 = (-B - Math.sqrt(disc)) / (2 * A), s2 = (-B + Math.sqrt(disc)) / (2 * A);
-          const j = () => r() * 6;
-          d += `M${f1(cx + px + s1 * ca + j())} ${f1(cy + py + s1 * sa + j())} L${f1(cx + px + s2 * ca + j())} ${f1(cy + py + s2 * sa + j())} `;
-        }
-        return d;
+  function thumbOutline(seed) {
+    const r = rng(seed);
+    const f = (n) => n.toFixed(1);
+    const strokes = [];
+    // one pass = four slightly bowed sides, each running a little past the corners
+    const pass = (inset, over, wobble) => {
+      const x1 = inset + r() * 4, y1 = inset + r() * 4;
+      const x2 = THUMB_W - inset + r() * 4, y2 = THUMB_H - inset + r() * 4;
+      const side = (ax, ay, bx, by) => {
+        const len = Math.hypot(bx - ax, by - ay), ux = (bx - ax) / len, uy = (by - ay) / len;
+        const sx = ax - ux * over * (0.6 + r()), sy = ay - uy * over * (0.6 + r());
+        const ex = bx + ux * over * (0.6 + r()), ey = by + uy * over * (0.6 + r());
+        const mx = (sx + ex) / 2 - uy * wobble * r() * 2, my = (sy + ey) / 2 + ux * wobble * r() * 2;
+        return `M${f(sx)} ${f(sy)} Q${f(mx)} ${f(my)} ${f(ex)} ${f(ey)}`;
       };
-      return [['', layer(-0.8, 11)], ['', layer(0.75, 13)]];
-    },
-    // stippled cloud: denser toward the middle
-    stipple(r, cx, cy, rad, n = 150) {
-      let d = '';
-      for (let i = 0; i < n; i++) {
-        const a = (r() + 0.5) * Math.PI * 2;
-        const dist = Math.pow(r() + 0.5, 1.6) * rad;
-        const x = cx + Math.cos(a) * dist * 1.5, y = cy + Math.sin(a) * dist;
-        d += `M${f1(x)} ${f1(y)} l0.4 0.3 `;
-      }
-      return [['dot', d]];
-    },
-    spiral(r, cx, cy, rad, turns = 4) {
-      let d = `M${cx} ${cy}`;
-      const steps = turns * 28;
-      for (let i = 1; i <= steps; i++) {
-        const a = (i / 28) * Math.PI * 2;
-        const rr = (i / steps) * rad + r() * 2.5;
-        d += ` L${f1(cx + Math.cos(a) * rr)} ${f1(cy + Math.sin(a) * rr)}`;
-      }
-      return [['', d]];
-    },
-    // loose concentric rings, like circling an idea over and over
-    rings(r, cx, cy, rad) {
-      return [0.45, 0.72, 1].map((k) => {
-        let d = '';
-        const start = r() * 6;
-        for (let i = 0; i <= 40; i++) {
-          const a = start + (i / 36) * Math.PI * 2;
-          const rr = rad * k + r() * 5;
-          d += `${i ? 'L' : 'M'}${f1(cx + Math.cos(a) * rr)} ${f1(cy + Math.sin(a) * rr * 0.9)} `;
-        }
-        return ['thin', d];
-      });
-    },
-    // stacked wavy contour lines
-    waves(r, x, y, w, rows = 5) {
-      return Array.from({ length: rows }, (_, row) => {
-        let d = `M${x} ${y + row * 16}`;
-        for (let sx = 0; sx <= w; sx += 14) {
-          d += ` L${f1(x + sx)} ${f1(y + row * 16 + Math.sin(sx / 18 + row) * 7 + r() * 2)}`;
-        }
-        return ['thin', d];
-      });
-    },
-    // back-and-forth zigzag shading
-    zigzag(r, x, y, w, h) {
-      let d = `M${x} ${y}`;
-      for (let sx = 0, up = false; sx <= w; sx += 7, up = !up) {
-        d += ` L${f1(x + sx + r() * 2)} ${f1((up ? y : y + h) + r() * 5)}`;
-      }
-      return [['thin', d]];
-    },
-    star(r, cx, cy, s) {
-      let d = '';
-      for (let i = 0; i <= 10; i++) {
-        const a = -Math.PI / 2 + (i * Math.PI) / 5;
-        const rr = i % 2 ? s * 0.42 : s;
-        d += `${i ? 'L' : 'M'}${f1(cx + Math.cos(a) * rr + r() * 3)} ${f1(cy + Math.sin(a) * rr + r() * 3)} `;
-      }
-      return [['', d]];
-    },
-    sparkles(r, pts) {
-      return [['thin', pts.map(([x, y, s]) =>
-        `M${x} ${y - s} Q${x + 2} ${y - 2} ${x + s} ${y} Q${x + 2} ${y + 2} ${x} ${y + s} Q${x - 2} ${y + 2} ${x - s} ${y} Q${x - 2} ${y - 2} ${x} ${y - s}`).join(' ')]];
-    },
-    flower(r, cx, cy, s) {
-      let d = '';
-      for (let i = 0; i < 6; i++) {
-        const a = (i / 6) * Math.PI * 2;
-        const tx = cx + Math.cos(a) * s, ty = cy + Math.sin(a) * s;
-        const lx = Math.cos(a + 0.5) * s * 0.55, ly = Math.sin(a + 0.5) * s * 0.55;
-        d += `M${cx} ${cy} Q${f1(cx + lx + Math.cos(a) * s * 0.5)} ${f1(cy + ly + Math.sin(a) * s * 0.5)} ${f1(tx)} ${f1(ty)} Q${f1(cx - lx + Math.cos(a) * s * 0.5 + (lx * 0.1))} ${f1(cy - ly + Math.sin(a) * s * 0.5)} ${cx} ${cy} `;
-      }
-      const c = s * 0.22;
-      return [['', d], ['', `M${cx - c} ${cy} a${c} ${c} 0 1 0 ${2 * c} 0 a${c} ${c} 0 1 0 ${-2 * c} 0 M${cx} ${cy + s * 0.25} Q${cx - 6} ${cy + s * 1.4} ${cx + 4} ${cy + s * 2.1}`]];
-    },
-    heart(r, cx, cy, s) {
-      return [['', `M${cx} ${cy + s * 0.9} C${cx - s * 1.4} ${cy - s * 0.1} ${cx - s * 0.8} ${cy - s * 1.1} ${cx} ${cy - s * 0.35} C${cx + s * 0.8} ${cy - s * 1.1} ${cx + s * 1.4} ${cy - s * 0.1} ${cx + 2} ${cy + s * 0.92}`]];
-    },
-    paw(r, cx, cy, s) {
-      const o = (x, y, rx, ry) => `M${f1(x - rx)} ${f1(y)} a${rx} ${ry} 0 1 0 ${f1(2 * rx)} 0 a${rx} ${ry} 0 1 0 ${f1(-2 * rx)} 0 `;
-      return [['', o(cx, cy + s * 0.35, s * 0.5, s * 0.4)],
-        ['', o(cx - s * 0.62, cy - s * 0.25, s * 0.17, s * 0.22) + o(cx - s * 0.22, cy - s * 0.62, s * 0.17, s * 0.22) +
-          o(cx + s * 0.22, cy - s * 0.62, s * 0.17, s * 0.22) + o(cx + s * 0.62, cy - s * 0.25, s * 0.17, s * 0.22)]];
-    },
-    squiggle(r, x, y, w) {
-      let d = `M${x} ${y}`;
-      for (let sx = 0; sx < w; sx += 22) {
-        d += ` c8 -16 18 -16 14 0 s-12 16 8 0`;
-      }
-      return [['', d]];
-    },
-  };
+      strokes.push(side(x1, y1, x2, y1), side(x2, y1, x2, y2), side(x2, y2, x1, y2), side(x1, y2, x1, y1));
+    };
+    pass(22, 14, 5);
+    pass(27, 9, 7);
+    return strokes;
+  }
 
-  // Which techniques go where on each card (left of the pill / right of the pill / corners).
-  const THUMB_DOODLES = {
-    ibm: (r, T) => [
-      ...T.crosshatch(r, 190, 150, 120, 85),
-      ...T.sparkles(r, [[360, 60, 16], [60, 250, 11]]),
-      ...T.spiral(r, 930, 150, 78, 4),
-      ...T.stipple(r, 1070, 70, 32, 60),
-    ],
-    adobe: (r, T) => [
-      ...T.stipple(r, 200, 150, 95, 190),
-      ...T.star(r, 380, 70, 30),
-      ...T.rings(r, 930, 155, 90),
-      ...T.zigzag(r, 1040, 230, 80, 40),
-    ],
-    haven: (r, T) => [
-      ...T.flower(r, 170, 120, 50),
-      ...T.heart(r, 330, 200, 34),
-      ...T.waves(r, 800, 95, 260, 5),
-      ...T.stipple(r, 1070, 235, 28, 55),
-      ...T.sparkles(r, [[390, 60, 12]]),
-    ],
-    wopet: (r, T) => [
-      ...T.spiral(r, 180, 155, 72, 3.5),
-      ...T.paw(r, 350, 110, 42),
-      ...T.crosshatch(r, 950, 150, 115, 75),
-      ...T.squiggle(r, 790, 265, 180),
-    ],
-  };
-
-  function thumbDoodle(slug, seed) {
-    const make = THUMB_DOODLES[slug];
-    if (!make) return null;
+  function thumbDoodle(seed) {
     const svg = document.createElementNS(SVG_NS, 'svg');
     svg.setAttribute('viewBox', `0 0 ${THUMB_W} ${THUMB_H}`);
-    svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+    svg.setAttribute('preserveAspectRatio', 'none');
     svg.setAttribute('class', 'sketch sketch-thumb');
     svg.setAttribute('aria-hidden', 'true');
     const g = document.createElementNS(SVG_NS, 'g');
     g.setAttribute('filter', 'url(#graphite)');
     svg.append(g);
-    make(rng(seed), TECHNIQUES).forEach(([cls, d], i) => {
+    thumbOutline(seed).forEach((d, i) => {
       const p = document.createElementNS(SVG_NS, 'path');
       p.setAttribute('d', d);
       p.setAttribute('pathLength', '1');
-      if (cls) p.setAttribute('class', cls);
-      p.style.setProperty('--d', `${(i * 0.09).toFixed(2)}s`);
+      if (i >= 4) p.setAttribute('class', 'thin');
+      p.style.setProperty('--d', `${(i * 0.12).toFixed(2)}s`);
       g.append(p);
     });
     return svg;
@@ -608,7 +481,7 @@
         onScrollIn(card, () => setTimeout(() => draw(corner, true), 350), 0.35);
       }
       const thumb = card.querySelector('.thumb');
-      const scribbles = canHover && thumb && thumbDoodle(slug, 97 + slug.length * 131);
+      const scribbles = canHover && thumb && thumbDoodle(97 + slug.length * 131);
       if (scribbles) {
         thumb.querySelector('.case-cta').before(scribbles);
         card.addEventListener('mouseenter', () => draw(scribbles, true));
