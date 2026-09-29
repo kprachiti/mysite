@@ -50,7 +50,7 @@
       // small screenshots get scaled up (to 1.75× their file size) so the view is actually larger;
       // max-width / max-height in the CSS still keep it on screen
       big.style.width = img.naturalWidth ? `${Math.round(img.naturalWidth * 1.75)}px` : '';
-      caption.textContent = img.alt;
+      caption.textContent = img.dataset.caption || img.alt;   // data-caption: a lightbox-only caption
       count.textContent = `${index + 1} / ${imgs.length}`;
       const single = imgs.length < 2;
       prevBtn.hidden = single;
