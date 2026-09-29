@@ -8,7 +8,7 @@
 
   const SIZE = 48 / 56;                         // rendered size / viewBox size
   const TIP_X = 4 * SIZE, TIP_Y = 52 * SIZE;    // graphite tip = hotspot
-  const INTERACTIVE = 'a, button, [role="button"], label, summary';
+  const INTERACTIVE = 'a, button, [role="button"], label, summary, .lb-zoomable';
 
   const PENCIL = `
     <svg class="pencil-body" viewBox="0 0 56 56" aria-hidden="true">
