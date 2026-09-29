@@ -319,7 +319,13 @@
     };
     build();
     if ('ResizeObserver' in window) new ResizeObserver(build).observe(photo);
-    onScrollIn(photo, () => setTimeout(() => { wantDrawn = true; if (svg) svg.classList.add('drawn'); }, 300), 0.3);
+    const drawFrame = () => setTimeout(() => { wantDrawn = true; if (svg) svg.classList.add('drawn'); }, 300);
+    // arriving from home, wait for the notes to finish moving aside (js/page-transition.js)
+    onScrollIn(photo, () => {
+      if (document.documentElement.classList.contains('vt-running')) {
+        addEventListener('pk:transition-done', drawFrame, { once: true });
+      } else drawFrame();
+    }, 0.3);
   }
 
   const draw = (el, on) => el.classList.toggle('drawn', on);
