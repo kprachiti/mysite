@@ -331,121 +331,6 @@
     }, 0.3);
   }
 
-  // About page secret: five iced matchas drawn in coloured pencil, hidden under looping pencil
-  // scribbles that spell SHHHH!. Hover (or tap) and the scribbles erase themselves, the drinks come
-  // into focus and "... i might like matcha more" is written underneath.
-  const DRINKS_W = 560, DRINKS_H = 210;
-  // layers top→bottom as [until, colour]; lid: 'flat' | 'dome' | 'spout'
-  const DRINKS = [
-    { layers: [[0.46, '#8db766'], [0.56, '#dfe8c7'], [1, '#f2a6b9']], straw: '#d9dde2', lid: 'flat', tilt: -4 },
-    { layers: [[0.6, '#6f9f4c'], [1, '#9db0e6']], straw: '#e4e7ea', lid: 'flat', lidTint: '#c6dc7a', sticker: true, tilt: 3 },
-    { layers: [[0.55, '#93bd63'], [1, '#efe5c6']], straw: '#b99a6a', lid: 'flat', tilt: -2 },
-    { layers: [[0.3, '#f6c3d1'], [0.8, '#a4c46f'], [0.93, '#f5efe7'], [1, '#b3496b']], straw: null, lid: 'spout', tilt: 4 },
-    { layers: [[0.42, '#efc8cf'], [1, '#79ab52']], straw: '#e8eaec', lid: 'dome', flakes: true, label: true, tilt: -3 },
-  ];
-
-  function drawDrinks() {
-    const f = (n) => n.toFixed(1);
-    const top = 58, bot = 196, topW = 74, botW = 56;
-    let defs = '<pattern id="pencil-hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">' +
-      '<line x1="0" y1="0" x2="0" y2="5" stroke="rgba(255,255,255,0.4)" stroke-width="1.6"/></pattern>';
-    let body = '';
-    DRINKS.forEach((d, i) => {
-      const cx = 56 + i * 112;
-      const cup = `M${cx - topW / 2} ${top} L${cx + topW / 2} ${top} L${cx + botW / 2} ${bot} Q${cx} ${bot + 5} ${cx - botW / 2} ${bot} Z`;
-      defs += `<clipPath id="cup-${i}"><path d="${cup}"/></clipPath>`;
-      let g = `<g transform="rotate(${d.tilt} ${cx} ${bot})">`;
-      // straw behind the lid
-      if (d.straw) g += `<path d="M${cx + 8} ${top + 60} L${cx + 22} ${top - 46}" stroke="${d.straw}" stroke-width="5" stroke-linecap="round"/>` +
-        `<path class="ink" d="M${cx + 5.6} ${top + 60} L${cx + 19.6} ${top - 46} L${cx + 24.4} ${top - 46.6} L${cx + 10.4} ${top + 60}"/>`;
-      // drink layers, pencil-hatched, clipped to the cup
-      let y = top + 6, fill = '';
-      d.layers.forEach(([until, col]) => {
-        const y2 = top + 6 + (bot - top - 6) * until;
-        fill += `<rect x="${cx - 50}" y="${f(y)}" width="100" height="${f(y2 - y + 1)}" fill="${col}"/>`;
-        y = y2;
-      });
-      fill += `<rect x="${cx - 50}" y="${top}" width="100" height="${bot - top + 6}" fill="url(#pencil-hatch)"/>`;
-      if (d.flakes) for (let k = 0; k < 9; k++) fill += `<circle cx="${f(cx - 16 + ((k * 37) % 32))}" cy="${f(top + 10 + ((k * 13) % 9))}" r="1.9" fill="#d2463f"/>`;
-      g += `<g clip-path="url(#cup-${i})">${fill}</g>`;
-      if (d.sticker) g += `<circle cx="${cx}" cy="${top + 70}" r="17" fill="#f3e3c2"/>` +
-        `<path d="M${cx} ${top + 70} m0 -8 a4 4 0 1 1 0.1 0 M${cx} ${top + 70} m8 0 a4 4 0 1 1 0 0.1 M${cx} ${top + 70} m0 8 a4 4 0 1 1 -0.1 0 M${cx} ${top + 70} m-8 0 a4 4 0 1 1 0 -0.1" fill="#3f7d4f"/>`;
-      if (d.label) g += `<rect x="${cx - 13}" y="${top + 84}" width="26" height="28" fill="#2f5d45"/>` +
-        `<path d="M${cx - 6} ${top + 92} h10 M${cx - 6} ${top + 98} h8 M${cx - 6} ${top + 104} h10" stroke="#e7efe6" stroke-width="1.4"/>`;
-      g += `<path class="ink" d="${cup}"/>`;
-      // lid
-      if (d.lid === 'dome') g += `<path d="M${cx - 40} ${top} Q${cx} ${top - 34} ${cx + 40} ${top} Z" fill="rgba(240,244,246,0.75)"/><path class="ink" d="M${cx - 40} ${top} Q${cx} ${top - 34} ${cx + 40} ${top} M${cx - 41} ${top} H${cx + 41}"/>`;
-      else if (d.lid === 'spout') g += `<path d="M${cx - 39} ${top} C${cx - 36} ${top - 18} ${cx + 36} ${top - 18} ${cx + 39} ${top} Z" fill="rgba(244,238,240,0.85)"/><rect x="${cx - 10}" y="${top - 22}" width="20" height="9" rx="2" fill="#f0609b"/><path class="ink" d="M${cx - 39} ${top} C${cx - 36} ${top - 18} ${cx + 36} ${top - 18} ${cx + 39} ${top} M${cx - 10} ${top - 13} v-9 h20 v9"/>`;
-      else g += `<rect x="${cx - 41}" y="${top - 7}" width="82" height="9" rx="3" fill="${d.lidTint || 'rgba(235,240,242,0.8)'}"/><path class="ink" d="M${cx - 41} ${top + 2} v-6 q0 -3 3 -3 h76 q3 0 3 3 v6 Z"/>`;
-      body += g + '</g>';
-    });
-    const svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', `0 0 ${DRINKS_W} ${DRINKS_H}`);
-    svg.setAttribute('class', 'drinks-art');
-    svg.innerHTML = `<defs>${defs}</defs><g filter="url(#graphite)">${body}</g>`;
-    return svg;
-  }
-
-  // "SHHHH!" written as a chain of little pencil loops that follow each letter's strokes
-  const GLYPHS = {
-    S: [[[58, 20], [40, 4], [16, 10], [10, 36], [32, 58], [56, 76], [58, 108], [36, 128], [8, 116]]],
-    H: [[[8, 4], [8, 128]], [[58, 4], [58, 128]], [[8, 66], [58, 66]]],
-    '!': [[[24, 4], [24, 90]], [[24, 116], [24, 122]]],
-  };
-  function loopScribble(points, ox, oy, r) {
-    const pts = [];
-    for (let i = 0; i < points.length - 1; i++) {
-      const [x1, y1] = points[i], [x2, y2] = points[i + 1];
-      const n = Math.max(2, Math.round(Math.hypot(x2 - x1, y2 - y1) / 1.7));
-      for (let k = 0; k < n; k++) pts.push([x1 + ((x2 - x1) * k) / n, y1 + ((y2 - y1) * k) / n]);
-    }
-    pts.push(points[points.length - 1]);
-    let a = 0, d = '';
-    pts.forEach(([x, y], i) => {
-      a += 0.72;
-      const px = ox + x + Math.cos(a) * r, py = oy + y + Math.sin(a) * r * 0.85;
-      d += `${i ? 'L' : 'M'}${px.toFixed(1)} ${py.toFixed(1)} `;
-    });
-    return d;
-  }
-  function drawShh() {
-    const svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', `0 0 ${DRINKS_W} ${DRINKS_H}`);
-    svg.setAttribute('class', 'sketch shh-art');
-    const g = document.createElementNS(SVG_NS, 'g');
-    g.setAttribute('filter', 'url(#graphite)');
-    svg.append(g);
-    let i = 0;
-    [...'SHHHH!'].forEach((ch, n) => {
-      GLYPHS[ch].forEach((stroke) => {
-        const p = document.createElementNS(SVG_NS, 'path');
-        p.setAttribute('d', loopScribble(stroke, 14 + n * 90 - (ch === '!' ? 4 : 0), 34, 6.5));
-        p.setAttribute('pathLength', '1');
-        p.style.setProperty('--d', `${(i++ * 0.12).toFixed(2)}s`);
-        g.append(p);
-      });
-    });
-    return svg;
-  }
-
-  function matchaSecret(btn) {
-    btn.querySelector('.matcha-drinks').append(drawDrinks());
-    const shh = drawShh();
-    btn.querySelector('.matcha-shh').append(shh);
-    onScrollIn(btn, () => setTimeout(() => draw(shh, true), 200), 0.4);
-    const reveal = () => {
-      if (btn.classList.contains('revealed')) return;
-      // erase in reverse, last loop first
-      const paths = [...shh.querySelectorAll('path')].reverse();
-      paths.forEach((p, k) => p.style.setProperty('--d', `${(k * 0.06).toFixed(2)}s`));
-      draw(shh, false);
-      btn.classList.add('revealed');
-      btn.setAttribute('aria-expanded', 'true');
-    };
-    if (canHover) btn.addEventListener('mouseenter', reveal);
-    btn.addEventListener('click', reveal);
-  }
-
   const draw = (el, on) => el.classList.toggle('drawn', on);
 
   function onScrollIn(target, cb, threshold = 0.4) {
@@ -531,8 +416,6 @@
 
     // About page: doodled frames around each painting
     document.querySelectorAll('.about-collage .art').forEach(frameArt);
-    const secret = document.querySelector('.matcha-secret');
-    if (secret) matchaSecret(secret);
     const photo = document.querySelector('.sticky-board.has-photo .note-photo');
     if (photo) framePhoto(photo);
 
