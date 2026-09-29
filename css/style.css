@@ -977,9 +977,10 @@ html.intro-run .intro-face-inner::after { animation: introPageShade 1.3s ease-in
   100% { opacity: 0.4; }
 }
 
-/* PK mark: the letters with a doodled pencil frame and sparks drawn around them */
+/* PK mark: each letter sticker gets a pencil-drawn perforated (postage-stamp) edge,
+   with little sparks around the pair, in the same graphite as the home page sketches */
 .intro-mark { position: relative; }
-.intro-frame {
+.intro-sparks {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -988,26 +989,38 @@ html.intro-run .intro-face-inner::after { animation: introPageShade 1.3s ease-in
   transform: translate(-50%, -50%);
   overflow: visible;
 }
-.intro-frame path {
+.intro-sparks path,
+.stamp-edge path {
   fill: none;
-  stroke: #5f6268;
-  stroke-width: 2.2;
+  stroke: var(--graphite, #5f6268);
+  stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
 }
-.intro-frame path.thin { stroke-width: 1.5; opacity: 0.8; }
-html.intro-run .intro-frame path { animation: introDoodle 0.35s ease-out var(--d, 1s) forwards; }
+.stamp-edge path { stroke-width: 1.6; }
+html.intro-run .intro-sparks path,
+html.intro-run .stamp-edge path { animation: introDoodle 0.4s ease-out var(--d, 1s) forwards; }
 @keyframes introDoodle { to { stroke-dashoffset: 0; } }
 
-/* the letter stickers, placed one by one */
+/* the letter stickers, placed one by one (the wrapper carries the tile and its stamp edge) */
 .intro-letters.brand-letters { font-size: 72px; }
-.intro-letters .lt { opacity: 0; }
-.intro-letters .lt-p { --r: -7deg; --ty: 0em; }
-.intro-letters .lt-k { --r: 6deg; --ty: 0.1em; }
-html.intro-run .intro-letters .lt-p { animation: introStickerDrop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 0.15s forwards; }
-html.intro-run .intro-letters .lt-k { animation: introStickerDrop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 0.65s forwards; }
+.intro-letters .lt { transform: none; }
+.intro-letters .lt-wrap { position: relative; display: inline-flex; opacity: 0; }
+.intro-letters .lt-wrap-p { --r: -7deg; --ty: 0em; }
+.intro-letters .lt-wrap-k { --r: 6deg; --ty: 0.1em; margin-left: 0.05em; }
+.intro-letters .lt-k { margin-left: 0; }
+.intro-letters .stamp-edge {
+  position: absolute;
+  left: -12px;
+  top: -12px;
+  width: calc(100% + 24px);
+  height: calc(100% + 24px);
+  overflow: visible;
+}
+html.intro-run .intro-letters .lt-wrap-p { animation: introStickerDrop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 0.15s forwards; }
+html.intro-run .intro-letters .lt-wrap-k { animation: introStickerDrop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 0.65s forwards; }
 
 @keyframes introStickerDrop {
   0%   { opacity: 0; transform: translate(-24px, -70px) rotate(calc(var(--r) - 16deg)) scale(1.45); }

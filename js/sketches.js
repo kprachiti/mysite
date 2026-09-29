@@ -336,7 +336,7 @@
     const date = `${pad(now.getMonth() + 1)}/${pad(now.getDate())}/${String(now.getFullYear()).slice(2)}`;
     const row = (l, r) => `<div class="r-row"><span>${l}</span><span>${r}</span></div>`;
     return `
-      <div class="r-head">THE DESIGN BREW</div>
+      <div class="r-head">THE DAILY GRID</div>
       ${row('#0826', date)}
       <div class="r-rule"></div>
       ${row('ICED LATTE', '5.25')}
