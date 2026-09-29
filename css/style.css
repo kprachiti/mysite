@@ -827,22 +827,50 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 .quote-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin: 18px 0;
+  gap: 22px;
+  margin: 24px 0 30px;
 }
 @media (max-width: 640px) {
   .quote-row { grid-template-columns: 1fr; }
 }
+/* Reviews as handwritten notes: key phrases highlighted, stars pencilled in (js/main.js) */
 .quote-card {
-  background: var(--yellow-soft);
-  border: 1px solid #d8c98a;
-  border-radius: 10px;
-  padding: 18px;
+  margin: 0;
+  background: #fffdf6;
+  background-image: repeating-linear-gradient(180deg, transparent 0 31px, rgba(61, 107, 245, 0.1) 31px 32px);
+  background-position: 0 14px;
+  border-radius: 4px;
+  padding: 22px 22px 18px;
   text-align: center;
-  font-size: 13px;
-  color: var(--navy-soft);
+  box-shadow: 0 1px 0 #ece6d4, 0 10px 22px rgba(24, 36, 73, 0.1);
+  transform: rotate(-1.2deg);
 }
-.quote-card .stars { color: #d8a300; letter-spacing: 2px; margin-top: 10px; }
+.quote-card:nth-child(2) { transform: rotate(1deg) translateY(6px); }
+.quote-card:nth-child(3) { transform: rotate(-0.6deg); }
+.quote-card blockquote {
+  margin: 0;
+  font-family: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
+  font-weight: 600;
+  font-size: 23px;
+  line-height: 32px;
+  color: var(--navy);
+}
+/* highlighter swipe: uneven ends, slightly lower than the text like a real marker pass */
+.hl {
+  color: inherit;
+  padding: 0 0.15em;
+  margin: 0 -0.05em;
+  border-radius: 0.35em 0.2em 0.4em 0.25em;
+  background: linear-gradient(100deg, transparent 0.6%, rgba(255, 222, 60, 0.75) 2.4%, rgba(255, 222, 60, 0.55) 60%, rgba(255, 222, 60, 0.7) 96%, transparent 99%) 0 0.3em / 100% 0.95em no-repeat;
+  -webkit-box-decoration-break: clone;
+          box-decoration-break: clone;
+}
+.hl-pink { background-image: linear-gradient(100deg, transparent 0.6%, rgba(255, 141, 220, 0.6) 2.4%, rgba(255, 141, 220, 0.42) 60%, rgba(255, 141, 220, 0.6) 96%, transparent 99%); }
+.quote-card .stars { display: flex; justify-content: center; gap: 4px; margin-top: 12px; color: #d8a300; letter-spacing: 2px; }
+.quote-card .star { width: 26px; height: 26px; overflow: visible; }
+.star-line { fill: none; stroke: #5f6268; stroke-width: 1.3; stroke-linejoin: round; }
+.star-line.faint { stroke-width: 0.7; opacity: 0.6; }
+.star-hl { fill: rgba(255, 214, 50, 0.62); stroke: rgba(255, 214, 50, 0.5); stroke-width: 2.2; stroke-linejoin: round; mix-blend-mode: multiply; }
 
 /* ---------------------------------- Contact page -------------------------- */
 
