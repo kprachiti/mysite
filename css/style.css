@@ -630,8 +630,11 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 .two-col > div > p:last-child { margin-bottom: 0; }
 /* text + a wide image side by side: give the image a bit more room */
 .two-col.text-left { grid-template-columns: 1fr 1.15fr; align-items: center; }
+/* image(s) first, text beside them */
+.two-col.media-left { grid-template-columns: 1.15fr 1fr; align-items: center; }
+.two-col.reflect-photo { grid-template-columns: 420px 1fr; gap: 40px; }
 @media (max-width: 640px) {
-  .two-col, .two-col.text-left { grid-template-columns: 1fr; }
+  .two-col, .two-col.text-left, .two-col.media-left, .two-col.reflect-photo { grid-template-columns: 1fr; }
 }
 
 .reflection {
