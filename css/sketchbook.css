@@ -122,7 +122,7 @@ iframe { cursor: auto; }
 @keyframes doodleFade { to { opacity: 0; } }
 html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
 
-/* doodle tip: a small blue index card, matching the notecard in the home hero */
+/* doodle tip: a yellow tape label, same style as "featured projects", with a pencil icon */
 .doodle-chip {
   position: fixed;
   right: 22px;
@@ -131,55 +131,54 @@ html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  max-width: 260px;
+  max-width: calc(100vw - 44px);
+  white-space: nowrap;
   font-family: var(--font-mono);
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 22px;
-  letter-spacing: 0.01em;
-  color: #fff;
-  background-color: #3a86f5;
-  /* faint ruled lines, like the notecard */
-  background-image: repeating-linear-gradient(to bottom, transparent 0 21px, rgba(255, 255, 255, 0.28) 21px 22px);
-  background-position: 0 26px;
-  padding: 28px 36px 14px 16px;
-  transform: rotate(-3deg);
-  box-shadow: 0 10px 22px rgba(24, 36, 73, 0.22);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--navy);
+  background: #f7ecab;
+  padding: 12px 42px 12px 18px;
+  transform: rotate(-2deg);
+  box-shadow: 0 10px 18px rgba(24, 36, 73, 0.14);
   animation: tipIn 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2);
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
-/* row of punched squares along the top edge */
+/* peeling corner, like the featured-projects label */
 .doodle-chip::before {
   content: '';
   position: absolute;
-  top: 9px;
-  left: 12px;
-  right: 12px;
-  height: 7px;
-  background: repeating-linear-gradient(to right, #fff 0 7px, transparent 7px 17px);
-  opacity: 0.95;
+  top: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, #fffdf2 46%, #f7ecab 47%);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+  box-shadow: -2px 2px 5px rgba(24, 36, 73, 0.18);
 }
 @keyframes tipIn {
   from { opacity: 0; transform: translateY(30px) rotate(6deg); }
-  to   { opacity: 1; transform: rotate(-3deg); }
+  to   { opacity: 1; transform: rotate(-2deg); }
 }
 .doodle-chip[hidden] { display: none; }
 .doodle-chip.fade { opacity: 0; transform: translateY(16px) rotate(2deg); }
 .doodle-chip-close {
   position: absolute;
-  top: 20px;
-  right: 8px;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
   border: 0;
   background: none;
-  color: #fff;
+  color: var(--navy);
   font-size: 18px;
   line-height: 1;
   padding: 2px 4px;
-  opacity: 0.6;
+  opacity: 0.55;
 }
 .doodle-chip-close:hover { opacity: 1; }
-.doodle-chip-close:focus-visible { outline: 2px solid #fff; border-radius: 4px; }
-.doodle-chip svg { width: 20px; height: 20px; flex: none; }
+.doodle-chip-close:focus-visible { outline: 2px solid var(--blue); border-radius: 4px; }
+.doodle-chip svg { width: 18px; height: 18px; flex: none; }
 
 /* ---------- Self-drawing sketches (home page) ---------- */
 
@@ -227,15 +226,20 @@ html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
 
 /* design-loop doodle: in the clear space below-right of the sticky note */
 /* Hero captions, balanced on either side of the original board: the girl doodle in the left
-   margin by the nametag, the design loop in the right margin by the sticky note, level with
+   margin beside the nametag, the design loop in the right margin by the sticky note, level with
    each other. Narrower screens have no margins, so they tuck into the gaps below the notes. */
-.sticky-board .sketch-girl  { left: -175px; top: 300px; width: 124px; }
-.sticky-board .sketch-cycle { left: 855px; top: 300px; width: 150px; transform: rotate(-6deg); }
+.sticky-board .sketch-girl  { left: -175px; top: 110px; width: 124px; }
+.sticky-board .sketch-cycle { left: 855px; top: 170px; width: 150px; transform: rotate(-6deg); }
 @media (min-width: 1360px) {
   .sticky-board .sketch-cycle { width: 185px; }
 }
-@media (max-width: 1199px) {
+@media (min-width: 1000px) and (max-width: 1199px) {
+  .sticky-board .sketch-girl  { left: -98px; top: 130px; width: 90px; }
+}
+@media (max-width: 999px) {
   .sticky-board .sketch-girl  { left: 6%; top: 63%; width: 110px; }
+}
+@media (max-width: 1199px) {
   .sticky-board .sketch-cycle { left: 84%; top: 69%; width: 150px; }
 }
 .sketch path.dot { stroke-width: 2.6; }
