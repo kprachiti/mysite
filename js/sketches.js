@@ -1,5 +1,5 @@
 // Home page scrapbook extras and pencil sketches.
-//  - Hero (nothing on load): hover or tap a note, or scroll the page:
+//  - Hero (nothing on load or scroll): hover or tap a note:
 //    "prev. UX @ IBM" is written beside the nametag, a one-line design-loop doodle
 //    (empathize → define → ideate → prototype → test → back again) appears by the sticky note,
 //    and a coffee receipt prints out from under the notecard.
@@ -58,8 +58,8 @@
   const DOODLES = {
     cycle: ['0 20 240 120', designLoop()],
     ibm: ['0 0 110 104', [
-      // arrow curling up toward the nametag above
-      ['path', 'M30 32 C27 20 33 9 46 3 M36 3 L47 2 L44 12', 'thin'],
+      // arrow curling back toward the nametag on its left
+      ['path', 'M62 32 C46 18 26 18 8 26 M17 18 L7 26 L16 33', 'thin'],
       ['text', 'prev. UX', { x: 4, y: 60, size: 26 }],
       ['text', '@', { x: 14, y: 88, size: 28 }],
       ['text', 'IBM', { x: 38, y: 88, size: 28, cls: 'ink-blue' }],
@@ -380,25 +380,14 @@
       { note: card, reveal: () => slot.classList.add('printing') },
     ].filter((i) => i.note);
 
-    // Nothing appears on load. Each extra is revealed (and kept) when its note is hovered or
-    // tapped; once the visitor scrolls the page, any still-hidden ones play in turn.
-    const shown = new Set();
-    const reveal = (item) => {
-      if (shown.has(item)) return;
-      shown.add(item);
-      item.reveal();
-    };
+    // Nothing appears on load or on scroll: each extra is revealed (and then kept) only when its
+    // note is hovered, or tapped on a touch screen.
     items.forEach((item) => {
-      item.note.addEventListener('mouseenter', () => reveal(item));
-      item.note.addEventListener('pointerdown', () => reveal(item), { passive: true });
+      let shown = false;
+      const reveal = () => { if (!shown) { shown = true; item.reveal(); } };
+      item.note.addEventListener('mouseenter', reveal);
+      item.note.addEventListener('pointerdown', reveal, { passive: true });
     });
-    const startY = window.scrollY;
-    function onScroll() {
-      if (Math.abs(window.scrollY - startY) < 40) return;
-      removeEventListener('scroll', onScroll);
-      items.filter((i) => !shown.has(i)).forEach((item, n) => setTimeout(() => reveal(item), n * 500));
-    }
-    addEventListener('scroll', onScroll, { passive: true });
   }
 
   function init() {
