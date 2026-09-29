@@ -15,8 +15,12 @@
 
 
   const STORE_KEY = 'doodleMode';
-  let enabled = true;
-  try { enabled = localStorage.getItem(STORE_KEY) !== 'off'; } catch (e) {}
+  const TIP_KEY = 'doodleTipClosed';
+  let enabled = true, tipClosed = false;
+  try {
+    enabled = localStorage.getItem(STORE_KEY) !== 'off';
+    tipClosed = localStorage.getItem(TIP_KEY) === '1';
+  } catch (e) {}
 
   function init() {
     // Page-anchored layer: a 1×1 SVG with visible overflow, so drawings scroll with the content
@@ -36,7 +40,7 @@
     document.body.append(layer);
 
     // Pop-up index card in the lower-right corner: slides in shortly after the page loads and
-    // stays until the visitor closes it.
+    // stays until the visitor closes it; once closed it doesn't come back on other pages.
     const hint = document.createElement('div');
     hint.className = 'doodle-chip hint';
     hint.setAttribute('role', 'status');
@@ -46,6 +50,8 @@
     document.body.append(hint);
 
     hint.querySelector('.doodle-chip-close').addEventListener('click', () => {
+      tipClosed = true;
+      try { localStorage.setItem(TIP_KEY, '1'); } catch (e) {}
       hint.classList.add('fade');
       setTimeout(() => { hint.hidden = true; }, 350);
     });
@@ -55,11 +61,11 @@
       const obs = new MutationObserver(() => {
         if (root.classList.contains('intro-run')) return;
         obs.disconnect();
-        setTimeout(() => { hint.hidden = !enabled; }, 900);
+        setTimeout(() => { hint.hidden = !enabled || tipClosed; }, 900);
       });
       obs.observe(root, { attributes: true, attributeFilter: ['class'] });
     } else {
-      setTimeout(() => { hint.hidden = !enabled; }, 2400);
+      setTimeout(() => { hint.hidden = !enabled || tipClosed; }, 2400);
     }
 
     // The line is drawn as a chain of short segments; each one fades out about a second after
