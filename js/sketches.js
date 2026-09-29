@@ -1,6 +1,6 @@
 // Home page scrapbook extras and pencil sketches.
 //  - Hero (nothing on load or scroll): hover or tap a note:
-//    "prev. UX @ IBM" is written beside the nametag, a one-line design-loop doodle
+//    a stick-figure girl (paintbrush + laptop) is doodled beside the nametag, a one-line design-loop doodle
 //    (empathize → define → ideate → prototype → test → back again) appears by the sticky note,
 //    and a coffee receipt prints out from under the notecard.
 //  - "featured projects": an arrow sketches toward the work as it scrolls into view.
@@ -57,12 +57,21 @@
   // ['path', d, className?, fill?], ['text', words, { x, y, size, anchor?, cls? }] or ['blob', { cx, cy, r, color }]
   const DOODLES = {
     cycle: ['0 20 240 120', designLoop()],
-    ibm: ['0 0 110 104', [
-      // arrow curling back toward the nametag on its left
-      ['path', 'M62 32 C46 18 26 18 8 26 M17 18 L7 26 L16 33', 'thin'],
-      ['text', 'prev. UX', { x: 4, y: 60, size: 26 }],
-      ['text', '@', { x: 14, y: 88, size: 28 }],
-      ['text', 'IBM', { x: 38, y: 88, size: 28, cls: 'ink-blue' }],
+    // nametag caption: stick-figure girl, arms up in a V with a paintbrush and a laptop,
+    // pencil-shaded hair, smile and a touch of sticky-note-pink blush
+    girl: ['0 0 124 130', [
+      ['path', 'M47 44 C44 27 53 24 60 26 C69 23 78 29 73 44 C75 55 75 63 77 71 C73 72 70 71 68 69 C70 60 70 52 69 45 C67 37 53 36 51 45 C50 52 50 60 52 69 C50 71 46 72 43 71 C45 63 46 55 47 44 Z', null, 'rgba(95, 98, 104, 0.5)'],
+      ['path', 'M51 45 C50 55 56 58 60 58 C65 58 70 55 69 45', null],
+      ['path', 'M56 45 l0.4 0.6 M64 45 l0.4 0.6', 'dot'],
+      ['path', 'M56.5 50 Q60 53.5 63.5 50', 'thin'],
+      ['path', 'M52.2 50.5 a2.4 1.6 0 1 0 4.8 0 a2.4 1.6 0 1 0 -4.8 0 M63 50.5 a2.4 1.6 0 1 0 4.8 0 a2.4 1.6 0 1 0 -4.8 0', 'nostroke', '#ffa8f2'],
+      ['path', 'M60 58 L60 66 M60 64 L47 100 L73 100 Z', null],
+      ['path', 'M58 70 L36 36 M62 70 L84 36', null],
+      ['path', 'M39 40 L27 16 M27 16 L25 12', null],
+      ['path', 'M25 12 C22 8 22 4 23 1 C26 4 28 8 27 12 Z', 'thin', '#ffa8f2'],
+      ['path', 'M78 30 L80 8 L104 6 L102 28 Z M78 30 L102 28 L110 34 L84 36 Z', null, '#fffdf6'],
+      ['path', 'M54 100 L52 124 L47 125 M66 100 L68 124 L73 125', null],
+      ['path', 'M14 28 l0 7 M10.5 31.5 l7 0 M114 12 l0 7 M110.5 15.5 l7 0', 'thin'],
     ]],
     arrow: ['0 0 120 90', [
       ['path', 'M6 18 C44 2 96 8 104 42 C108 58 104 70 97 80'],
@@ -358,7 +367,7 @@
 
   function heroExtras(board) {
     // 1. "prev. UX @ IBM" written beside the nametag
-    const ibm = sketch('ibm', 'sketch-ibm');
+    const ibm = sketch('girl', 'sketch-girl');
     board.append(ibm);
 
     // 2. Design-cycle doodle beside the sticky note

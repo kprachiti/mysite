@@ -226,29 +226,25 @@ html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
 /* "prev. UX @ IBM": handwritten just below the nametag, arrow pointing up at it */
 
 /* design-loop doodle: in the clear space below-right of the sticky note */
-/* Home hero layout (tablet/desktop). A wider board with slightly smaller notes, so each piece
-   has space around it and the captions sit in the gaps instead of crowding the notes:
-   nametag top-left · IBM caption in the gap to its right · sticky note top-right with the
-   design-loop doodle beside it · notecard and coffee ring lower-centre, receipt below. */
-@media (min-width: 481px) {
-  .sticky-board:not(.has-photo) { max-width: 940px; height: 660px; }
-  .sticky-board:not(.has-photo) .note-name    { left: 0; top: 0; width: 420px; }
-  .sticky-board:not(.has-photo) .note-empathy { left: 600px; right: auto; top: 20px; width: 300px; }
-  .sticky-board:not(.has-photo) .note-blurb   { left: 330px; top: 370px; width: 290px; }
-  .sticky-board:not(.has-photo) .note-shadow-stain { left: 330px; top: 362px; width: 385px; height: 385px; }
-
-  .sticky-board .sketch-ibm   { left: 458px; top: 128px; width: 104px; }
-  /* design loop: small and tilted, just past the sticky note's right edge when there's room… */
-  .sticky-board .sketch-cycle { left: 930px; top: 70px; width: 150px; transform: rotate(-7deg); }
+/* Hero captions, balanced on either side of the original board: the girl doodle in the left
+   margin by the nametag, the design loop in the right margin by the sticky note, level with
+   each other. Narrower screens have no margins, so they tuck into the gaps below the notes. */
+.sticky-board .sketch-girl  { left: -175px; top: 300px; width: 124px; }
+.sticky-board .sketch-cycle { left: 855px; top: 300px; width: 150px; transform: rotate(-6deg); }
+@media (min-width: 1360px) {
+  .sticky-board .sketch-cycle { width: 185px; }
 }
-/* …otherwise tucked under the sticky note's right corner */
-@media (min-width: 481px) and (max-width: 1239px) {
-  .sticky-board .sketch-cycle { left: 715px; top: 360px; }
+@media (max-width: 1199px) {
+  .sticky-board .sketch-girl  { left: 6%; top: 63%; width: 110px; }
+  .sticky-board .sketch-cycle { left: 84%; top: 69%; width: 150px; }
 }
-/* narrower screens get the same layout, scaled to fit */
-@media (min-width: 481px) and (max-width: 999px) { .sticky-board:not(.has-photo) { zoom: 0.8; } }
-@media (min-width: 481px) and (max-width: 820px) { .sticky-board:not(.has-photo) { zoom: 0.68; } }
-@media (min-width: 481px) and (max-width: 680px) { .sticky-board:not(.has-photo) { zoom: 0.56; } }
+.sketch path.dot { stroke-width: 2.6; }
+.sketch path.nostroke { stroke: none; }
+.sketch path.filled {
+  fill-opacity: 0;
+  transition: stroke-dashoffset 0.5s ease-in-out var(--d, 0s), fill-opacity 0.35s ease calc(var(--d, 0s) + 0.3s);
+}
+.sketch.drawn path.filled { fill-opacity: 1; }
 
 /* Coffee receipt fed out from under the notecard (it lives inside .note-blurb, behind the card).
    It prints from the card's left end, where the coffee ring has already curved away. */
@@ -327,7 +323,7 @@ html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
 
 /* phone layout of the sticky board (see style.css @480px) */
 @media (max-width: 480px) {
-  .sticky-board .sketch-ibm   { left: 0; top: 37%; width: 28%; }
+  .sticky-board .sketch-girl  { left: 0; top: 37%; width: 26%; }
   /* no free space around the notes on phones: the board grows and the loop sits below the notecard */
   .sticky-board.has-cycle { height: 585px; }
   .sticky-board .sketch-cycle { left: 38%; top: 79%; width: 200px; }

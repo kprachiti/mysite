@@ -1026,7 +1026,39 @@ html.intro-run .intro-lost { animation: introWrite 0.5s steps(14, end) 0.1s forw
 }
 .stamp-edge path { stroke-width: 1.6; }
 html.intro-run .intro-sparks path,
-html.intro-run .stamp-edge path { animation: introDoodle 0.4s ease-out var(--d, 1s) forwards; }
+html.intro-run .stamp-edge path,
+html.intro-run .intro-doodle path { animation: introDoodle 0.4s ease-out var(--d, 1s) forwards; }
+
+/* the stick-figure girl and the cockapoo, doodled either side of the stickers */
+.intro-doodle {
+  position: absolute;
+  bottom: -18px;
+  overflow: visible;
+}
+.intro-girl { right: calc(100% + 70px); width: 124px; }
+.intro-dog  { left: calc(100% + 70px); width: 104px; bottom: -8px; }
+.intro-doodle path {
+  fill: none;
+  stroke: var(--graphite, #5f6268);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.intro-doodle path.thin { stroke-width: 1.3; }
+.intro-doodle path.dot { stroke-width: 2.6; }
+.intro-doodle path.nostroke { stroke: none; }
+.intro-doodle path.filled { fill-opacity: 0; }
+html.intro-run .intro-doodle path.filled {
+  animation: introDoodle 0.4s ease-out var(--d, 1s) forwards, introFill 0.35s ease calc(var(--d, 1s) + 0.3s) forwards;
+}
+@keyframes introFill { to { fill-opacity: 1; } }
+@media (max-width: 600px) {
+  .intro-letters.brand-letters { font-size: 56px; }
+  .intro-girl { right: calc(100% + 14px); width: 72px; }
+  .intro-dog  { left: calc(100% + 14px); width: 60px; }
+}
 @keyframes introDoodle { to { stroke-dashoffset: 0; } }
 
 /* the letter stickers, placed one by one (the wrapper carries the tile and its stamp edge) */
