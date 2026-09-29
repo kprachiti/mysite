@@ -6,6 +6,7 @@
 
 /* handwriting (Caveat); logo letters (DM Serif Display, Special Elite) */
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=DM+Serif+Display&family=Special+Elite&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Righteous&display=swap');   /* current-favs concert tickets */
 
 :root {
   --graphite: #5f6268;           /* soft HB pencil grey */
@@ -478,3 +479,126 @@ html.lb-open { overflow: hidden; }
 }
 .doodle-toggle[aria-checked="true"] .doodle-toggle-track { background: var(--yellow); }
 .doodle-toggle[aria-checked="true"] .doodle-toggle-track::after { transform: translateX(16px); background: var(--navy); }
+
+/* ---------- About: "current favs" junk-journal collage (concert stubs + polaroid) ---------- */
+/* Stubs follow the classic 80s coliseum ticket layout (seat stub · main body · price stub),
+   each dressed for its artist. Everything inside a ticket is sized in em so it scales as one. */
+.favs-section { padding: 30px 24px 10px; }
+.favs { position: relative; height: 560px; max-width: 900px; margin: 10px auto 30px; }
+
+.ticket {
+  --tk-bg: #f3efe2; --tk-ink: #1d2233; --tk-stub: #6b7fb3; --tk-stub-ink: #fff;
+  position: absolute;
+  font-size: 10px;
+  width: 47em;
+  height: 18.5em;
+  display: grid;
+  grid-template-columns: 5.6em 1fr 6.2em;
+  background: var(--tk-bg);
+  color: var(--tk-ink);
+  font-family: var(--font-body);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 12px 24px rgba(24, 36, 73, 0.18);
+  /* torn right edge */
+  clip-path: polygon(0 0, 97.6% 0, 98.8% 8%, 97.4% 16%, 99.2% 25%, 97.8% 34%, 99.4% 44%, 97.6% 53%, 99% 62%, 97.5% 71%, 99.3% 80%, 97.8% 89%, 98.9% 100%, 0 100%);
+  transition: transform 0.3s ease, z-index 0s;
+}
+.ticket p { margin: 0; color: inherit; }
+.ticket:hover { transform: rotate(0deg) translateY(-6px) scale(1.02) !important; z-index: 6 !important; }
+
+/* seat stub (left) and price stub (right), text running up the ticket */
+.tk-stub, .tk-end {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: var(--tk-stub);
+  color: var(--tk-stub-ink);
+  font-family: var(--font-mono);
+  font-size: 1.05em;
+  letter-spacing: 0.12em;
+}
+.tk-stub b, .tk-end b { font-size: 1.35em; letter-spacing: 0.08em; }
+.tk-end { border-right: 0.2em dashed rgba(0, 0, 0, 0.28); padding-left: 0.8em; }
+.tk-stub { border-left: 0.2em dashed rgba(0, 0, 0, 0.28); }
+
+.tk-main { padding: 1.2em 1.6em 1em; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.tk-presents { font-family: var(--font-mono); font-size: 1.05em; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.8; }
+.tk-artist { font-size: 3.6em; line-height: 1.05; margin-top: 0.08em !important; white-space: nowrap; }
+.tk-venue { font-family: var(--font-mono); font-size: 1em; letter-spacing: 0.1em; text-transform: uppercase; padding-bottom: 0.5em; border-bottom: 0.15em solid currentColor; width: 100%; }
+.tk-when { display: flex; align-items: center; gap: 0.8em; margin-top: 0.6em; width: 100%; }
+.tk-col { display: flex; flex-direction: column; font-family: var(--font-mono); font-weight: 700; font-size: 1em; line-height: 1.15; }
+.tk-day { font-family: var(--font-head); font-weight: 700; font-size: 3.4em; line-height: 1; }
+.tk-price {
+  flex: 1; margin-left: 0.6em; padding-left: 0.9em; border-left: 0.15em solid currentColor;
+  display: flex; flex-direction: column;
+  font-family: var(--font-mono); font-size: 1em; line-height: 1.45; text-align: left;
+}
+.tk-price span { display: flex; align-items: baseline; }
+/* dotted leader from label to amount, like "Est. Price . . . . $18.50" */
+.tk-price i { flex: 1; display: flex; align-items: baseline; font-style: normal; }
+.tk-price i::before { content: ''; flex: 1; margin: 0 0.4em; border-bottom: 0.14em dotted currentColor; opacity: 0.6; }
+.tk-fine { font-family: var(--font-mono); font-size: 0.85em; letter-spacing: 0.14em; text-transform: uppercase; margin-top: auto !important; opacity: 0.75; }
+
+/* Tame Impala: psychedelic sunset ripples, groovy rounded type */
+.t-tame {
+  --tk-bg: #fff1dd; --tk-ink: #3b0a57; --tk-stub: #7b2cbf; --tk-stub-ink: #ffe3b8;
+  background:
+    linear-gradient(rgba(255, 241, 221, 0.72), rgba(255, 241, 221, 0.72)),
+    repeating-radial-gradient(circle at 18% 130%, #ff9f43 0 1.4em, #ff6b8b 1.4em 2.8em, #c44dff 2.8em 4.2em, #5f27cd 4.2em 5.6em);
+}
+.t-tame .tk-artist { font-family: 'Righteous', var(--font-head); color: #5f27cd; text-shadow: 0.06em 0.06em 0 #ff9f43, 0.12em 0.12em 0 #ff6b8b; letter-spacing: 0.02em; }
+
+/* Phoebe Bridgers: hazy night-blue, tiny stars, soft lowercase serif */
+.t-phoebe {
+  --tk-bg: #e3e9f3; --tk-ink: #1d2a44; --tk-stub: #1d2a44; --tk-stub-ink: #d7e0f0;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0.1em, transparent 0.16em) 0 0 / 2.2em 2.2em,
+    radial-gradient(circle, rgba(255, 255, 255, 0.7) 0.08em, transparent 0.13em) 1.1em 1.3em / 3.1em 3.1em,
+    linear-gradient(180deg, #dfe6f2, #c9d4e8);
+}
+.t-phoebe .tk-artist { font-family: 'DM Serif Display', Georgia, serif; font-size: 3.9em; font-style: italic; letter-spacing: -0.01em; }
+
+/* Drake: black and gold, tall condensed capitals */
+.t-drake {
+  --tk-bg: #121212; --tk-ink: #d8b566; --tk-stub: #d8b566; --tk-stub-ink: #121212;
+  background: repeating-linear-gradient(90deg, #121212 0 1.1em, #171512 1.1em 1.2em);
+}
+.t-drake .tk-artist { font-family: 'Bebas Neue', var(--font-head); font-size: 5em; letter-spacing: 0.14em; line-height: 0.95; }
+.t-drake .tk-day { font-family: 'Bebas Neue', var(--font-head); font-weight: 400; font-size: 4em; }
+
+.t-tame   { left: 0;    top: 6px;   transform: rotate(-5deg); z-index: 1; }
+.t-phoebe { left: 56px; top: 182px; transform: rotate(3deg);  z-index: 2; }
+.t-drake  { left: 12px; top: 352px; transform: rotate(-2deg); z-index: 3; }
+
+/* polaroid of Mylo, caption pencilled in underneath */
+.polaroid {
+  position: absolute;
+  left: 520px; top: 40px;
+  width: 300px;
+  margin: 0;
+  padding: 14px 14px 0;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 16px 30px rgba(24, 36, 73, 0.2);
+  transform: rotate(5deg);
+  z-index: 4;
+  transition: transform 0.3s ease;
+}
+.polaroid:hover { transform: rotate(1deg) translateY(-6px); }
+.polaroid img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
+.polaroid figcaption {
+  padding: 16px 4px 20px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 17px;
+  color: var(--graphite);
+  transform: rotate(-2deg);
+}
+
+@media (max-width: 900px) {
+  .favs { height: auto; display: flex; flex-direction: column; align-items: center; }
+  .ticket, .polaroid { position: relative; left: auto !important; top: auto !important; }
+  .ticket { font-size: min(10px, calc((100vw - 72px) / 47)); }
+  .ticket + .ticket { margin-top: -1.6em; }
+  .polaroid { width: min(280px, 72vw); margin-top: 18px; }
+}
