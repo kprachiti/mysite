@@ -1,6 +1,8 @@
-// Home page sketches that draw themselves in pencil.
-//  - Hero: hover a sticky note (or scroll it into view on touch) and a note sketches itself beside it:
-//    "prev. UX @ IBM" by the nametag, an EDIPT design cycle by the sticky note, an iced coffee by the card.
+// Home page scrapbook extras and pencil sketches.
+//  - Hero: move the pointer near a note (or scroll the hero into view on touch):
+//    the nametag gets a blue "prev. UX @ IBM" sticker stuck down beside it, the sticky note gets
+//    a doodled Empathize → Define → Ideate → Prototype → Test cycle, and a coffee receipt prints
+//    out from under the notecard.
 //  - "featured projects": an arrow sketches toward the work as it scrolls into view.
 //  - Project cards: a themed doodle draws on the corner when the card scrolls in;
 //    hovering a card underlines its title.
@@ -36,52 +38,71 @@
       `C${f(cx - r * 1.05)} ${f(cy + r * 0.3)} ${f(cx - r * 1.05)} ${f(cy - r * 0.1)} ${f(cx - r * 0.85)} ${f(cy - r * 0.35)}`;
   }
 
-  // Stanford d.school cycle: Empathize → Define → Ideate → Prototype → Test
+  // Stanford d.school design cycle as a doodled path down the page: a little icon for each
+  // stage, the word written beside it, and a loop from Test back up to Empathize.
   function edipt() {
-    const C = 60, R = 40, r = 12, strokes = [];
-    const pt = (deg, rad = R) => [C + rad * Math.cos(deg * Math.PI / 180), C + rad * Math.sin(deg * Math.PI / 180)];
+    const X = 26, GAP = 58, strokes = [];
     const f = (n) => n.toFixed(1);
-    'EDIPT'.split('').forEach((letter, i) => {
-      const a = -90 + i * 72;
-      const [x, y] = pt(a);
-      strokes.push(['path', loop(x, y, r)]);
-      strokes.push(['text', letter, { x: f(x), y: f(y + 1), size: 17, cls: 'center' }]);
-      // arc to the next stage with an arrowhead
-      const a1 = a + 22, a2 = a + 72 - 22;
-      const [x1, y1] = pt(a1), [x2, y2] = pt(a2);
-      const t = [-Math.sin(a2 * Math.PI / 180), Math.cos(a2 * Math.PI / 180)];   // clockwise tangent
-      const n = [Math.cos(a2 * Math.PI / 180), Math.sin(a2 * Math.PI / 180)];
-      const h1 = [x2 - 6 * t[0] + 3.5 * n[0], y2 - 6 * t[1] + 3.5 * n[1]];
-      const h2 = [x2 - 6 * t[0] - 3.5 * n[0], y2 - 6 * t[1] - 3.5 * n[1]];
-      strokes.push(['path', `M${f(x1)} ${f(y1)} A${R} ${R} 0 0 1 ${f(x2)} ${f(y2)} M${f(h1[0])} ${f(h1[1])} L${f(x2)} ${f(y2)} L${f(h2[0])} ${f(h2[1])}`, 'thin']);
+    const icons = [
+      // Empathize: heart
+      (y) => `M${X} ${y + 10} C${X - 16} ${y} ${X - 12} ${y - 13} ${X} ${y - 4} C${X + 12} ${y - 13} ${X + 16} ${y} ${X} ${y + 10} Z`,
+      // Define: magnifying glass
+      (y) => loop(X - 3, y - 3, 9) + ` M${X + 3} ${y + 4} L${X + 11} ${y + 12}`,
+      // Ideate: light bulb with rays
+      (y) => `M${X - 6} ${y + 6} C${X - 15} ${y - 2} ${X - 11} ${y - 14} ${X} ${y - 14} C${X + 11} ${y - 14} ${X + 15} ${y - 2} ${X + 6} ${y + 6} Z ` +
+        `M${X - 5} ${y + 10} L${X + 5} ${y + 10} M${X - 3} ${y + 13} L${X + 3} ${y + 13} ` +
+        `M${X} ${y - 19} l0 -4 M${X - 13} ${y - 14} l-3 -3 M${X + 13} ${y - 14} l3 -3`,
+      // Prototype: phone wireframe
+      (y) => `M${X - 9} ${y - 14} L${X + 9} ${y - 14} L${X + 9} ${y + 14} L${X - 9} ${y + 14} Z ` +
+        `M${X - 5} ${y - 8} L${X + 5} ${y - 8} M${X - 5} ${y - 3} L${X + 2} ${y - 3} M${X - 5} ${y + 2} L${X + 4} ${y + 2} M${X - 2} ${y + 10} L${X + 2} ${y + 10}`,
+      // Test: ticked checkbox
+      (y) => `M${X - 10} ${y - 9} L${X + 8} ${y - 10} L${X + 9} ${y + 8} L${X - 9} ${y + 9} Z M${X - 6} ${y - 1} L${X - 1} ${y + 5} L${X + 13} ${y - 13}`,
+    ];
+    ['Empathize', 'Define', 'Ideate', 'Prototype', 'Test'].forEach((word, i) => {
+      const y = 22 + i * GAP;
+      strokes.push(['path', icons[i](y)]);
+      strokes.push(['text', word, { x: 56, y: y + 8, size: 25 }]);
+      if (i < 4) {
+        // wiggly connector with an arrowhead to the next stage
+        const y1 = y + 17, y2 = y + GAP - 20;
+        strokes.push(['path', `M${X} ${y1} C${X + 9} ${f(y1 + 6)} ${X - 9} ${f(y2 - 8)} ${X} ${y2} M${X - 4} ${y2 - 5} L${X} ${y2} L${X + 4} ${y2 - 5}`, 'thin']);
+      }
     });
+    // loop back: Test → Empathize
+    const top = 22, bottom = 22 + 4 * GAP;
+    strokes.push(['path', `M128 ${bottom + 4} C176 ${bottom - 10} 176 ${top + 14} 150 ${top - 2} M151 ${top + 10} L150 ${top - 2} L161 ${top - 1}`, 'thin']);
+    strokes.push(['text', 'repeat!', { x: 124, y: bottom + 26, size: 18 }]);
     return strokes;
   }
 
   // Each doodle: viewBox + strokes, drawn one after another.
   // ['path', d, className?] or ['text', words, { x, y, size, cls? }]
   const DOODLES = {
-    ibm: ['0 0 240 60', [
-      ['text', 'prev. UX @ IBM', { x: 6, y: 34, size: 32 }],
-      ['path', 'M8 46 C60 41 120 49 178 43', 'thin'],
-    ]],
-    edipt: ['0 0 120 120', edipt()],
-    iced: ['0 0 140 110', [
-      ['path', 'M9 32 L15 102 Q30 106 45 102 L51 32'],          // cup
-      ['path', 'M5 32 L55 32 M10 31 C12 15 48 15 50 31'],       // lid rim + dome
-      ['path', 'M33 17 L43 2 L50 4'],                           // straw
-      ['path', 'M12 54 C22 49 37 58 48 52', 'thin'],            // coffee line
-      ['path', 'M19 64 L29 61 L32 71 L22 74 Z M32 78 L41 76 L43 85 L34 87 Z', 'thin'],   // ice
-      ['path', 'M5 60 C3 65 8 66 7 61 M6 76 C4 80 8 81 7 77', 'thin'],                   // condensation
-      ['text', '+ honey', { x: 64, y: 70, size: 26 }],
-    ]],
+    edipt: ['0 0 180 290', edipt()],
     arrow: ['0 0 120 90', [
       ['path', 'M6 14 C40 2 92 10 100 44 C104 60 98 72 90 82'],
       ['path', 'M76 72 L90 83 L97 66'],
     ]],
     underline: ['0 0 200 12', [
-      ['path', 'M2 7 C40 3 80 10 120 6 S180 3 198 7'],
-      ['path', 'M186 9 C140 12 90 8 26 11', 'thin'],
+      ['path', 'M2 7 C50 4 130 9 198 5'],
+    ]],
+    // About page: notes beside each painting (arrow points back at the painting)
+    'note-still-life': ['0 0 200 80', [
+      ['path', 'M26 36 C14 38 8 46 4 58 M2 49 L4 59 L12 53', 'thin'],
+      ['text', 'the first painting', { x: 30, y: 30, size: 23 }],
+      ['text', 'I sold!', { x: 30, y: 58, size: 23 }],
+      ['path', 'M88 64 C110 60 128 66 150 61', 'thin'],
+    ]],
+    'note-hands-tea': ['0 0 200 100', [
+      ['text', 'a childhood memory:', { x: 4, y: 26, size: 23 }],
+      ['text', "my dad's", { x: 4, y: 52, size: 23 }],
+      ['text', 'morning chai', { x: 4, y: 78, size: 23 }],
+      ['path', 'M126 72 C150 70 170 76 186 90 M176 90 L187 91 L184 80', 'thin'],
+    ]],
+    'note-lipstick': ['0 0 200 80', [
+      ['path', 'M26 30 C14 30 8 22 4 12 M3 22 L4 11 L12 17', 'thin'],
+      ['text', 'first showcase piece', { x: 30, y: 30, size: 23 }],
+      ['text', '@ Crocker Museum', { x: 30, y: 58, size: 23 }],
     ]],
     // themed corner doodles, keyed by case-study slug
     ibmCard: ['0 0 76 70', [
@@ -246,6 +267,17 @@
     if (img.complete) build(); else img.addEventListener('load', build, { once: true });
     if ('ResizeObserver' in window) new ResizeObserver(build).observe(img);
     onScrollIn(fig, () => setTimeout(() => svg && svg.classList.add('drawn'), 200), 0.3);
+
+    // handwritten note beside the painting, written on hover (or after the frame on touch)
+    if (DOODLES[`note-${key}`]) {
+      const note = sketch(`note-${key}`, `sketch-art-note art-note-${key}`);
+      fig.parentElement.append(note);
+      if (canHover) {
+        fig.addEventListener('mouseenter', () => note.classList.add('drawn'));
+      } else {
+        onScrollIn(fig, () => setTimeout(() => note.classList.add('drawn'), 1600), 0.5);
+      }
+    }
   }
 
   const draw = (el, on) => el.classList.toggle('drawn', on);
@@ -260,29 +292,86 @@
     io.observe(target);
   }
 
+  // ---------- Hero: sticker, design-cycle doodle, printed receipt ----------
+
+  function receiptHTML() {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const date = `${pad(now.getMonth() + 1)}/${pad(now.getDate())}/${String(now.getFullYear()).slice(2)}`;
+    const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    const row = (l, r) => `<div class="r-row"><span>${l}</span><span>${r}</span></div>`;
+    return `
+      <div class="r-head">THE DESIGN BREW</div>
+      <div class="r-sub">Austin, TX</div>
+      <div class="r-rule"></div>
+      ${row('#0826', `${date}<span class="r-time"> ${time}</span>`)}
+      <div class="r-rule"></div>
+      ${row('1 ICED LATTE', '5.25')}
+      ${row('&nbsp;&nbsp;+ honey', '0.75')}
+      ${row('&nbsp;&nbsp;oat milk', '0.00')}
+      <div class="r-rule"></div>
+      ${row('<b>TOTAL</b>', '<b>6.00</b>')}
+      <div class="r-thanks">thanks! see you tmrw :)</div>
+      <div class="r-barcode"></div>`;
+  }
+
+  function heroExtras(board) {
+    // 1. Blue sticker stuck down to the right of the nametag
+    const sticker = document.createElement('div');
+    sticker.className = 'hero-sticker';
+    sticker.innerHTML = '<span>prev. UX</span><span>@ IBM</span>';
+    board.append(sticker);
+
+    // 2. Design cycle doodled beside the sticky note
+    const cycle = sketch('edipt', 'sketch-edipt');
+    board.append(cycle);
+
+    // 3. Coffee receipt printed out from under the notecard
+    const card = board.querySelector('.note-blurb');
+    const slot = document.createElement('div');
+    slot.className = 'receipt-slot';
+    slot.setAttribute('aria-hidden', 'true');
+    slot.innerHTML = `<div class="receipt">${receiptHTML()}</div>`;
+    if (card) card.append(slot);
+
+    const items = [
+      { note: board.querySelector('.note-name'), reveal: () => sticker.classList.add('placed') },
+      { note: board.querySelector('.note-empathy'), reveal: () => cycle.classList.add('drawn') },
+      { note: card, reveal: () => slot.classList.add('printing') },
+    ].filter((i) => i.note);
+
+    if (!canHover) {
+      // touch: play all three in turn when the hero comes into view
+      onScrollIn(board, () => items.forEach((i, n) => setTimeout(i.reveal, 400 + n * 900)), 0.4);
+      return;
+    }
+
+    // mouse: reveal each one when the pointer comes near its note (and keep it)
+    const NEAR = 48;
+    let queued = false, lastX = 0, lastY = 0;
+    function check() {
+      queued = false;
+      for (let n = items.length - 1; n >= 0; n--) {
+        const r = items[n].note.getBoundingClientRect();
+        if (lastX > r.left - NEAR && lastX < r.right + NEAR && lastY > r.top - NEAR && lastY < r.bottom + NEAR) {
+          items[n].reveal();
+          items.splice(n, 1);
+        }
+      }
+      if (!items.length) removeEventListener('pointermove', onMove);
+    }
+    function onMove(e) {
+      lastX = e.clientX; lastY = e.clientY;
+      if (!queued) { queued = true; requestAnimationFrame(check); }
+    }
+    addEventListener('pointermove', onMove, { passive: true });
+  }
+
   function init() {
     ensureGraphite();
-    // Hero sticky notes
-    // hero sketches are laid out for the home page board (About uses a different board)
+    // Hero scrapbook extras (home page board only; About uses a different board)
     const board = document.querySelector('.sticky-board:not(.has-photo)');
-    if (board) {
-      const pairs = [
-        ['.note-name', sketch('ibm', 'sketch-ibm')],
-        ['.note-empathy', sketch('edipt', 'sketch-edipt')],
-        ['.note-blurb', sketch('iced', 'sketch-iced')],
-      ];
-      pairs.forEach(([sel, svg]) => {
-        const note = board.querySelector(sel);
-        if (!note) return;
-        board.append(svg);
-        if (canHover) {
-          note.addEventListener('mouseenter', () => draw(svg, true));
-        }
-      });
-      if (!canHover) {
-        onScrollIn(board, () => pairs.forEach(([, svg]) => draw(svg, true)), 0.5);
-      }
-    }
+    if (board) heroExtras(board);
 
     // About page: doodled frames around each painting
     document.querySelectorAll('.about-collage .art').forEach(frameArt);
