@@ -636,6 +636,9 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 }
 .reflection img { flex: 0 0 160px; width: 160px; height: auto; border-radius: 8px; }
 .reflection .ph { flex: 0 0 160px; width: 160px; height: 160px; }
+@media (min-width: 641px) {
+  .reflection.photo-lg img { flex-basis: 260px; width: 260px; }
+}
 @media (max-width: 640px) {
   .reflection { flex-direction: column; }
   .reflection img { flex: none; width: 100%; height: auto; }            /* keep the photo's own proportions */
