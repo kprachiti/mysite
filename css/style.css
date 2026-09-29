@@ -540,6 +540,16 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 .highlight-pink { color: var(--pink-text); }
 .highlight-blue { color: var(--blue); }
 
+/* links inside case-study text: underlined so they read as links, blue on hover */
+.case-section p a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+.case-section p a:hover { color: var(--blue); }
+.case-section p a:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 2px; }
+
 .stat-row {
   display: flex;
   gap: 18px;
