@@ -6,7 +6,6 @@
 
 /* handwriting (Caveat); logo letters (DM Serif Display, Special Elite) */
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=DM+Serif+Display&family=Special+Elite&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Righteous&display=swap');   /* current-favs concert tickets */
 
 :root {
   --graphite: #5f6268;           /* soft HB pencil grey */
@@ -553,31 +552,53 @@ html.lb-open { overflow: hidden; }
 .tk-price i::before { content: ''; flex: 1; margin: 0 0.4em; border-bottom: 0.14em dotted currentColor; opacity: 0.6; }
 .tk-fine { font-family: var(--font-mono); font-size: 0.85em; letter-spacing: 0.14em; text-transform: uppercase; margin-top: auto !important; opacity: 0.75; }
 
-/* Tame Impala: faded marigold paper, dusty plum ink, a whisper of sun rings */
+/* Album-cover inspired, softened and worn. */
+/* Tame Impala / Currents: lilac ripple lines, a red-to-orange streak, a little silver sphere */
 .t-tame {
-  --tk-bg: #f1dcae; --tk-ink: #6a4a63; --tk-stub: #c99a7a; --tk-stub-ink: #fff4e0;
+  --tk-bg: #cdbbd8; --tk-ink: #3f2d52; --tk-stub: #7b5d95; --tk-stub-ink: #f3e6f6;
   background:
-    repeating-radial-gradient(circle at 16% 125%, rgba(201, 120, 90, 0.1) 0 1.2em, transparent 1.2em 2.4em),
-    #f1dcae;
+    radial-gradient(circle at 19% 24%, #fbfbfd 0 0.2em, #c9c8d2 0.7em, #77757f 1.25em, transparent 1.35em),
+    linear-gradient(116deg, transparent 38%, rgba(226, 92, 116, 0.55) 38.4%, rgba(240, 150, 90, 0.55) 40%, transparent 40.4%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='9'%3E%3Cpath d='M0 4.5 Q6 0 12 4.5 T24 4.5' fill='none' stroke='%237d5f99' stroke-opacity='.35' stroke-width='1.3'/%3E%3C/svg%3E") 0 0 / 2.4em 0.9em,
+    #cdbbd8;
 }
-.t-tame .tk-artist { font-family: 'Righteous', var(--font-head); color: #7a4f6e; }
+.t-tame .tk-artist { font-family: var(--font-head); font-weight: 700; font-size: 3.2em; letter-spacing: 0.06em; text-transform: uppercase; color: #d99a3e; text-shadow: 0 0.05em 0 rgba(63, 45, 82, 0.45); }
 
-/* Phoebe Bridgers: washed powder blue, soft navy ink, a few tiny stars */
+/* Phoebe Bridgers / Stranger in the Alps: hazy sky over faded grass, a faint rainbow,
+   the name in white handwriting and a tiny sheet ghost */
 .t-phoebe {
-  --tk-bg: #dde3ea; --tk-ink: #3f4b64; --tk-stub: #8f9db4; --tk-stub-ink: #f4f6fa;
+  --tk-bg: #c3d3dd; --tk-ink: #34405a; --tk-stub: #8e9f7a; --tk-stub-ink: #f6f7f1;
   background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.85) 0.1em, transparent 0.16em) 0 0 / 2.6em 2.6em,
-    #dde3ea;
+    radial-gradient(circle at 88% 135%, transparent 62%, rgba(240, 120, 120, 0.22) 62.5%, rgba(245, 200, 120, 0.22) 64.5%, rgba(150, 200, 150, 0.22) 66.5%, rgba(140, 160, 225, 0.22) 68.5%, transparent 69%),
+    linear-gradient(180deg, #c6d6e0 0 54%, #b9b58f 54% 100%);
 }
-.t-phoebe .tk-artist { font-family: 'DM Serif Display', Georgia, serif; font-size: 3.9em; font-style: italic; letter-spacing: -0.01em; }
+.t-phoebe .tk-main { position: relative; }
+.t-phoebe .tk-artist { font-family: var(--font-hand); font-weight: 600; font-size: 4.3em; color: #fff; text-shadow: 0 0.03em 0.08em rgba(40, 50, 70, 0.35); }
+.t-phoebe .tk-main::after {
+  content: ''; position: absolute; right: 1em; top: 0.9em;
+  width: 1.7em; height: 2.5em;
+  border-radius: 1em 1em 0.35em 0.35em;
+  background:
+    radial-gradient(circle at 34% 30%, #2a2a2a 0.14em, transparent 0.19em),
+    radial-gradient(circle at 66% 30%, #2a2a2a 0.14em, transparent 0.19em),
+    rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.15);
+  transform: rotate(-4deg);
+}
 
-/* Drake: aged cream with worn gold-brown ink, thin pinstripes */
+/* Drake / Scorpion: grainy charcoal, silver ink, wide-spaced capitals and a signature scrawl */
 .t-drake {
-  --tk-bg: #ece2cc; --tk-ink: #7a6038; --tk-stub: #c8ab72; --tk-stub-ink: #fbf5e6;
-  background: repeating-linear-gradient(90deg, transparent 0 1.1em, rgba(160, 128, 70, 0.08) 1.1em 1.2em), #ece2cc;
+  --tk-bg: #4a4845; --tk-ink: #d8d3ca; --tk-stub: #2e2d2b; --tk-stub-ink: #cfcac2;
+  background: radial-gradient(ellipse at 40% 40%, #57544f, #3f3d3a 75%);
 }
-.t-drake .tk-artist { font-family: 'Bebas Neue', var(--font-head); font-size: 5em; letter-spacing: 0.14em; line-height: 0.95; }
-.t-drake .tk-day { font-family: 'Bebas Neue', var(--font-head); font-weight: 400; font-size: 4em; }
+.t-drake::after { mix-blend-mode: screen; opacity: 0.18; }
+.t-drake .tk-main { position: relative; }
+.t-drake .tk-artist { font-family: var(--font-body); font-weight: 400; font-size: 3.1em; letter-spacing: 0.42em; padding-left: 0.42em; }
+.t-drake .tk-day { font-family: var(--font-body); font-weight: 300; }
+.t-drake .tk-main::after {
+  content: ''; position: absolute; left: 0.8em; top: 0.5em; width: 6.5em; height: 2.9em; opacity: 0.5;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 40'%3E%3Cpath d='M4 34 C8 20 12 8 14 6 C14 16 13 26 12 34 M8 22 C14 20 20 20 24 21 M26 30 C22 22 30 12 36 16 C42 20 34 30 30 26 C40 22 58 10 86 8' fill='none' stroke='%23e6e1d8' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 
 .t-tame   { left: 0;    top: 6px;   transform: rotate(-5deg); z-index: 1; }
 .t-phoebe { left: 28px; top: 118px; transform: rotate(3deg);  z-index: 2; }
@@ -612,4 +633,46 @@ html.lb-open { overflow: hidden; }
   .ticket, .polaroid { position: relative; left: auto !important; top: auto !important; }
   .ticket + .ticket { margin-top: -1.4em; }
   .polaroid { margin-top: 16px; }
+}
+
+/* ---------- About: matcha secret under the favs (js/sketches.js matchaSecret) ---------- */
+.matcha-secret {
+  display: block;
+  position: relative;
+  width: min(560px, 100%);
+  margin: 6px auto 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: center;
+}
+.matcha-secret:focus-visible { outline: 2px dashed var(--graphite); outline-offset: 8px; border-radius: 8px; }
+.matcha-drinks { display: block; }
+.drinks-art { display: block; width: 100%; height: auto; overflow: visible; }
+.drinks-art .ink { fill: none; stroke: var(--graphite); stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
+/* hidden: just a faint, blurry hint of colour under the scribbles */
+.matcha-drinks { opacity: 0.16; filter: blur(5px); transition: opacity 0.8s ease 0.5s, filter 0.8s ease 0.5s; }
+.matcha-secret.revealed .matcha-drinks { opacity: 1; filter: none; }
+
+.matcha-shh { position: absolute; left: 0; right: 0; top: 0; }
+.matcha-shh .shh-art { position: static; display: block; width: 100%; height: auto; transition: opacity 0.3s ease 1.3s; }
+.matcha-shh .shh-art.drawn { opacity: 0.95; transition-delay: 0s; }
+.matcha-shh .shh-art path { stroke-width: 2.3; transition-duration: 0.9s; }
+
+.matcha-note {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-size: 27px;
+  color: var(--graphite);
+  transform: rotate(-2deg);
+  clip-path: inset(-10px 100% -10px -10px);
+  transition: clip-path 1s steps(20, end) 1.3s;
+}
+.matcha-secret.revealed .matcha-note { clip-path: inset(-10px -10px -10px -10px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .matcha-drinks, .matcha-note, .matcha-shh .shh-art { transition: none; }
 }
