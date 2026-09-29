@@ -24,14 +24,39 @@
 </script>
 </head>
 <body class="dotted-bg">
-<div id="intro-overlay" aria-hidden="true">
-  <div class="intro-sheet">
-    <div class="intro-page">
-      <div class="intro-letters brand-letters"><span class="lt lt-p">P</span><span class="lt lt-k">K</span></div>
-    </div>
-    <div class="intro-back"></div>
+<div id="intro-overlay" aria-hidden="true"><div class="intro-book"></div></div>
+<template id="intro-face">
+  <div class="intro-mark">
+    <svg class="intro-frame" viewBox="0 0 320 220" aria-hidden="true">
+      <path pathLength="1" style="--d:1.00s" d="M58 38 C124 30 200 32 262 40 C274 41 280 49 279 60 C283 104 282 146 277 168 C275 180 267 184 254 183 C190 188 118 187 66 182 C52 181 44 173 44 161 C41 124 41 88 45 58 C46 46 50 40 62 38"/>
+      <path pathLength="1" class="thin" style="--d:1.15s" d="M64 46 C126 39 196 41 255 47 C266 49 271 55 271 64 C274 104 273 142 269 162 C268 171 262 175 252 175 C190 179 122 178 70 174 C59 173 53 167 53 157 C51 124 51 92 54 64 C55 53 58 48 66 46"/>
+      <path pathLength="1" class="thin" style="--d:1.35s" d="M288 30 l11 -11 M292 44 l15 -2 M278 25 l2 -15"/>
+      <path pathLength="1" class="thin" style="--d:1.45s" d="M34 190 l-11 11 M30 176 l-15 2 M44 195 l-2 15"/>
+      <path pathLength="1" class="thin" style="--d:1.55s" d="M296 184 q2 8 10 10 q-8 2 -10 10 q-2 -8 -10 -10 q8 -2 10 -10 Z"/>
+      <path pathLength="1" class="thin" style="--d:1.60s" d="M22 30 l0 12 M16 36 l12 0"/>
+    </svg>
+    <div class="intro-letters brand-letters"><span class="lt lt-p">P</span><span class="lt lt-k">K</span></div>
   </div>
-</div>
+</template>
+<script>
+/* Intro page: built from thin vertical strips nested edge to edge, so the sheet can curl like paper
+   as it turns right to left. Each strip shows its own slice of the same page. */
+(function () {
+  if (!document.documentElement.classList.contains('intro-run')) return;
+  var book = document.querySelector('#intro-overlay .intro-book');
+  var face = document.getElementById('intro-face').innerHTML;
+  var N = 10, parent = book;
+  for (var i = 0; i < N; i++) {
+    var strip = document.createElement('div');
+    strip.className = 'intro-strip';
+    strip.style.setProperty('--k', (i / (N - 1)).toFixed(3));
+    strip.innerHTML = '<div class="intro-face"><div class="intro-face-inner" style="left:' + (-i * 100 / N) + 'vw">' +
+      face + '</div></div><div class="intro-back"></div>';
+    parent.appendChild(strip);
+    parent = strip;
+  }
+})();
+</script>
 <a class="skip-link" href="#main">Skip to content</a>
 
 <div class="page-wrap">

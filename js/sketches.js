@@ -1,5 +1,5 @@
 // Home page scrapbook extras and pencil sketches.
-//  - Hero: move the pointer near a note (or scroll the hero into view on touch):
+//  - Hero (nothing on load): hover or tap a note, or scroll the page:
 //    "prev. UX @ IBM" is written beside the nametag, a one-line design-loop doodle
 //    (empathize → define → ideate → prototype → test → back again) appears by the sticky note,
 //    and a coffee receipt prints out from under the notecard.
@@ -370,31 +370,25 @@
       { note: card, reveal: () => slot.classList.add('printing') },
     ].filter((i) => i.note);
 
-    if (!canHover) {
-      // touch: play all three in turn when the hero comes into view
-      onScrollIn(board, () => items.forEach((i, n) => setTimeout(i.reveal, 400 + n * 900)), 0.4);
-      return;
+    // Nothing appears on load. Each extra is revealed (and kept) when its note is hovered or
+    // tapped; once the visitor scrolls the page, any still-hidden ones play in turn.
+    const shown = new Set();
+    const reveal = (item) => {
+      if (shown.has(item)) return;
+      shown.add(item);
+      item.reveal();
+    };
+    items.forEach((item) => {
+      item.note.addEventListener('mouseenter', () => reveal(item));
+      item.note.addEventListener('pointerdown', () => reveal(item), { passive: true });
+    });
+    const startY = window.scrollY;
+    function onScroll() {
+      if (Math.abs(window.scrollY - startY) < 40) return;
+      removeEventListener('scroll', onScroll);
+      items.filter((i) => !shown.has(i)).forEach((item, n) => setTimeout(() => reveal(item), n * 500));
     }
-
-    // mouse: reveal each one when the pointer comes near its note (and keep it)
-    const NEAR = 48;
-    let queued = false, lastX = 0, lastY = 0;
-    function check() {
-      queued = false;
-      for (let n = items.length - 1; n >= 0; n--) {
-        const r = items[n].note.getBoundingClientRect();
-        if (lastX > r.left - NEAR && lastX < r.right + NEAR && lastY > r.top - NEAR && lastY < r.bottom + NEAR) {
-          items[n].reveal();
-          items.splice(n, 1);
-        }
-      }
-      if (!items.length) removeEventListener('pointermove', onMove);
-    }
-    function onMove(e) {
-      lastX = e.clientX; lastY = e.clientY;
-      if (!queued) { queued = true; requestAnimationFrame(check); }
-    }
-    addEventListener('pointermove', onMove, { passive: true });
+    addEventListener('scroll', onScroll, { passive: true });
   }
 
   function init() {

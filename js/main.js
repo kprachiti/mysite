@@ -1,10 +1,10 @@
-// Intro (letter stickers + page turn) cleanup
+// Intro (letter stickers, doodled frame, page turn) cleanup
 if (document.documentElement.classList.contains('intro-run')) {
   setTimeout(() => {
     document.documentElement.classList.remove('intro-run');
     const overlay = document.getElementById('intro-overlay');
     if (overlay) overlay.remove();
-  }, 2500);
+  }, 3250);
 }
 
 // Mobile nav toggle
