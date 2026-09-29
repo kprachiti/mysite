@@ -1,8 +1,8 @@
 // Home page scrapbook extras and pencil sketches.
 //  - Hero: move the pointer near a note (or scroll the hero into view on touch):
-//    the nametag gets a blue "prev. UX @ IBM" sticker stuck down beside it, the sticky note gets
-//    a doodled Empathize → Define → Ideate → Prototype → Test cycle, and a coffee receipt prints
-//    out from under the notecard.
+//    "prev. UX @ IBM" is written beside the nametag, a one-line "my design loop" doodle
+//    (empathize → define → ideate → prototype → test → back again) appears by the sticky note,
+//    and a coffee receipt prints out from under the notecard.
 //  - "featured projects": an arrow sketches toward the work as it scrolls into view.
 //  - Project cards: a themed doodle draws on the corner when the card scrolls in;
 //    hovering a card underlines its title.
@@ -30,44 +30,38 @@
     '<feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="2" result="warp"/>' +
     '<feDisplacementMap in="grainy" in2="warp" scale="1.8"/></filter>';
 
-  // Small circular design cycle: five overlapping pastel discs, each with a doodled icon,
-  // hand-lettered stage names around the outside on curvy leader lines.
-  const EDIPT_RING = ['0 0 280 225', [
-    ['blob', { cx: 140, cy: 66, r: 30, color: 'rgba(160, 205, 240, 0.55)' }],
-    ['blob', { cx: 183.7, cy: 97.8, r: 30, color: 'rgba(205, 180, 240, 0.55)' }],
-    ['blob', { cx: 167, cy: 149.2, r: 30, color: 'rgba(235, 150, 195, 0.5)' }],
-    ['blob', { cx: 113, cy: 149.2, r: 30, color: 'rgba(245, 190, 165, 0.55)' }],
-    ['blob', { cx: 96.3, cy: 97.8, r: 30, color: 'rgba(248, 228, 150, 0.6)' }],
-    // Empathize: heart
-    ['path', 'M140 77 C123 66 127 52 140 60 C153 52 157 66 140 77 Z', null, '#e8706a'],
-    ['text', 'EMPATHIZE', { x: 140, y: 20, size: 17, anchor: 'middle', cls: 'label' }],
-    ['path', 'M156 25 C167 28 165 37 154 40', 'thin'],
-    // Define: pencil
-    ['path', 'M175 109 L190 92 L195 97 L180 114 Z M175 109 L172 117 L180 114 M187 89 L193 95', null, '#fff'],
-    ['text', 'DEFINE', { x: 216, y: 74, size: 17, cls: 'label' }],
-    ['path', 'M216 79 C207 81 206 87 209 92', 'thin'],
-    // Ideate: light bulb with an orange filament
-    ['path', 'M161 153 C154 147 157 137 167 137 C177 137 180 147 173 153 L172 158 L162 158 Z M163 161 L171 161 M164 164 L170 164', null, '#fff'],
-    ['path', 'M164 152 L167 145 L170 152', 'thin orange'],
-    ['text', 'IDEATE', { x: 190, y: 208, size: 17, cls: 'label' }],
-    ['path', 'M196 195 C198 186 191 180 183 178', 'thin'],
-    // Prototype: wireframe card
-    ['path', 'M101 138 L125 138 L125 161 L101 161 Z', null, '#b89bd6'],
-    ['path', 'M104 141 L122 141 L122 148 L104 148 Z M104 152 h5 v5 h-5 Z M110.5 152 h5 v5 h-5 Z M117 152 h5 v5 h-5 Z', 'thin', '#fff'],
-    ['text', 'PROTOTYPE', { x: 116, y: 208, size: 17, anchor: 'end', cls: 'label' }],
-    ['path', 'M102 195 C99 186 103 180 108 177', 'thin'],
-    // Test: clipboard with ticks
-    ['path', 'M87 87 L106 87 L106 111 L87 111 Z', null, '#fff'],
-    ['path', 'M92 84 L101 84 L101 89 L92 89 Z', 'thin', '#f2a93b'],
-    ['path', 'M90 95 l2 2 l3 -4 M90 102 l2 2 l3 -4 M98 95 h5 M98 102 h5 M91 107 h11', 'thin'],
-    ['text', 'TEST', { x: 58, y: 74, size: 17, anchor: 'end', cls: 'label' }],
-    ['path', 'M61 79 C67 81 70 87 69 93', 'thin'],
-  ]];
+  // "my design loop": one continuous pencil line that curls once per stage (labels alternate
+  // above and below), then swoops back underneath to the start, as if drawn without lifting the pencil.
+  function designLoop() {
+    const words = ['empathize', 'define', 'ideate', 'prototype', 'test'];
+    const B = 70;                                     // baseline
+    let d = `M8 ${B} L20 ${B}`;
+    const strokes = [['text', 'my design loop:', { x: 6, y: 16, size: 19 }]];
+    words.forEach((word, i) => {
+      const cx = 35 + i * 40, s = i % 2 ? 1 : -1;     // curl above (-1) or below (+1) the line
+      d += ` C${cx + 2} ${B} ${cx + 10} ${B + 14 * s} ${cx + 2} ${B + 20 * s}` +
+           ` C${cx - 6} ${B + 26 * s} ${cx - 12} ${B + 14 * s} ${cx - 2} ${B + 6 * s}` +
+           ` C${cx + 6} ${B} ${cx + 14} ${B} ${cx + 25} ${B}`;
+    });
+    strokes.push(['path', d]);
+    words.forEach((word, i) => {
+      const cx = 35 + i * 40, above = i % 2 === 0;
+      strokes.push(['text', word, { x: cx, y: above ? 40 : 113, size: 20, anchor: 'middle' }]);
+    });
+    // back to the start, with an arrowhead
+    strokes.push(['path', `M220 ${B} C238 110 170 134 110 132 C50 130 6 118 8 84 M3 91 L8 82 L14 90`, 'thin']);
+    return strokes;
+  }
 
   // Each doodle: viewBox + strokes, drawn one after another.
   // ['path', d, className?, fill?], ['text', words, { x, y, size, anchor?, cls? }] or ['blob', { cx, cy, r, color }]
   const DOODLES = {
-    edipt: EDIPT_RING,
+    cycle: ['0 0 240 140', designLoop()],
+    ibm: ['0 0 110 80', [
+      ['text', 'prev. UX', { x: 4, y: 26, size: 26 }],
+      ['text', '@ IBM', { x: 14, y: 54, size: 28 }],
+      ['path', 'M62 64 C80 72 96 66 104 56 M96 56 L104 55 L102 63', 'thin'],
+    ]],
     arrow: ['0 0 120 90', [
       ['path', 'M6 14 C40 2 92 10 100 44 C104 60 98 72 90 82'],
       ['path', 'M76 72 L90 83 L97 66'],
@@ -297,7 +291,7 @@
     io.observe(target);
   }
 
-  // ---------- Hero: sticker, design-cycle doodle, printed receipt ----------
+  // ---------- Hero: IBM note, design-loop doodle, printed receipt ----------
 
   function receiptHTML() {
     const now = new Date();
@@ -316,15 +310,14 @@
   }
 
   function heroExtras(board) {
-    // 1. Blue sticker stuck down to the right of the nametag
-    const sticker = document.createElement('div');
-    sticker.className = 'hero-sticker';
-    sticker.innerHTML = '<span class="s-small">prev. UX</span><span class="s-big">@ IBM</span><span class="s-stars">★★★</span>';
-    board.append(sticker);
+    // 1. "prev. UX @ IBM" written beside the nametag
+    const ibm = sketch('ibm', 'sketch-ibm');
+    board.append(ibm);
 
-    // 2. Design cycle doodled beside the sticky note
-    const cycle = sketch('edipt', 'sketch-edipt');
+    // 2. Design-cycle doodle beside the sticky note
+    const cycle = sketch('cycle', 'sketch-cycle');
     board.append(cycle);
+    board.classList.add('has-cycle');
 
     // 3. Coffee receipt printed out from under the notecard
     const card = board.querySelector('.note-blurb');
@@ -335,7 +328,7 @@
     if (card) card.append(slot);
 
     const items = [
-      { note: board.querySelector('.note-name'), reveal: () => sticker.classList.add('placed') },
+      { note: board.querySelector('.note-name'), reveal: () => ibm.classList.add('drawn') },
       { note: board.querySelector('.note-empathy'), reveal: () => cycle.classList.add('drawn') },
       { note: card, reveal: () => slot.classList.add('printing') },
     ].filter((i) => i.note);

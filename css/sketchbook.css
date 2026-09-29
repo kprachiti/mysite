@@ -4,17 +4,12 @@
    without JS the site looks exactly as before, plus a static pencil cursor.
    ========================================================================== */
 
-/* handwriting (Caveat), hand-lettered caps (Architects Daughter), retro sticker type (Fraunces Black) */
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Architects+Daughter&family=Fraunces:opsz,wght,SOFT@9..144,900,100&family=DM+Serif+Display&family=Special+Elite&display=swap');
+/* handwriting (Caveat); logo letters (DM Serif Display, Special Elite) */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=DM+Serif+Display&family=Special+Elite&display=swap');
 
 :root {
   --graphite: #5f6268;           /* soft HB pencil grey */
   --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
-  --font-letter: 'Architects Daughter', 'Caveat', cursive;
-  --font-sticker: 'Fraunces', 'Cooper Black', Georgia, serif;
-  --ibm-blue: #0f62fe;           /* IBM Carbon blue 60 */
-  --ibm-navy: #001d6c;           /* IBM Carbon blue 90 */
-  --ibm-pale: #d0e2ff;           /* IBM Carbon blue 20 */
 }
 
 /* ---------- Logo: two cut-out letter stickers (junk-journal / ransom-note style) ---------- */
@@ -194,77 +189,15 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
 
 /* ---------- Hero scrapbook extras (home page) ---------- */
 
-/* Design cycle: small ring of pastel discs, below-right of the sticky note */
-.sticky-board .sketch-edipt { left: 83%; top: 54%; width: 190px; }
-.sketch .blob {
-  transform-box: fill-box;
-  transform-origin: center;
-  transform: scale(0);
-  transition: transform 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) var(--d, 0s);
-}
-.sketch.drawn .blob { transform: scale(1); }
-.sketch path.filled { fill-opacity: 0; transition: stroke-dashoffset 0.5s ease-in-out var(--d, 0s), fill-opacity 0.3s ease calc(var(--d, 0s) + 0.35s); }
-.sketch.drawn path.filled { fill-opacity: 1; }
-.sketch path.orange { stroke: #e8892c; }
-.sketch text.label { font-family: var(--font-letter); font-weight: 400; letter-spacing: 0.04em; transition-duration: 0.45s; }
+/* "prev. UX @ IBM": handwritten in the margin to the left of the nametag */
+.sticky-board .sketch-ibm { left: -112px; top: 26%; width: 104px; }
+/* design-loop doodle: in the clear space below-right of the sticky note */
+.sticky-board .sketch-cycle { left: 83%; top: 54%; width: 230px; }
 
-/* Oval die-cut sticker in IBM blue (retro "first rodeo" style), stuck down right of the nametag */
-.hero-sticker {
-  position: absolute;
-  left: 57%;
-  top: -6%;
-  z-index: 5;
-  width: 150px;
-  height: 84px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(ellipse at 35% 25%, #4589ff 0%, var(--ibm-blue) 55%, #0043ce 100%);
-  color: var(--ibm-pale);
-  font-family: var(--font-sticker);
-  font-weight: 900;
-  line-height: 0.95;
-  white-space: nowrap;
-  border: 4px solid #fff;
-  border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(24, 36, 73, 0.35);
-  text-shadow: 1px 1.5px 0 var(--ibm-navy);
-  overflow: hidden;
-  opacity: 0;
-  transform: rotate(-5deg);
-  pointer-events: none;
+/* narrower screens have no left margin, so the IBM note moves above the nametag */
+@media (max-width: 1060px) {
+  .sticky-board .sketch-ibm { left: 14%; top: -14%; }
 }
-/* thin inner ring, like the printed border on a vintage sticker */
-.hero-sticker::before {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  border: 1.5px solid var(--ibm-navy);
-  border-radius: 50%;
-}
-/* glint that sweeps across once the sticker is pressed down */
-.hero-sticker::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
-  transform: translateX(-120%);
-}
-.hero-sticker .s-small { font-size: 14px; letter-spacing: 0.02em; }
-.hero-sticker .s-big { font-size: 24px; letter-spacing: 0.01em; }
-.hero-sticker .s-stars { font-family: var(--font-head); font-size: 10px; letter-spacing: 3px; margin-top: 3px; text-shadow: none; }
-.hero-sticker.placed { animation: stickDown 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
-.hero-sticker.placed::after { animation: glint 0.6s ease-out 0.8s forwards; }
-
-@keyframes stickDown {
-  0%   { opacity: 0; transform: translate(-18px, -46px) rotate(-20deg) scale(1.35); box-shadow: 0 24px 22px rgba(24, 36, 73, 0.28); }
-  50%  { opacity: 1; transform: translate(0, 0) rotate(-3deg) scale(1.02); box-shadow: 0 3px 4px rgba(24, 36, 73, 0.3); }
-  64%  { transform: rotate(-5deg) scale(1.08, 0.9); }
-  80%  { transform: rotate(-5deg) scale(0.97, 1.03); }
-  100% { opacity: 1; transform: rotate(-5deg) scale(1); box-shadow: 0 1px 3px rgba(24, 36, 73, 0.35); }
-}
-@keyframes glint { to { transform: translateX(120%); } }
 
 /* Coffee receipt fed out from under the notecard (it lives inside .note-blurb, behind the card).
    It prints from the card's left end, where the coffee ring has already curved away. */
@@ -338,14 +271,13 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
 
 /* phone layout of the sticky board (see style.css @480px) */
 @media (max-width: 480px) {
-  .sticky-board .sketch-edipt { left: -4%; top: 54%; width: 136px; }
-  .hero-sticker { left: 75%; top: -6%; width: 92px; height: 52px; border-width: 3px; }
-  .hero-sticker::before { inset: 3px; border-width: 1px; }
-  .hero-sticker .s-small { font-size: 9px; }
-  .hero-sticker .s-big { font-size: 15px; }
-  .hero-sticker .s-stars { font-size: 6px; letter-spacing: 2px; margin-top: 1px; }
+  .sticky-board .sketch-ibm   { left: 33%; top: -62px; width: 28%; }
+  /* no free space around the notes on phones: the board grows and the loop sits below the notecard */
+  .sticky-board.has-cycle { height: 585px; }
+  .sticky-board .sketch-cycle { left: 38%; top: 79%; width: 200px; }
   .receipt-slot { left: 0; width: 36%; }
-  .receipt { font-size: 5.8px; padding: 5px 5px 11px; }
+  .receipt { font-size: 5.1px; padding: 5px 4px 11px; }
+  .receipt .r-row { gap: 2px; }
   .receipt .r-barcode { height: 8px; }
 }
 
