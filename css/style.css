@@ -581,6 +581,11 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 @media (max-width: 640px) {
   .img-grid, .img-grid.cols-3 { grid-template-columns: 1fr 1fr; }
 }
+/* screenshots of different shapes, two across: centred against each other, never stretched */
+.img-grid.shots { gap: 18px; align-items: center; }
+@media (max-width: 640px) {
+  .img-grid.shots { grid-template-columns: 1fr; }
+}
 
 /* Full-width stack for dense composite images that go illegible in a grid column */
 .stacked-images {
@@ -590,7 +595,6 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   margin: 18px 0;
 }
 .stacked-images img { width: 100%; height: auto; border-radius: 10px; display: block; }
-.stacked-images.narrow { max-width: 720px; margin-left: auto; margin-right: auto; }
 
 .figma-embed {
   position: relative;
@@ -837,7 +841,7 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 @media (max-width: 640px) {
   .quote-row { grid-template-columns: 1fr; }
 }
-/* Reviews as handwritten notes: key phrases highlighted, stars pencilled in (js/main.js) */
+/* Reviews as notes: key phrases highlighted, stars pencilled in (js/main.js) */
 .quote-card {
   margin: 0;
   background: #fffdf6;
@@ -853,10 +857,10 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 .quote-card:nth-child(3) { transform: rotate(-0.6deg); }
 .quote-card blockquote {
   margin: 0;
-  font-family: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
-  font-weight: 600;
-  font-size: 23px;
-  line-height: 32px;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 28px;
   color: var(--navy);
 }
 /* highlighter swipe: uneven ends, slightly lower than the text like a real marker pass */
