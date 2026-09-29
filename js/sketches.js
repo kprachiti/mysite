@@ -61,7 +61,8 @@
       // arrow curling up toward the nametag above
       ['path', 'M30 32 C27 20 33 9 46 3 M36 3 L47 2 L44 12', 'thin'],
       ['text', 'prev. UX', { x: 4, y: 60, size: 26 }],
-      ['text', '@ IBM', { x: 14, y: 88, size: 28 }],
+      ['text', '@', { x: 14, y: 88, size: 28 }],
+      ['text', 'IBM', { x: 38, y: 88, size: 28, cls: 'ink-blue' }],
     ]],
     arrow: ['0 0 120 90', [
       ['path', 'M6 18 C44 2 96 8 104 42 C108 58 104 70 97 80'],
@@ -137,7 +138,7 @@
         if (opt.anchor) el.setAttribute('text-anchor', opt.anchor);
         if (opt.cls) el.setAttribute('class', opt.cls);
         el.style.setProperty('--d', `${delay}s`);
-        delay += opt.cls === 'center' ? 0.08 : opt.cls === 'label' ? 0.3 : 0.6;
+        delay += opt.cls === 'center' ? 0.08 : opt.cls === 'label' ? 0.3 : value.length < 3 ? 0.15 : 0.6;
       } else if (kind === 'blob') {
         // soft coloured-pencil disc that pops in
         el = document.createElementNS(SVG_NS, 'circle');

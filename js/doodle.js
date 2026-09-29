@@ -6,15 +6,12 @@
 
   const NO_DRAW = 'a, button, input, textarea, select, label, summary, iframe, [contenteditable], ' +
     'p, h1, h2, h3, h4, h5, li, figcaption, blockquote, strong, em, .doodle-chip';
-  const HINT_KEY = 'doodleHintSeen';
   const SVG_NS = 'http://www.w3.org/2000/svg';
 
   const PENCIL_ICON =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 20l1-4L16 5l3 3L8 19z" fill="#f0dd8c"/><path d="M14 7l3 3"/></svg>';
 
-  function readHint() { try { return localStorage.getItem(HINT_KEY) === '1'; } catch (e) { return false; } }
-  function saveHint() { try { localStorage.setItem(HINT_KEY, '1'); } catch (e) {} }
 
   function init() {
     // Page-anchored layer: a 1×1 SVG with visible overflow, so drawings scroll with the content
@@ -33,16 +30,28 @@
       '<feDisplacementMap in="grainy" in2="warp" scale="1.8"/></filter></defs>';
     document.body.append(layer);
 
-    // Corner hint until the visitor's first doodle
+    // Pop-up note in the lower-right corner: slides in shortly after the page loads, and goes away
+    // after the visitor's first doodle, after a few seconds, or when closed.
     const hint = document.createElement('div');
     hint.className = 'doodle-chip hint';
-    hint.innerHTML = PENCIL_ICON + '<span>psst, click + drag to doodle</span>';
+    hint.setAttribute('role', 'status');
+    hint.innerHTML = PENCIL_ICON + '<span>psst! click + drag anywhere to doodle</span>' +
+      '<button type="button" class="doodle-chip-close" aria-label="Close tip">&times;</button>';
     hint.hidden = true;
     document.body.append(hint);
 
-    if (!readHint()) {
-      setTimeout(() => { hint.hidden = false; }, 2200);
+    let hintTimer = null;
+    function hideHint() {
+      if (hint.hidden || hint.classList.contains('fade')) return;
+      clearTimeout(hintTimer);
+      hint.classList.add('fade');
+      setTimeout(() => { hint.hidden = true; }, 350);
     }
+    hint.querySelector('.doodle-chip-close').addEventListener('click', hideHint);
+    setTimeout(() => {
+      hint.hidden = false;
+      hintTimer = setTimeout(hideHint, 9000);
+    }, 2400);
 
     // The line is drawn as a chain of short segments; each one fades out about a second after
     // it's drawn (CSS animation), so the doodle trails away behind the pencil.
@@ -92,11 +101,7 @@
       document.documentElement.classList.remove('doodling');
       if (drawing) {
         seg.setAttribute('d', d + ` L${px.toFixed(1)} ${py.toFixed(1)}`);
-        if (!hint.hidden) {
-          hint.classList.add('fade');
-          setTimeout(() => { hint.hidden = true; }, 300);
-        }
-        saveHint();
+        hideHint();
       }
       seg = null;
       drawing = false;
