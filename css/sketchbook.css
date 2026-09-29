@@ -4,6 +4,14 @@
    without JS the site looks exactly as before, plus a static pencil cursor.
    ========================================================================== */
 
+/* handwriting for sketch labels */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap');
+
+:root {
+  --graphite: #5f6268;           /* soft HB pencil grey */
+  --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
+}
+
 /* ---------- Pencil cursor ---------- */
 
 @media (hover: hover) and (pointer: fine) {
@@ -63,11 +71,11 @@ iframe { cursor: auto; }
 }
 .doodle-layer path {
   fill: none;
-  stroke: var(--navy);
-  stroke-width: 2.2;
+  stroke: var(--graphite);
+  stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 .doodle-layer.erasing path {
   transition: opacity 0.45s ease, stroke-width 0.45s ease;
@@ -112,24 +120,34 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
   transition: opacity 0.2s ease 0.5s;   /* fade only after the lines retract */
   z-index: 6;
 }
-.sketch.drawn { opacity: 1; transition-delay: 0s; }
+.sketch.drawn { opacity: 0.9; transition-delay: 0s; }
 .sketch path {
   fill: none;
-  stroke: var(--navy);
-  stroke-width: 2;
+  stroke: var(--graphite);
+  stroke-width: 1.9;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  transition: stroke-dashoffset 0.55s ease-in-out var(--d, 0s);
+  transition: stroke-dashoffset 0.5s ease-in-out var(--d, 0s);
 }
-.sketch path.pink { stroke: var(--pink-text); }
-.sketch path.thin { stroke-width: 1.4; }
+.sketch path.thin { stroke-width: 1.3; }
 .sketch.drawn path { stroke-dashoffset: 0; }
 
-.sticky-board .sketch-bubble { left: -9%;  top: 1%;  width: 12.5%; }
-.sticky-board .sketch-hearts { left: 87%;  top: 3%;  width: 10%; }
-.sticky-board .sketch-steam  { left: 79.5%; top: 55%; width: 7.5%; }
+/* handwriting is "written" left to right with a wipe */
+.sketch text {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  fill: var(--graphite);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.7s steps(14, end) var(--d, 0s);
+}
+.sketch text.center { text-anchor: middle; dominant-baseline: central; transition-timing-function: ease; transition-duration: 0.2s; }
+.sketch.drawn text { clip-path: inset(0 0 0 0); }
+
+.sticky-board .sketch-ibm   { left: -2%;   top: -3%; width: 29%; transform: rotate(-6deg); }
+.sticky-board .sketch-edipt { left: 61%;   top: -7%; width: 14%; }
+.sticky-board .sketch-iced  { left: 80.5%; top: 64%; width: 16%; }
 
 .featured-tag .sketch-arrow { left: calc(100% + 10px); top: 4px; width: 120px; }
 
@@ -139,8 +157,14 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
 .project-card .meta h3 { position: relative; display: inline-block; }
 .project-card .sketch-underline { left: -4px; right: -4px; bottom: -8px; width: calc(100% + 8px); height: 12px; }
 
+/* phone layout of the sticky board (see style.css @480px): bigger sketches in the free corners */
+@media (max-width: 480px) {
+  .sticky-board .sketch-ibm   { left: -3%; top: -9%; width: 46%; }
+  .sticky-board .sketch-edipt { left: 79%; top: -4%; width: 23%; }
+  .sticky-board .sketch-iced  { left: -2%; top: 72%; width: 36%; }
+}
+
 @media (max-width: 640px) {
-  .sticky-board .sketch-bubble { left: -2%; top: -8%; width: 20%; }
   .project-card .sketch-corner { width: 56px; top: -26px; right: -6px; }
   .featured-tag .sketch-arrow { width: 80px; }
 }

@@ -27,10 +27,14 @@
     layer.setAttribute('width', '1');
     layer.setAttribute('height', '1');
     layer.setAttribute('aria-hidden', 'true');
+    // graphite grain: speckled, slightly wobbly stroke (shared with js/sketches.js)
     layer.innerHTML =
-      '<defs><filter id="graphite" x="-5%" y="-5%" width="110%" height="110%">' +
-      '<feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="3" result="grain"/>' +
-      '<feDisplacementMap in="SourceGraphic" in2="grain" scale="1.4"/></filter></defs>';
+      '<defs><filter id="graphite" x="-10%" y="-10%" width="120%" height="120%">' +
+      '<feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="7" result="noise"/>' +
+      '<feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.75" result="grain"/>' +
+      '<feComposite in="SourceGraphic" in2="grain" operator="in" result="grainy"/>' +
+      '<feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="2" result="warp"/>' +
+      '<feDisplacementMap in="grainy" in2="warp" scale="1.8"/></filter></defs>';
     document.body.append(layer);
 
     // Corner chip: a hint until the first doodle, then an eraser button while doodles exist
