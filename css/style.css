@@ -1000,10 +1000,9 @@ html.intro-run .intro-face-inner::after { animation: introPageShade 1.5s ease-in
   left: 50%;
   bottom: calc(100% + 54px);
   transform: translateX(-50%) rotate(-3deg);
-  font-family: var(--font-mono);
+  font-family: var(--font-head);
   font-weight: 700;
-  font-size: 20px;
-  letter-spacing: 0.02em;
+  font-size: 22px;
   color: var(--navy);
   white-space: nowrap;
   clip-path: inset(0 100% 0 0);

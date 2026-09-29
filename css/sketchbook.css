@@ -228,13 +228,13 @@ html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
 /* Hero captions, balanced on either side of the original board: the girl doodle in the left
    margin beside the nametag, the design loop in the right margin by the sticky note, level with
    each other. Narrower screens have no margins, so they tuck into the gaps below the notes. */
-.sticky-board .sketch-girl  { left: -150px; top: 320px; width: 124px; }
+.sticky-board .sketch-girl  { left: -138px; top: 340px; width: 142px; }
 .sticky-board .sketch-cycle { left: 855px; top: 170px; width: 150px; transform: rotate(-6deg); }
 @media (min-width: 1360px) {
   .sticky-board .sketch-cycle { width: 185px; }
 }
 @media (min-width: 1000px) and (max-width: 1199px) {
-  .sticky-board .sketch-girl  { left: -98px; top: 330px; width: 90px; }
+  .sticky-board .sketch-girl  { left: -96px; top: 345px; width: 100px; }
 }
 @media (max-width: 999px) {
   .sticky-board .sketch-girl  { left: 6%; top: 63%; width: 110px; }
