@@ -1,5 +1,5 @@
 // Doodle mode: click and drag on any empty part of the page to draw in pencil.
-// Doodles stay on the page (they scroll with it) until the visitor erases them.
+// Doodles scroll with the page and fade away on their own about a second after they're drawn.
 // Text, links and embeds are left alone so reading, selecting and clicking still work.
 (function () {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
@@ -9,10 +9,6 @@
   const HINT_KEY = 'doodleHintSeen';
   const SVG_NS = 'http://www.w3.org/2000/svg';
 
-  const ERASER_ICON =
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-    '<path d="M4 16.5 13.5 7a2 2 0 0 1 2.8 0l3 3a2 2 0 0 1 0 2.8L12 20H7.5z" fill="#f0a8d4"/>' +
-    '<path d="M9 11.5l5.5 5.5M7.5 20H20"/></svg>';
   const PENCIL_ICON =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 20l1-4L16 5l3 3L8 19z" fill="#f0dd8c"/><path d="M14 7l3 3"/></svg>';
@@ -37,29 +33,38 @@
       '<feDisplacementMap in="grainy" in2="warp" scale="1.8"/></filter></defs>';
     document.body.append(layer);
 
-    // Corner chip: a hint until the first doodle, then an eraser button while doodles exist
+    // Corner hint until the visitor's first doodle
     const hint = document.createElement('div');
     hint.className = 'doodle-chip hint';
     hint.innerHTML = PENCIL_ICON + '<span>psst, click + drag to doodle</span>';
     hint.hidden = true;
-    const eraser = document.createElement('button');
-    eraser.type = 'button';
-    eraser.className = 'doodle-chip';
-    eraser.innerHTML = ERASER_ICON + '<span>Erase doodles</span>';
-    eraser.hidden = true;
-    document.body.append(hint, eraser);
+    document.body.append(hint);
 
     if (!readHint()) {
       setTimeout(() => { hint.hidden = false; }, 2200);
     }
 
-    let path = null, d = '', px = 0, py = 0, sx = 0, sy = 0, armed = false;
+    // The line is drawn as a chain of short segments; each one fades out about a second after
+    // it's drawn (CSS animation), so the doodle trails away behind the pencil.
+    const SEGMENT = 6;                          // curve pieces per segment
+    let seg = null, d = '', count = 0, px = 0, py = 0, sx = 0, sy = 0, drawing = false, armed = false;
+
+    function newSegment(x, y) {
+      seg = document.createElementNS(SVG_NS, 'path');
+      seg.setAttribute('filter', 'url(#graphite)');
+      const self = seg;
+      self.addEventListener('animationend', () => self.remove(), { once: true });
+      layer.append(self);
+      d = `M${x.toFixed(1)} ${y.toFixed(1)}`;
+      count = 0;
+    }
 
     function begin(e) {
       if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
       if (e.target.closest && e.target.closest(NO_DRAW)) return;
       e.preventDefault();                       // no text selection or image drag while drawing
       armed = true;
+      drawing = false;
       sx = px = e.pageX; sy = py = e.pageY;
       document.addEventListener('mousemove', move);
       document.addEventListener('mouseup', end, { once: true });
@@ -67,45 +72,36 @@
 
     function move(e) {
       const x = e.pageX, y = e.pageY;
-      if (!path) {
+      if (!drawing) {
         if (Math.hypot(x - sx, y - sy) < 3) return;   // a plain click doesn't leave a dot
+        drawing = true;
         document.documentElement.classList.add('doodling');
-        path = document.createElementNS(SVG_NS, 'path');
-        path.setAttribute('filter', 'url(#graphite)');
-        layer.append(path);
-        d = `M${sx.toFixed(1)} ${sy.toFixed(1)}`;
+        newSegment(sx, sy);
       }
       if (Math.hypot(x - px, y - py) < 2) return;
       // quadratic curve through midpoints = smooth, hand-drawn line
-      d += ` Q${px.toFixed(1)} ${py.toFixed(1)} ${((px + x) / 2).toFixed(1)} ${((py + y) / 2).toFixed(1)}`;
-      path.setAttribute('d', d);
+      const mx = (px + x) / 2, my = (py + y) / 2;
+      d += ` Q${px.toFixed(1)} ${py.toFixed(1)} ${mx.toFixed(1)} ${my.toFixed(1)}`;
+      seg.setAttribute('d', d);
       px = x; py = y;
+      if (++count >= SEGMENT) newSegment(mx, my);     // next piece starts where this one ends
     }
 
     function end() {
       document.removeEventListener('mousemove', move);
       document.documentElement.classList.remove('doodling');
-      if (path) {
-        path.setAttribute('d', d + ` L${px.toFixed(1)} ${py.toFixed(1)}`);
-        eraser.hidden = false;
+      if (drawing) {
+        seg.setAttribute('d', d + ` L${px.toFixed(1)} ${py.toFixed(1)}`);
         if (!hint.hidden) {
           hint.classList.add('fade');
           setTimeout(() => { hint.hidden = true; }, 300);
         }
         saveHint();
       }
-      path = null;
+      seg = null;
+      drawing = false;
       armed = false;
     }
-
-    eraser.addEventListener('click', () => {
-      layer.classList.add('erasing');
-      setTimeout(() => {
-        layer.querySelectorAll('path').forEach((p) => p.remove());
-        layer.classList.remove('erasing');
-        eraser.hidden = true;
-      }, 450);
-    });
 
     document.addEventListener('mousedown', begin);
     document.addEventListener('dragstart', (e) => { if (armed) e.preventDefault(); });

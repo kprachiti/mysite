@@ -64,8 +64,9 @@
       ['text', '@ IBM', { x: 14, y: 88, size: 28 }],
     ]],
     arrow: ['0 0 120 90', [
-      ['path', 'M6 14 C40 2 92 10 100 44 C104 60 98 72 90 82'],
-      ['path', 'M76 72 L90 83 L97 66'],
+      ['path', 'M6 18 C44 2 96 8 104 42 C108 58 104 70 97 80'],
+      // arrowhead: two barbs set back along the curve's final direction
+      ['path', 'M108.6 74.1 L97 80 L98.6 67.1'],
     ]],
     underline: ['0 0 200 12', [
       ['path', 'M2 7 C50 4 130 9 198 5'],
@@ -75,7 +76,6 @@
       ['path', 'M26 36 C14 38 8 46 4 58 M2 49 L4 59 L12 53', 'thin'],
       ['text', 'the first painting', { x: 30, y: 30, size: 23 }],
       ['text', 'I sold!', { x: 30, y: 58, size: 23 }],
-      ['path', 'M88 64 C110 60 128 66 150 61', 'thin'],
     ]],
     'note-hands-tea': ['0 0 200 100', [
       ['text', 'a childhood memory:', { x: 4, y: 26, size: 23 }],
@@ -278,15 +278,11 @@
     if ('ResizeObserver' in window) new ResizeObserver(build).observe(img);
     onScrollIn(fig, () => setTimeout(() => { wantDrawn = true; if (svg) svg.classList.add('drawn'); }, 200), 0.15);
 
-    // handwritten note beside the painting, written on hover (or after the frame on touch)
+    // handwritten note beside the painting, written as its frame finishes drawing
     if (DOODLES[`note-${key}`]) {
       const note = sketch(`note-${key}`, `sketch-art-note art-note-${key}`);
       fig.parentElement.append(note);
-      if (canHover) {
-        fig.addEventListener('mouseenter', () => note.classList.add('drawn'));
-      } else {
-        onScrollIn(fig, () => setTimeout(() => note.classList.add('drawn'), 1600), 0.5);
-      }
+      onScrollIn(fig, () => setTimeout(() => note.classList.add('drawn'), 900), 0.15);
     }
   }
 
@@ -335,8 +331,21 @@
     const pad = (n) => String(n).padStart(2, '0');
     const date = `${pad(now.getMonth() + 1)}/${pad(now.getDate())}/${String(now.getFullYear()).slice(2)}`;
     const row = (l, r) => `<div class="r-row"><span>${l}</span><span>${r}</span></div>`;
+    // pencil doodle of a cockapoo in side profile (facing right) at the top of the receipt
+    const dog = `
+      <svg class="r-dog" viewBox="0 0 80 50" aria-hidden="true"><g filter="url(#graphite)">
+        <path d="M14 31 q-5 -6 1 -9 q2 -5 8 -4 q4 -4 9 -1 q5 -3 9 0 q6 -2 8 3 q4 1 4 5"/>
+        <path d="M15 32 q-1 4 4 4 q6 2 11 0 q6 2 11 0 q5 1 8 -2"/>
+        <path d="M20 36 q-1 5 -1 8 q-1 2 3 1 M27 37 l0 7 q0 2 3 1 M41 37 l1 7 q0 2 3 1 M47 35 l2 8 q0 2 3 1"/>
+        <path d="M13 26 q-7 -3 -6 -11 q4 1 3 5 q4 1 2 6"/>
+        <path d="M50 24 q-3 -7 3 -10 q2 -6 9 -5 q6 -1 8 5 q4 3 1 8 q-2 3 -6 3"/>
+        <path d="M68 17 q5 -1 8 3 q0 4 -6 4 q-3 0 -5 -2"/>
+        <path d="M75 19.5 l0.6 0.4 M63 14.5 l0.6 0.4"/>
+        <path d="M55 13 q-6 3 -5 11 q1 6 5 6 q3 -3 1 -8 q2 -4 -1 -9"/>
+      </g></svg>`;
     return `
-      <div class="r-head">THE DAILY GRID</div>
+      ${dog}
+      <div class="r-head">THE DOODLE CAFE</div>
       ${row('#0826', date)}
       <div class="r-rule"></div>
       ${row('ICED LATTE', '5.25')}

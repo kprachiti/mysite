@@ -116,12 +116,10 @@ iframe { cursor: auto; }
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0.9;
+  /* each segment fades away on its own about a second after it's drawn */
+  animation: doodleFade 0.7s ease-in 0.45s forwards;
 }
-.doodle-layer.erasing path {
-  transition: opacity 0.45s ease, stroke-width 0.45s ease;
-  opacity: 0;
-  stroke-width: 6;
-}
+@keyframes doodleFade { to { opacity: 0; } }
 html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
 
 .doodle-chip {
@@ -146,8 +144,6 @@ html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
 .doodle-chip[hidden] { display: none; }
 .doodle-chip.hint { pointer-events: none; background: #fff; }
 .doodle-chip.fade { opacity: 0; }
-button.doodle-chip:hover { transform: rotate(0deg) translateY(-2px); }
-button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
 .doodle-chip svg { width: 18px; height: 18px; flex: none; }
 
 /* ---------- Self-drawing sketches (home page) ---------- */
@@ -230,6 +226,8 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
   to   { transform: translateY(0); }
 }
 .receipt .r-head { text-align: center; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 2px; }
+.receipt .r-dog { display: block; width: 62%; margin: 0 auto 3px; overflow: visible; }
+.receipt .r-dog path { fill: none; stroke: var(--graphite); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .receipt .r-rule { border-top: 1px dashed currentColor; opacity: 0.5; margin: 4px 0; }
 .receipt .r-row { display: flex; justify-content: space-between; gap: 6px; white-space: nowrap; }
 .receipt .r-barcode {

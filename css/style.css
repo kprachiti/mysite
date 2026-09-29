@@ -955,9 +955,9 @@ html.intro-run #intro-overlay { display: block; }
 
 /* the turn: the first strip swings the page on the left edge, every later strip adds a bend
    (more toward the right edge), so the corner curls up first and the sheet flattens as it lands */
-html.intro-run .intro-book > .intro-strip { animation: introTurnPage 1.3s cubic-bezier(0.5, 0.02, 0.3, 1) 1.8s forwards; }
-html.intro-run .intro-strip .intro-strip { animation: introCurlPage 1.3s ease-in-out 1.8s forwards; }
-html.intro-run .intro-face-inner::after { animation: introPageShade 1.3s ease-in-out 1.8s forwards; }
+html.intro-run .intro-book > .intro-strip { animation: introTurnPage 1.3s cubic-bezier(0.5, 0.02, 0.3, 1) 2.3s forwards; }
+html.intro-run .intro-strip .intro-strip { animation: introCurlPage 1.3s ease-in-out 2.3s forwards; }
+html.intro-run .intro-face-inner::after { animation: introPageShade 1.3s ease-in-out 2.3s forwards; }
 
 @keyframes introTurnPage {
   0%   { transform: rotateY(0deg); }
@@ -980,6 +980,21 @@ html.intro-run .intro-face-inner::after { animation: introPageShade 1.3s ease-in
 /* PK mark: each letter sticker gets a pencil-drawn perforated (postage-stamp) edge,
    with little sparks around the pair, in the same graphite as the home page sketches */
 .intro-mark { position: relative; }
+/* journal inside-cover label, handwritten above the stickers before they're placed */
+.intro-lost {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 42px);
+  transform: translateX(-50%) rotate(-3deg);
+  font-family: var(--font-hand, 'Caveat', cursive);
+  font-weight: 600;
+  font-size: 34px;
+  color: var(--graphite, #5f6268);
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+}
+html.intro-run .intro-lost { animation: introWrite 0.5s steps(14, end) 0.1s forwards; }
+@keyframes introWrite { to { clip-path: inset(0 0 0 0); } }
 .intro-sparks {
   position: absolute;
   left: 50%;
@@ -1019,8 +1034,8 @@ html.intro-run .stamp-edge path { animation: introDoodle 0.4s ease-out var(--d, 
   height: calc(100% + 24px);
   overflow: visible;
 }
-html.intro-run .intro-letters .lt-wrap-p { animation: introStickerDrop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 0.15s forwards; }
-html.intro-run .intro-letters .lt-wrap-k { animation: introStickerDrop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 0.65s forwards; }
+html.intro-run .intro-letters .lt-wrap-p { animation: introStickerDrop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 0.65s forwards; }
+html.intro-run .intro-letters .lt-wrap-k { animation: introStickerDrop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 1.15s forwards; }
 
 @keyframes introStickerDrop {
   0%   { opacity: 0; transform: translate(-24px, -70px) rotate(calc(var(--r) - 16deg)) scale(1.45); }

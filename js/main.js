@@ -4,7 +4,7 @@ if (document.documentElement.classList.contains('intro-run')) {
     document.documentElement.classList.remove('intro-run');
     const overlay = document.getElementById('intro-overlay');
     if (overlay) overlay.remove();
-  }, 3250);
+  }, 3750);
 }
 
 // Mobile nav toggle
