@@ -590,6 +590,7 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   margin: 18px 0;
 }
 .stacked-images img { width: 100%; height: auto; border-radius: 10px; display: block; }
+.stacked-images.narrow { max-width: 720px; margin-left: auto; margin-right: auto; }
 
 .figma-embed {
   position: relative;
