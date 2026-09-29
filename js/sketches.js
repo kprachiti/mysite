@@ -4,6 +4,7 @@
 //  - "featured projects": an arrow sketches toward the work as it scrolls into view.
 //  - Project cards: a themed doodle draws on the corner when the card scrolls in;
 //    hovering a card underlines its title.
+//  - About page: each painting gets a hand-doodled hanging frame when it scrolls into view.
 (function () {
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -60,10 +61,9 @@
   // Each doodle: viewBox + strokes, drawn one after another.
   // ['path', d, className?] or ['text', words, { x, y, size, cls? }]
   const DOODLES = {
-    ibm: ['0 0 240 80', [
+    ibm: ['0 0 240 60', [
       ['text', 'prev. UX @ IBM', { x: 6, y: 34, size: 32 }],
-      ['path', 'M112 44 C108 56 116 66 132 70'],
-      ['path', 'M123 63 L133 70 L124 76', 'thin'],
+      ['path', 'M8 46 C60 41 120 49 178 43', 'thin'],
     ]],
     edipt: ['0 0 120 120', edipt()],
     iced: ['0 0 140 110', [
@@ -145,6 +145,109 @@
     return svg;
   }
 
+
+  // ---------- Doodled picture frames (About page paintings) ----------
+  // The painting photos are pre-rotated on transparent canvases, so each frame is drawn
+  // around the painting's real rectangle: size as a fraction of image width, tilt in degrees,
+  // centre as a fraction of the image box (measured from the images' alpha channel).
+  const PAINTINGS = {
+    'still-life': { w: 0.877, h: 0.697, rot: -9.54, cx: 0.499, cy: 0.489 },
+    'hands-tea':  { w: 0.766, h: 0.761, rot: -20.24, cx: 0.5, cy: 0.491 },
+    'lipstick':   { w: 0.854, h: 1.088, rot: 7.42, cx: 0.497, cy: 0.492 },
+  };
+
+  // tiny seeded random so each frame wobbles the same way on every visit
+  function rng(seed) {
+    return () => ((seed = (seed * 16807) % 2147483647) / 2147483647) - 0.5;
+  }
+
+  function frameStrokes(style, x, y, w, h, rand) {
+    const f = (n) => n.toFixed(1);
+    const line = (x1, y1, x2, y2) =>
+      `M${f(x1)} ${f(y1)} Q${f((x1 + x2) / 2 + rand() * 2)} ${f((y1 + y2) / 2 + rand() * 2)} ${f(x2)} ${f(y2)}`;
+    const rect = (o) =>
+      line(x - o, y - o, x + w + o, y - o) + ' ' + line(x + w + o, y - o, x + w + o, y + h + o) + ' ' +
+      line(x + w + o, y + h + o, x - o, y + h + o) + ' ' + line(x - o, y + h + o, x - o, y - o);
+
+    const out = style === 'scallop' ? 12 : style === 'ornate' ? 18 : 16;
+    // nail + string (the frames hang, like the reference sheet)
+    const nx = x + w / 2, ny = y - out - Math.min(34, h * 0.18);
+    const strokes = [
+      ['path', `M${f(nx - 3)} ${f(ny)} a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 M${f(nx)} ${f(ny)} l0.4 0.4`, 'thin'],
+      ['path', line(nx, ny + 3, x + w * 0.22, y - out) + ' ' + line(nx, ny + 3, x + w * 0.78, y - out), 'thin'],
+    ];
+
+    if (style === 'bevel') {
+      strokes.push(['path', rect(out)]);
+      strokes.push(['path', rect(4)]);
+      strokes.push(['path',
+        line(x - out, y - out, x - 4, y - 4) + ' ' + line(x + w + out, y - out, x + w + 4, y - 4) + ' ' +
+        line(x + w + out, y + h + out, x + w + 4, y + h + 4) + ' ' + line(x - out, y + h + out, x - 4, y + h + 4), 'thin']);
+    } else if (style === 'scallop') {
+      strokes.push(['path', rect(4)]);
+      strokes.push(['path', rect(out), 'thin']);
+      // bumps all the way round, traced clockwise so every arc bulges outward
+      const o = out, corners = [[x - o, y - o], [x + w + o, y - o], [x + w + o, y + h + o], [x - o, y + h + o]];
+      let d = `M${f(corners[0][0])} ${f(corners[0][1])}`;
+      for (let i = 0; i < 4; i++) {
+        const [ax, ay] = corners[i], [bx, by] = corners[(i + 1) % 4];
+        const len = Math.hypot(bx - ax, by - ay), n = Math.max(3, Math.round(len / 13)), r = len / n / 2;
+        for (let k = 1; k <= n; k++) {
+          d += ` A${f(r)} ${f(r)} 0 0 1 ${f(ax + (bx - ax) * k / n)} ${f(ay + (by - ay) * k / n)}`;
+        }
+      }
+      strokes.push(['path', d]);
+    } else {
+      strokes.push(['path', rect(out)]);
+      strokes.push(['path', rect(5)]);
+      // rope-like ticks across the band
+      let t = '';
+      const tick = (px, py, dx, dy) => { t += ` M${f(px)} ${f(py)} l${f(dx)} ${f(dy)}`; };
+      for (let px = x + 4; px < x + w - 4; px += 7) { tick(px, y - 14, 0, 6); tick(px, y + h + 8, 0, 6); }
+      for (let py = y + 4; py < y + h - 4; py += 7) { tick(x - 14, py, 6, 0); tick(x + w + 8, py, 6, 0); }
+      strokes.push(['path', t.trim(), 'thin']);
+      // little leaves in each corner
+      const leaf = (cx, cy, sx, sy) =>
+        `M${f(cx)} ${f(cy)} q${f(sx * 9)} ${f(sy * -1)} ${f(sx * 11)} ${f(sy * 11)} q${f(sx * -10)} ${f(sy * -1)} ${f(sx * -11)} ${f(sy * -11)} ` +
+        `M${f(cx + sx * 2)} ${f(cy + sy * 2)} l${f(sx * 7)} ${f(sy * 7)}`;
+      strokes.push(['path', [
+        leaf(x - 16, y - 16, 1, 1), leaf(x + w + 16, y - 16, -1, 1),
+        leaf(x + w + 16, y + h + 16, -1, -1), leaf(x - 16, y + h + 16, 1, -1)].join(' '), 'thin']);
+    }
+    return strokes;
+  }
+
+  function frameArt(fig) {
+    const img = fig.querySelector('img');
+    const key = (img.getAttribute('src') || '').replace(/^.*\/|\.\w+$/g, '');
+    const spec = PAINTINGS[key];
+    if (!spec) return;
+    let svg = null;
+    const build = () => {
+      const bw = img.offsetWidth, bh = img.offsetHeight;
+      if (!bw || !bh) return;
+      const w = spec.w * bw, h = spec.h * bw;
+      const x = spec.cx * bw - w / 2, y = spec.cy * bh - h / 2;
+      const name = `frame-${key}`;
+      DOODLES[name] = [`0 0 ${bw} ${bh}`, frameStrokes(fig.dataset.frame, x, y, w, h, rng(key.length * 977))];
+      const next = sketch(name, 'sketch-frame');
+      next.querySelector('g').setAttribute('transform', `rotate(${spec.rot} ${f1(spec.cx * bw)} ${f1(spec.cy * bh)})`);
+      next.style.width = `${bw}px`;
+      next.style.height = `${bh}px`;
+      if (svg) {
+        if (svg.classList.contains('drawn')) next.classList.add('drawn');
+        svg.replaceWith(next);
+      } else {
+        fig.append(next);
+      }
+      svg = next;
+    };
+    const f1 = (n) => n.toFixed(1);
+    if (img.complete) build(); else img.addEventListener('load', build, { once: true });
+    if ('ResizeObserver' in window) new ResizeObserver(build).observe(img);
+    onScrollIn(fig, () => setTimeout(() => svg && svg.classList.add('drawn'), 200), 0.3);
+  }
+
   const draw = (el, on) => el.classList.toggle('drawn', on);
 
   function onScrollIn(target, cb, threshold = 0.4) {
@@ -160,7 +263,8 @@
   function init() {
     ensureGraphite();
     // Hero sticky notes
-    const board = document.querySelector('.sticky-board');
+    // hero sketches are laid out for the home page board (About uses a different board)
+    const board = document.querySelector('.sticky-board:not(.has-photo)');
     if (board) {
       const pairs = [
         ['.note-name', sketch('ibm', 'sketch-ibm')],
@@ -180,8 +284,11 @@
       }
     }
 
-    // Arrow from "featured projects" down to the work
-    const tag = document.querySelector('.featured-tag');
+    // About page: doodled frames around each painting
+    document.querySelectorAll('.about-collage .art').forEach(frameArt);
+
+    // Arrow from "featured projects" down to the work (home page only)
+    const tag = document.querySelector('.projects') && document.querySelector('.featured-tag');
     if (tag) {
       const arrow = sketch('arrow', 'sketch-arrow');
       tag.append(arrow);

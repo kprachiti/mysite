@@ -145,26 +145,34 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
 .sketch text.center { text-anchor: middle; dominant-baseline: central; transition-timing-function: ease; transition-duration: 0.2s; }
 .sketch.drawn text { clip-path: inset(0 0 0 0); }
 
-.sticky-board .sketch-ibm   { left: -2%;   top: -3%; width: 29%; transform: rotate(-6deg); }
-.sticky-board .sketch-edipt { left: 61%;   top: -7%; width: 14%; }
-.sticky-board .sketch-iced  { left: 80.5%; top: 64%; width: 16%; }
+/* Hero sketches sit in the clear space around the notes, never on them:
+   IBM below-left of the nametag, EDIPT under the sticky note's corner,
+   iced coffee right of the coffee ring. */
+.sticky-board .sketch-ibm   { left: 3%;    top: 67%; width: 29%; transform: rotate(-4deg); }
+.sticky-board .sketch-edipt { left: 96.3%; top: 68%; width: 14%; }
+.sticky-board .sketch-iced  { left: 91%;   top: 94%; width: 16%; }
+
+.about-collage .sketch-frame { left: 0; top: 0; z-index: 0; }
 
 .featured-tag .sketch-arrow { left: calc(100% + 10px); top: 4px; width: 120px; }
 
 .project-card { position: relative; }
-.project-card .sketch-corner { top: -34px; right: -14px; width: 76px; transform: rotate(8deg); }
+.project-card .sketch-corner { bottom: calc(100% + 4px); right: 6px; width: 60px; transform: rotate(6deg); }
 .project-card:nth-child(even) .sketch-corner { transform: rotate(-6deg); }
 .project-card .meta h3 { position: relative; display: inline-block; }
 .project-card .sketch-underline { left: -4px; right: -4px; bottom: -8px; width: calc(100% + 8px); height: 12px; }
 
 /* phone layout of the sticky board (see style.css @480px): bigger sketches in the free corners */
 @media (max-width: 480px) {
-  .sticky-board .sketch-ibm   { left: -3%; top: -9%; width: 46%; }
-  .sticky-board .sketch-edipt { left: 79%; top: -4%; width: 23%; }
-  .sticky-board .sketch-iced  { left: -2%; top: 72%; width: 36%; }
+  .sticky-board .sketch-ibm   { left: 0;   top: -15%; width: 44%; transform: rotate(-3deg); }
+  .sticky-board .sketch-edipt { left: 78%; top: -3%;  width: 23%; }
+  .sticky-board .sketch-iced  { left: 0;   top: 60%;  width: 30%; }
 }
 
 @media (max-width: 640px) {
-  .project-card .sketch-corner { width: 56px; top: -26px; right: -6px; }
+  .project-card .sketch-corner { width: 46px; }
   .featured-tag .sketch-arrow { width: 80px; }
 }
+
+/* Tilted tape labels and sketches must never make the page scroll sideways */
+main { overflow-x: clip; }

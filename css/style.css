@@ -755,25 +755,26 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   width: 330px;
   max-width: 100%;
   margin: 0 auto;
-  height: 600px;
+  height: 800px;
 }
-.about-collage img {
+.about-collage .art {
   position: absolute;
-  border-radius: 4px;
+  margin: 0;
   transition: transform 0.3s ease, z-index 0s;
 }
-.about-collage img:nth-child(1) { top: 0; left: 0; width: 220px; z-index: 1; }
-.about-collage img:nth-child(2) { top: 168px; left: 110px; width: 200px; z-index: 3; }
-.about-collage img:nth-child(3) { top: 350px; left: 0; width: 190px; z-index: 2; }
-.about-collage img:hover {
+.about-collage .art img { width: 100%; height: auto; border-radius: 4px; }
+.about-collage .art:nth-child(1) { top: 30px; left: 0; width: 220px; z-index: 1; }
+.about-collage .art:nth-child(2) { top: 280px; left: 115px; width: 200px; z-index: 3; }
+.about-collage .art:nth-child(3) { top: 555px; left: 0; width: 190px; z-index: 2; }
+.about-collage .art:hover {
   transform: scale(1.06) translateY(-6px);
   z-index: 5;
 }
 @media (max-width: 480px) {
-  .about-collage { width: 260px; height: 480px; }
-  .about-collage img:nth-child(1) { width: 175px; }
-  .about-collage img:nth-child(2) { width: 160px; top: 135px; left: 90px; }
-  .about-collage img:nth-child(3) { width: 150px; top: 280px; left: 0; }
+  .about-collage { width: 260px; height: 700px; }
+  .about-collage .art:nth-child(1) { width: 175px; top: 30px; }
+  .about-collage .art:nth-child(2) { width: 160px; top: 250px; left: 95px; }
+  .about-collage .art:nth-child(3) { width: 150px; top: 480px; left: 0; }
 }
 
 .contact-blurb {
