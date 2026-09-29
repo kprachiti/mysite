@@ -5,7 +5,7 @@
    ========================================================================== */
 
 /* handwriting (Caveat), hand-lettered caps (Architects Daughter), retro sticker type (Fraunces Black) */
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Architects+Daughter&family=Fraunces:opsz,wght,SOFT@9..144,900,100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Architects+Daughter&family=Fraunces:opsz,wght,SOFT@9..144,900,100&family=DM+Serif+Display&family=Special+Elite&display=swap');
 
 :root {
   --graphite: #5f6268;           /* soft HB pencil grey */
@@ -16,6 +16,48 @@
   --ibm-navy: #001d6c;           /* IBM Carbon blue 90 */
   --ibm-pale: #d0e2ff;           /* IBM Carbon blue 20 */
 }
+
+/* ---------- Logo: two cut-out letter stickers (junk-journal / ransom-note style) ---------- */
+
+.brand-letters {
+  display: inline-flex;
+  align-items: center;
+  font-size: 21px;
+  filter: drop-shadow(0 2px 2px rgba(24, 36, 73, 0.28));
+}
+.brand-letters .lt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3em;
+  height: 1.5em;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+/* P: navy paper, yellow serif */
+.brand-letters .lt-p {
+  background: var(--navy);
+  color: var(--yellow);
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.12em;
+  padding-top: 0.08em;
+  transform: rotate(-7deg);
+  clip-path: polygon(4% 2%, 97% 0, 100% 95%, 55% 99%, 1% 100%);
+}
+/* K: pink paper, typewriter */
+.brand-letters .lt-k {
+  background: var(--pink);
+  color: var(--navy);
+  font-family: 'Special Elite', 'Courier New', monospace;
+  margin-left: -0.12em;
+  transform: rotate(6deg) translateY(0.1em);
+  clip-path: polygon(0 5%, 60% 0, 96% 2%, 100% 100%, 3% 96%);
+}
+.brand:hover .brand-letters .lt-p { transform: rotate(-2deg) translateY(-2px); }
+.brand:hover .brand-letters .lt-k { transform: rotate(1deg) translateY(-1px); }
+
+/* the home-page intro drops the same two letters, larger, then shrinks them into the header */
+.intro-stamp.brand-letters { width: auto; font-size: 58px; }
 
 /* ---------- Pencil cursor ---------- */
 
