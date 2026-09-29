@@ -1,6 +1,7 @@
 // Doodle mode: click and drag on any empty part of the page to draw in pencil.
 // Doodles scroll with the page and fade away on their own about a second after they're drawn.
 // Text, links and embeds are left alone so reading, selecting and clicking still work.
+// A switch in the footer turns doodle mode on/off; the choice is remembered on this browser.
 (function () {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
@@ -12,6 +13,10 @@
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 20l1-4L16 5l3 3L8 19z" fill="#f0dd8c"/><path d="M14 7l3 3"/></svg>';
 
+
+  const STORE_KEY = 'doodleMode';
+  let enabled = true;
+  try { enabled = localStorage.getItem(STORE_KEY) !== 'off'; } catch (e) {}
 
   function init() {
     // Page-anchored layer: a 1×1 SVG with visible overflow, so drawings scroll with the content
@@ -50,11 +55,11 @@
       const obs = new MutationObserver(() => {
         if (root.classList.contains('intro-run')) return;
         obs.disconnect();
-        setTimeout(() => { hint.hidden = false; }, 900);
+        setTimeout(() => { hint.hidden = !enabled; }, 900);
       });
       obs.observe(root, { attributes: true, attributeFilter: ['class'] });
     } else {
-      setTimeout(() => { hint.hidden = false; }, 2400);
+      setTimeout(() => { hint.hidden = !enabled; }, 2400);
     }
 
     // The line is drawn as a chain of short segments; each one fades out about a second after
@@ -73,6 +78,7 @@
     }
 
     function begin(e) {
+      if (!enabled) return;
       if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
       if (e.target.closest && e.target.closest(NO_DRAW)) return;
       e.preventDefault();                       // no text selection or image drag while drawing
@@ -109,6 +115,31 @@
       seg = null;
       drawing = false;
       armed = false;
+    }
+
+    // Footer switch
+    const footer = document.querySelector('.site-footer .footer-nav');
+    if (footer) {
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'doodle-toggle';
+      toggle.setAttribute('role', 'switch');
+      toggle.innerHTML = PENCIL_ICON + '<span>DOODLE MODE</span><span class="doodle-toggle-track" aria-hidden="true"></span>';
+      const sync = () => {
+        toggle.setAttribute('aria-checked', String(enabled));
+        document.documentElement.classList.toggle('doodle-off', !enabled);
+      };
+      toggle.addEventListener('click', () => {
+        enabled = !enabled;
+        try { localStorage.setItem(STORE_KEY, enabled ? 'on' : 'off'); } catch (e) {}
+        if (!enabled && !hint.hidden) {
+          hint.classList.add('fade');
+          setTimeout(() => { hint.hidden = true; hint.classList.remove('fade'); }, 350);
+        }
+        sync();
+      });
+      sync();
+      footer.append(toggle);
     }
 
     document.addEventListener('mousedown', begin);
