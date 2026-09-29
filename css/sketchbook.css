@@ -482,25 +482,31 @@ html.lb-open { overflow: hidden; }
 /* ---------- About: "current favs" junk-journal collage (concert stubs + polaroid) ---------- */
 /* Stubs follow the classic 80s coliseum ticket layout (seat stub · main body · price stub),
    each dressed for its artist. Everything inside a ticket is sized in em so it scales as one. */
-.favs-section { padding: 30px 24px 10px; }
-.favs { position: relative; height: 350px; max-width: 520px; margin: 10px auto 30px; }
+/* same two columns as the intro above, with everything in the text column */
+.favs-section { padding: 30px 24px 10px; display: grid; grid-template-columns: 1.1fr 0.9fr; column-gap: 40px; }
+.favs-section > * { grid-column: 2; }
+.favs-section > .featured-tag { justify-self: start; }
+@media (max-width: 720px) {
+  .favs-section { grid-template-columns: 1fr; }
+  .favs-section > * { grid-column: 1; }
+}
+.favs { position: relative; height: 340px; width: 100%; max-width: 430px; margin: 10px 0 30px; }
 
 .ticket {
-  --tk-bg: #efe6d0; --tk-ink: #4a4636; --tk-stub: #b9a98a; --tk-stub-ink: #fbf6ea;
+  --tk-bg: #f3ecd9; --tk-ink: #6b3fa0; --tk-band: #b9a3d6; --tk-band2: #d8c9ea;
   position: absolute;
-  font-size: 6.4px;
-  width: 47em;
-  height: 18.5em;
+  font-size: 6px;
+  width: 44em;
+  height: 20em;
   display: grid;
-  grid-template-columns: 5.6em 1fr 6.2em;
+  grid-template-columns: 11.5em 1fr;
   background: var(--tk-bg);
   color: var(--tk-ink);
-  font-family: var(--font-body);
-  border-radius: 0.6em;
+  font-family: var(--font-head);
+  border-radius: 0.4em;
   /* aged edges: a soft brown vignette inside, a light drop shadow outside */
-  box-shadow: inset 0 0 2.2em rgba(120, 92, 48, 0.28), 0 1px 1px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(24, 36, 73, 0.14);
-  /* torn right edge */
-  clip-path: polygon(0 0, 97.6% 0, 98.8% 8%, 97.4% 16%, 99.2% 25%, 97.8% 34%, 99.4% 44%, 97.6% 53%, 99% 62%, 97.5% 71%, 99.3% 80%, 97.8% 89%, 98.9% 100%, 0 100%);
+  box-shadow: inset 0 0 2.4em rgba(120, 92, 48, 0.3), 0 1px 1px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(24, 36, 73, 0.14);
+  overflow: hidden;
   transition: transform 0.3s ease, z-index 0s;
 }
 /* paper grain + a faint fold crease, so each stub looks handled and a bit worn */
@@ -508,107 +514,65 @@ html.lb-open { overflow: hidden; }
 .ticket::after {
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .33 0 0 0 0 .22 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   mix-blend-mode: multiply;
-  opacity: 0.4;
+  opacity: 0.45;
 }
 .ticket::before {
-  background: linear-gradient(90deg, transparent 43%, rgba(255, 255, 255, 0.45) 43.3%, rgba(90, 70, 40, 0.1) 43.8%, transparent 44.4%);
+  background: linear-gradient(90deg, transparent 52%, rgba(255, 255, 255, 0.45) 52.3%, rgba(90, 70, 40, 0.1) 52.8%, transparent 53.4%);
   z-index: 1;
 }
 .ticket p { margin: 0; color: inherit; }
 .ticket:hover { transform: rotate(0deg) translateY(-5px) scale(1.03) !important; z-index: 6 !important; }
 
-/* seat stub (left) and price stub (right), text running up the ticket */
-.tk-stub, .tk-end {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  background: var(--tk-stub);
-  color: var(--tk-stub-ink);
-  font-family: var(--font-mono);
-  font-size: 1.05em;
-  letter-spacing: 0.12em;
+/* left stub: coloured bands with the seat details, text running up the ticket */
+.tk-stub { display: grid; grid-template-columns: 3.2em 1fr 2.4em; border-right: 0.18em dashed rgba(80, 60, 30, 0.35); }
+.tk-stub > span {
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  display: flex; align-items: center; justify-content: space-around;
+  font-family: var(--font-mono); letter-spacing: 0.1em;
 }
-.tk-stub b, .tk-end b { font-size: 1.35em; letter-spacing: 0.08em; }
-.tk-end { border-right: 0.2em dashed rgba(80, 60, 30, 0.3); padding-left: 0.8em; }
-.tk-stub { border-left: 0.2em dashed rgba(80, 60, 30, 0.3); }
+.tk-band { background: var(--tk-band); color: rgba(255, 255, 255, 0.9); font-size: 0.95em; }
+.tk-band i { font-style: normal; }
+.tk-admit { background: var(--tk-band2); color: var(--tk-ink); font-size: 0.75em; justify-content: center !important; }
+.tk-seat { color: var(--tk-ink); font-size: 1.05em; font-weight: 700; justify-content: center !important; gap: 0.2em; white-space: nowrap; line-height: 1.25; }
+.tk-seat b { font-weight: 700; }
 
-.tk-main { padding: 1.2em 1.6em 1em; display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0.9; }
-.tk-presents { font-family: var(--font-mono); font-size: 1.05em; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.8; }
-.tk-artist { font-size: 3.6em; line-height: 1.05; margin-top: 0.08em !important; white-space: nowrap; }
-.tk-venue { font-family: var(--font-mono); font-size: 1em; letter-spacing: 0.1em; text-transform: uppercase; padding-bottom: 0.5em; border-bottom: 0.15em solid currentColor; width: 100%; }
-.tk-when { display: flex; align-items: center; gap: 0.8em; margin-top: 0.6em; width: 100%; }
-.tk-col { display: flex; flex-direction: column; font-family: var(--font-mono); font-weight: 700; font-size: 1em; line-height: 1.15; }
-.tk-day { font-family: var(--font-head); font-weight: 700; font-size: 3.4em; line-height: 1; }
-.tk-price {
-  flex: 1; margin-left: 0.6em; padding-left: 0.9em; border-left: 0.15em solid currentColor;
-  display: flex; flex-direction: column;
-  font-family: var(--font-mono); font-size: 1em; line-height: 1.45; text-align: left;
+/* main body: everything printed in the one ink colour, with a line-art motif on the right */
+.tk-main {
+  position: relative;
+  padding: 1.1em 1.4em 0.9em 1.6em;
+  display: grid;
+  grid-template-columns: 1fr 8.5em;
+  grid-template-rows: auto auto 1fr auto;
+  column-gap: 0.8em;
+  opacity: 0.9;
 }
-.tk-price span { display: flex; align-items: baseline; }
-/* dotted leader from label to amount, like "Est. Price . . . . $18.50" */
-.tk-price i { flex: 1; display: flex; align-items: baseline; font-style: normal; }
-.tk-price i::before { content: ''; flex: 1; margin: 0 0.4em; border-bottom: 0.14em dotted currentColor; opacity: 0.6; }
-.tk-fine { font-family: var(--font-mono); font-size: 0.85em; letter-spacing: 0.14em; text-transform: uppercase; margin-top: auto !important; opacity: 0.75; }
+.tk-presents { grid-column: 1 / -1; font-weight: 700; font-size: 1.05em; letter-spacing: 0.04em; text-transform: uppercase; }
+.tk-artist { grid-column: 1; font-size: 3.1em; font-weight: 800; line-height: 1.05; text-transform: uppercase; }
+.tk-info { grid-column: 1; margin-top: 0.4em !important; font-weight: 700; font-size: 1.15em; line-height: 1.3; text-transform: uppercase; }
+.tk-info b { font-size: 1.15em; }
+.tk-fine { grid-column: 1 / -1; font-weight: 600; font-size: 0.9em; }
+.tk-motif { grid-column: 2; grid-row: 2 / 4; width: 100%; height: auto; align-self: center; overflow: visible; }
+.tk-motif * { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.tk-motif .fill { fill: currentColor; stroke: none; }
 
-/* Album-cover inspired, softened and worn. */
-/* Tame Impala / Currents: lilac ripple lines, a red-to-orange streak, a little silver sphere */
-.t-tame {
-  --tk-bg: #cdbbd8; --tk-ink: #3f2d52; --tk-stub: #7b5d95; --tk-stub-ink: #f3e6f6;
-  background:
-    radial-gradient(circle at 19% 24%, #fbfbfd 0 0.2em, #c9c8d2 0.7em, #77757f 1.25em, transparent 1.35em),
-    linear-gradient(116deg, transparent 38%, rgba(226, 92, 116, 0.55) 38.4%, rgba(240, 150, 90, 0.55) 40%, transparent 40.4%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='9'%3E%3Cpath d='M0 4.5 Q6 0 12 4.5 T24 4.5' fill='none' stroke='%237d5f99' stroke-opacity='.35' stroke-width='1.3'/%3E%3C/svg%3E") 0 0 / 2.4em 0.9em,
-    #cdbbd8;
-}
-.t-tame .tk-artist { font-family: var(--font-head); font-weight: 700; font-size: 3.2em; letter-spacing: 0.06em; text-transform: uppercase; color: #d99a3e; text-shadow: 0 0.05em 0 rgba(63, 45, 82, 0.45); }
-
-/* Phoebe Bridgers / Stranger in the Alps: hazy sky over faded grass, a faint rainbow,
-   the name in white handwriting and a tiny sheet ghost */
-.t-phoebe {
-  --tk-bg: #c3d3dd; --tk-ink: #34405a; --tk-stub: #8e9f7a; --tk-stub-ink: #f6f7f1;
-  background:
-    radial-gradient(circle at 88% 135%, transparent 62%, rgba(240, 120, 120, 0.22) 62.5%, rgba(245, 200, 120, 0.22) 64.5%, rgba(150, 200, 150, 0.22) 66.5%, rgba(140, 160, 225, 0.22) 68.5%, transparent 69%),
-    linear-gradient(180deg, #c6d6e0 0 54%, #b9b58f 54% 100%);
-}
-.t-phoebe .tk-main { position: relative; }
-.t-phoebe .tk-artist { font-family: var(--font-hand); font-weight: 600; font-size: 4.3em; color: #fff; text-shadow: 0 0.03em 0.08em rgba(40, 50, 70, 0.35); }
-.t-phoebe .tk-main::after {
-  content: ''; position: absolute; right: 1em; top: 0.9em;
-  width: 1.7em; height: 2.5em;
-  border-radius: 1em 1em 0.35em 0.35em;
-  background:
-    radial-gradient(circle at 34% 30%, #2a2a2a 0.14em, transparent 0.19em),
-    radial-gradient(circle at 66% 30%, #2a2a2a 0.14em, transparent 0.19em),
-    rgba(255, 255, 255, 0.92);
-  box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.15);
-  transform: rotate(-4deg);
-}
-
-/* Drake / Scorpion: grainy charcoal, silver ink, wide-spaced capitals and a signature scrawl */
-.t-drake {
-  --tk-bg: #4a4845; --tk-ink: #d8d3ca; --tk-stub: #2e2d2b; --tk-stub-ink: #cfcac2;
-  background: radial-gradient(ellipse at 40% 40%, #57544f, #3f3d3a 75%);
-}
-.t-drake::after { mix-blend-mode: screen; opacity: 0.18; }
-.t-drake .tk-main { position: relative; }
-.t-drake .tk-artist { font-family: var(--font-body); font-weight: 400; font-size: 3.1em; letter-spacing: 0.42em; padding-left: 0.42em; }
-.t-drake .tk-day { font-family: var(--font-body); font-weight: 300; }
-.t-drake .tk-main::after {
-  content: ''; position: absolute; left: 0.8em; top: 0.5em; width: 6.5em; height: 2.9em; opacity: 0.5;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 40'%3E%3Cpath d='M4 34 C8 20 12 8 14 6 C14 16 13 26 12 34 M8 22 C14 20 20 20 24 21 M26 30 C22 22 30 12 36 16 C42 20 34 30 30 26 C40 22 58 10 86 8' fill='none' stroke='%23e6e1d8' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
-}
+/* Tame Impala: purple ink, lilac bands, the Currents ball in rippling lines */
+.t-tame { --tk-bg: #f2e9cf; --tk-ink: #6b3fa0; --tk-band: #a98dcb; --tk-band2: #ddd0ec; }
+/* Phoebe Bridgers: faded blue ink, sky-blue bands, a sheet ghost; name in script like a signature */
+.t-phoebe { --tk-bg: #f1ede2; --tk-ink: #3c6aa3; --tk-band: #7ea8d6; --tk-band2: #c9dcf0; }
+.t-phoebe .tk-artist { font-family: var(--font-hand); font-weight: 600; font-size: 3.9em; text-transform: none; line-height: 0.95; }
+/* Drake: worn gold ink, brown and gold bands, a scorpion */
+.t-drake { --tk-bg: #f0e8d3; --tk-ink: #9c7428; --tk-band: #5a4631; --tk-band2: #e0c98e; }
+.t-drake .tk-artist { font-size: 3.6em; letter-spacing: 0.12em; }
 
 .t-tame   { left: 0;    top: 6px;   transform: rotate(-5deg); z-index: 1; }
-.t-phoebe { left: 28px; top: 118px; transform: rotate(3deg);  z-index: 2; }
-.t-drake  { left: 6px;  top: 228px; transform: rotate(-2deg); z-index: 3; }
+.t-phoebe { left: 22px; top: 112px; transform: rotate(3deg);  z-index: 2; }
+.t-drake  { left: 4px;  top: 218px; transform: rotate(-2deg); z-index: 3; }
 
 /* polaroid of Mylo, caption pencilled in underneath */
 .polaroid {
   position: absolute;
-  left: 312px; top: 26px;
-  width: 200px;
+  left: 272px; top: 30px;
+  width: 160px;
   margin: 0;
   padding: 10px 10px 0;
   background: #fffdf8;
@@ -639,8 +603,8 @@ html.lb-open { overflow: hidden; }
 .matcha-secret {
   display: block;
   position: relative;
-  width: min(560px, 100%);
-  margin: 6px auto 0;
+  width: 100%;
+  margin: 6px 0 0;
   padding: 0;
   border: 0;
   background: none;
