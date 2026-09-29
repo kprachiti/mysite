@@ -51,8 +51,6 @@
 .brand:hover .brand-letters .lt-p { transform: rotate(-2deg) translateY(-2px); }
 .brand:hover .brand-letters .lt-k { transform: rotate(1deg) translateY(-1px); }
 
-/* the home-page intro drops the same two letters, larger, then shrinks them into the header */
-.intro-stamp.brand-letters { width: auto; font-size: 58px; }
 
 /* ---------- Pencil cursor ---------- */
 
@@ -189,15 +187,10 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
 
 /* ---------- Hero scrapbook extras (home page) ---------- */
 
-/* "prev. UX @ IBM": handwritten in the margin to the left of the nametag */
-.sticky-board .sketch-ibm { left: -112px; top: 26%; width: 104px; }
+/* "prev. UX @ IBM": handwritten just below the nametag, arrow pointing up at it */
+.sticky-board .sketch-ibm { left: 7%; top: 63%; width: 104px; }
 /* design-loop doodle: in the clear space below-right of the sticky note */
 .sticky-board .sketch-cycle { left: 83%; top: 54%; width: 230px; }
-
-/* narrower screens have no left margin, so the IBM note moves above the nametag */
-@media (max-width: 1060px) {
-  .sticky-board .sketch-ibm { left: 14%; top: -17%; }
-}
 
 /* Coffee receipt fed out from under the notecard (it lives inside .note-blurb, behind the card).
    It prints from the card's left end, where the coffee ring has already curved away. */
@@ -274,7 +267,7 @@ button.doodle-chip:focus-visible { outline: 2px solid var(--blue); outline-offse
 
 /* phone layout of the sticky board (see style.css @480px) */
 @media (max-width: 480px) {
-  .sticky-board .sketch-ibm   { left: 33%; top: -76px; width: 28%; }
+  .sticky-board .sketch-ibm   { left: 0; top: 37%; width: 28%; }
   /* no free space around the notes on phones: the board grows and the loop sits below the notecard */
   .sticky-board.has-cycle { height: 585px; }
   .sticky-board .sketch-cycle { left: 38%; top: 79%; width: 200px; }

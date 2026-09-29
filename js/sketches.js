@@ -58,10 +58,10 @@
   const DOODLES = {
     cycle: ['0 20 240 120', designLoop()],
     ibm: ['0 0 110 104', [
-      ['text', 'prev. UX', { x: 4, y: 26, size: 26 }],
-      ['text', '@ IBM', { x: 14, y: 54, size: 28 }],
-      // arrow curling down toward the nametag
-      ['path', 'M58 62 C60 78 72 88 90 96 M80 97 L91 96 L86 86', 'thin'],
+      // arrow curling up toward the nametag above
+      ['path', 'M30 32 C27 20 33 9 46 3 M36 3 L47 2 L44 12', 'thin'],
+      ['text', 'prev. UX', { x: 4, y: 60, size: 26 }],
+      ['text', '@ IBM', { x: 14, y: 88, size: 28 }],
     ]],
     arrow: ['0 0 120 90', [
       ['path', 'M6 14 C40 2 92 10 100 44 C104 60 98 72 90 82'],
