@@ -30,55 +30,44 @@
     '<feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="2" result="warp"/>' +
     '<feDisplacementMap in="grainy" in2="warp" scale="1.8"/></filter>';
 
-  // Hand-drawn circle that overshoots its start a little, like a real pencil loop
-  function loop(cx, cy, r) {
-    const f = (n) => n.toFixed(1);
-    return `M${f(cx - r)} ${f(cy + 1)} C${f(cx - r)} ${f(cy - r * 0.8)} ${f(cx + r * 0.8)} ${f(cy - r * 1.1)} ${f(cx + r)} ${f(cy - 1)} ` +
-      `C${f(cx + r * 1.1)} ${f(cy + r * 0.8)} ${f(cx - r * 0.2)} ${f(cy + r * 1.1)} ${f(cx - r * 0.85)} ${f(cy + r * 0.6)} ` +
-      `C${f(cx - r * 1.05)} ${f(cy + r * 0.3)} ${f(cx - r * 1.05)} ${f(cy - r * 0.1)} ${f(cx - r * 0.85)} ${f(cy - r * 0.35)}`;
-  }
-
-  // Stanford d.school design cycle as a doodled path down the page: a little icon for each
-  // stage, the word written beside it, and a loop from Test back up to Empathize.
-  function edipt() {
-    const X = 26, GAP = 58, strokes = [];
-    const f = (n) => n.toFixed(1);
-    const icons = [
-      // Empathize: heart
-      (y) => `M${X} ${y + 10} C${X - 16} ${y} ${X - 12} ${y - 13} ${X} ${y - 4} C${X + 12} ${y - 13} ${X + 16} ${y} ${X} ${y + 10} Z`,
-      // Define: magnifying glass
-      (y) => loop(X - 3, y - 3, 9) + ` M${X + 3} ${y + 4} L${X + 11} ${y + 12}`,
-      // Ideate: light bulb with rays
-      (y) => `M${X - 6} ${y + 6} C${X - 15} ${y - 2} ${X - 11} ${y - 14} ${X} ${y - 14} C${X + 11} ${y - 14} ${X + 15} ${y - 2} ${X + 6} ${y + 6} Z ` +
-        `M${X - 5} ${y + 10} L${X + 5} ${y + 10} M${X - 3} ${y + 13} L${X + 3} ${y + 13} ` +
-        `M${X} ${y - 19} l0 -4 M${X - 13} ${y - 14} l-3 -3 M${X + 13} ${y - 14} l3 -3`,
-      // Prototype: phone wireframe
-      (y) => `M${X - 9} ${y - 14} L${X + 9} ${y - 14} L${X + 9} ${y + 14} L${X - 9} ${y + 14} Z ` +
-        `M${X - 5} ${y - 8} L${X + 5} ${y - 8} M${X - 5} ${y - 3} L${X + 2} ${y - 3} M${X - 5} ${y + 2} L${X + 4} ${y + 2} M${X - 2} ${y + 10} L${X + 2} ${y + 10}`,
-      // Test: ticked checkbox
-      (y) => `M${X - 10} ${y - 9} L${X + 8} ${y - 10} L${X + 9} ${y + 8} L${X - 9} ${y + 9} Z M${X - 6} ${y - 1} L${X - 1} ${y + 5} L${X + 13} ${y - 13}`,
-    ];
-    ['Empathize', 'Define', 'Ideate', 'Prototype', 'Test'].forEach((word, i) => {
-      const y = 22 + i * GAP;
-      strokes.push(['path', icons[i](y)]);
-      strokes.push(['text', word, { x: 56, y: y + 8, size: 25 }]);
-      if (i < 4) {
-        // wiggly connector with an arrowhead to the next stage
-        const y1 = y + 17, y2 = y + GAP - 20;
-        strokes.push(['path', `M${X} ${y1} C${X + 9} ${f(y1 + 6)} ${X - 9} ${f(y2 - 8)} ${X} ${y2} M${X - 4} ${y2 - 5} L${X} ${y2} L${X + 4} ${y2 - 5}`, 'thin']);
-      }
-    });
-    // loop back: Test → Empathize
-    const top = 22, bottom = 22 + 4 * GAP;
-    strokes.push(['path', `M128 ${bottom + 4} C176 ${bottom - 10} 176 ${top + 14} 150 ${top - 2} M151 ${top + 10} L150 ${top - 2} L161 ${top - 1}`, 'thin']);
-    strokes.push(['text', 'repeat!', { x: 124, y: bottom + 26, size: 18 }]);
-    return strokes;
-  }
+  // Small circular design cycle: five overlapping pastel discs, each with a doodled icon,
+  // hand-lettered stage names around the outside on curvy leader lines.
+  const EDIPT_RING = ['0 0 280 225', [
+    ['blob', { cx: 140, cy: 66, r: 30, color: 'rgba(160, 205, 240, 0.55)' }],
+    ['blob', { cx: 183.7, cy: 97.8, r: 30, color: 'rgba(205, 180, 240, 0.55)' }],
+    ['blob', { cx: 167, cy: 149.2, r: 30, color: 'rgba(235, 150, 195, 0.5)' }],
+    ['blob', { cx: 113, cy: 149.2, r: 30, color: 'rgba(245, 190, 165, 0.55)' }],
+    ['blob', { cx: 96.3, cy: 97.8, r: 30, color: 'rgba(248, 228, 150, 0.6)' }],
+    // Empathize: heart
+    ['path', 'M140 77 C123 66 127 52 140 60 C153 52 157 66 140 77 Z', null, '#e8706a'],
+    ['text', 'EMPATHIZE', { x: 140, y: 20, size: 17, anchor: 'middle', cls: 'label' }],
+    ['path', 'M156 25 C167 28 165 37 154 40', 'thin'],
+    // Define: pencil
+    ['path', 'M175 109 L190 92 L195 97 L180 114 Z M175 109 L172 117 L180 114 M187 89 L193 95', null, '#fff'],
+    ['text', 'DEFINE', { x: 216, y: 74, size: 17, cls: 'label' }],
+    ['path', 'M216 79 C207 81 206 87 209 92', 'thin'],
+    // Ideate: light bulb with an orange filament
+    ['path', 'M161 153 C154 147 157 137 167 137 C177 137 180 147 173 153 L172 158 L162 158 Z M163 161 L171 161 M164 164 L170 164', null, '#fff'],
+    ['path', 'M164 152 L167 145 L170 152', 'thin orange'],
+    ['text', 'IDEATE', { x: 190, y: 208, size: 17, cls: 'label' }],
+    ['path', 'M196 195 C198 186 191 180 183 178', 'thin'],
+    // Prototype: wireframe card
+    ['path', 'M101 138 L125 138 L125 161 L101 161 Z', null, '#b89bd6'],
+    ['path', 'M104 141 L122 141 L122 148 L104 148 Z M104 152 h5 v5 h-5 Z M110.5 152 h5 v5 h-5 Z M117 152 h5 v5 h-5 Z', 'thin', '#fff'],
+    ['text', 'PROTOTYPE', { x: 116, y: 208, size: 17, anchor: 'end', cls: 'label' }],
+    ['path', 'M102 195 C99 186 103 180 108 177', 'thin'],
+    // Test: clipboard with ticks
+    ['path', 'M87 87 L106 87 L106 111 L87 111 Z', null, '#fff'],
+    ['path', 'M92 84 L101 84 L101 89 L92 89 Z', 'thin', '#f2a93b'],
+    ['path', 'M90 95 l2 2 l3 -4 M90 102 l2 2 l3 -4 M98 95 h5 M98 102 h5 M91 107 h11', 'thin'],
+    ['text', 'TEST', { x: 58, y: 74, size: 17, anchor: 'end', cls: 'label' }],
+    ['path', 'M61 79 C67 81 70 87 69 93', 'thin'],
+  ]];
 
   // Each doodle: viewBox + strokes, drawn one after another.
-  // ['path', d, className?] or ['text', words, { x, y, size, cls? }]
+  // ['path', d, className?, fill?], ['text', words, { x, y, size, anchor?, cls? }] or ['blob', { cx, cy, r, color }]
   const DOODLES = {
-    edipt: ['0 0 180 290', edipt()],
+    edipt: EDIPT_RING,
     arrow: ['0 0 120 90', [
       ['path', 'M6 14 C40 2 92 10 100 44 C104 60 98 72 90 82'],
       ['path', 'M76 72 L90 83 L97 66'],
@@ -142,7 +131,7 @@
     g.setAttribute('filter', 'url(#graphite)');
     svg.append(g);
     let delay = 0;
-    strokes.forEach(([kind, value, opt]) => {
+    strokes.forEach(([kind, value, opt, fill]) => {
       let el;
       if (kind === 'text') {
         el = document.createElementNS(SVG_NS, 'text');
@@ -150,14 +139,26 @@
         el.setAttribute('x', opt.x);
         el.setAttribute('y', opt.y);
         el.setAttribute('font-size', opt.size);
+        if (opt.anchor) el.setAttribute('text-anchor', opt.anchor);
         if (opt.cls) el.setAttribute('class', opt.cls);
         el.style.setProperty('--d', `${delay}s`);
-        delay += opt.cls ? 0.08 : 0.6;
+        delay += opt.cls === 'center' ? 0.08 : opt.cls === 'label' ? 0.3 : 0.6;
+      } else if (kind === 'blob') {
+        // soft coloured-pencil disc that pops in
+        el = document.createElementNS(SVG_NS, 'circle');
+        el.setAttribute('cx', value.cx);
+        el.setAttribute('cy', value.cy);
+        el.setAttribute('r', value.r);
+        el.setAttribute('class', 'blob');
+        el.style.fill = value.color;
+        el.style.setProperty('--d', `${delay}s`);
+        delay += 0.1;
       } else {
         el = document.createElementNS(SVG_NS, 'path');
         el.setAttribute('d', value);
         el.setAttribute('pathLength', '1');
         if (opt) el.setAttribute('class', opt);
+        if (fill) { el.classList.add('filled'); el.style.fill = fill; }
         el.style.setProperty('--d', `${delay}s`);
         delay += 0.18;
       }
@@ -243,7 +244,9 @@
     const key = (img.getAttribute('src') || '').replace(/^.*\/|\.\w+$/g, '');
     const spec = PAINTINGS[key];
     if (!spec) return;
-    let svg = null;
+    // The paintings lazy-load, so the frame may only be buildable after the painting has already
+    // scrolled into view. Remember that it should be drawn and apply it whenever it gets built.
+    let svg = null, wantDrawn = false;
     const build = () => {
       const bw = img.offsetWidth, bh = img.offsetHeight;
       if (!bw || !bh) return;
@@ -255,18 +258,20 @@
       next.querySelector('g').setAttribute('transform', `rotate(${spec.rot} ${f1(spec.cx * bw)} ${f1(spec.cy * bh)})`);
       next.style.width = `${bw}px`;
       next.style.height = `${bh}px`;
-      if (svg) {
-        if (svg.classList.contains('drawn')) next.classList.add('drawn');
-        svg.replaceWith(next);
-      } else {
-        fig.append(next);
-      }
+      const wasDrawn = !!svg && svg.classList.contains('drawn');
+      if (svg) svg.replaceWith(next); else fig.append(next);
       svg = next;
+      if (wasDrawn) {
+        svg.classList.add('drawn');                  // a resize rebuild: stay drawn, no replay
+      } else if (wantDrawn) {
+        // built after it was already due: paint it undrawn first, then animate whichever frame is current
+        requestAnimationFrame(() => requestAnimationFrame(() => svg.classList.add('drawn')));
+      }
     };
     const f1 = (n) => n.toFixed(1);
     if (img.complete) build(); else img.addEventListener('load', build, { once: true });
     if ('ResizeObserver' in window) new ResizeObserver(build).observe(img);
-    onScrollIn(fig, () => setTimeout(() => svg && svg.classList.add('drawn'), 200), 0.3);
+    onScrollIn(fig, () => setTimeout(() => { wantDrawn = true; if (svg) svg.classList.add('drawn'); }, 200), 0.15);
 
     // handwritten note beside the painting, written on hover (or after the frame on touch)
     if (DOODLES[`note-${key}`]) {
@@ -298,20 +303,15 @@
     const now = new Date();
     const pad = (n) => String(n).padStart(2, '0');
     const date = `${pad(now.getMonth() + 1)}/${pad(now.getDate())}/${String(now.getFullYear()).slice(2)}`;
-    const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
     const row = (l, r) => `<div class="r-row"><span>${l}</span><span>${r}</span></div>`;
     return `
       <div class="r-head">THE DESIGN BREW</div>
-      <div class="r-sub">Austin, TX</div>
+      ${row('#0826', date)}
       <div class="r-rule"></div>
-      ${row('#0826', `${date}<span class="r-time"> ${time}</span>`)}
-      <div class="r-rule"></div>
-      ${row('1 ICED LATTE', '5.25')}
-      ${row('&nbsp;&nbsp;+ honey', '0.75')}
-      ${row('&nbsp;&nbsp;oat milk', '0.00')}
+      ${row('ICED LATTE', '5.25')}
+      ${row('+ honey', '0.75')}
       <div class="r-rule"></div>
       ${row('<b>TOTAL</b>', '<b>6.00</b>')}
-      <div class="r-thanks">thanks! see you tmrw :)</div>
       <div class="r-barcode"></div>`;
   }
 
@@ -319,7 +319,7 @@
     // 1. Blue sticker stuck down to the right of the nametag
     const sticker = document.createElement('div');
     sticker.className = 'hero-sticker';
-    sticker.innerHTML = '<span>prev. UX</span><span>@ IBM</span>';
+    sticker.innerHTML = '<span class="s-small">prev. UX</span><span class="s-big">@ IBM</span><span class="s-stars">★★★</span>';
     board.append(sticker);
 
     // 2. Design cycle doodled beside the sticky note
