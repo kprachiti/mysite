@@ -450,3 +450,174 @@ html.lb-open { overflow: hidden; }
 }
 .sketch-thumb path.thin { stroke-width: 2.4; }
 .sketch-thumb path.dot { stroke-width: 6; transition-duration: 0.9s; }
+
+/* ---------- Contact: "sign my scrapbook" yearbook autograph page ---------- */
+
+.yearbook { padding: 50px 24px 90px; }
+.autograph-page {
+  --ink-blue: #2f55c9;
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 46px 56px 56px 96px;
+  background-color: #fffdf6;
+  /* faint ruled lines + a pink margin rule, like a yearbook's blank autograph page */
+  background-image:
+    linear-gradient(90deg, transparent 70px, rgba(240, 168, 212, 0.75) 70px, rgba(240, 168, 212, 0.75) 72px, transparent 72px),
+    repeating-linear-gradient(180deg, transparent 0 37px, rgba(61, 107, 245, 0.13) 37px 38px);
+  border-radius: 6px;
+  box-shadow: 0 2px 0 #efe9d8, 0 4px 0 #fffdf6, 0 6px 0 #ebe4d0, 0 22px 44px rgba(24, 36, 73, 0.14);
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  grid-template-areas:
+    "title    hags"
+    "note     stickers"
+    "note     creative"
+    "sign     forgot"
+    "coffee   forgot";
+  column-gap: 48px;
+  row-gap: 14px;
+  align-items: start;
+}
+.autograph-page.in-view { transform: rotate(-0.6deg); }
+
+/* punched binder holes down the left edge */
+.ag-holes {
+  position: absolute;
+  left: 26px; top: 0; bottom: 0;
+  width: 18px;
+  background: radial-gradient(circle at 9px 50%, #e9e4d6 0 8px, transparent 9px) 0 60px / 18px 33.3% repeat-y;
+}
+
+.ag-title {
+  grid-area: title;
+  margin: 0 0 6px;
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(40px, 6vw, 60px);
+  line-height: 1;
+  color: var(--navy);
+}
+.ag-year { font-family: 'Special Elite', 'Courier New', monospace; font-size: 0.45em; color: var(--pink-text); vertical-align: super; }
+
+/* handwritten yearbook scrawls write themselves in, left to right */
+.scrawl {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  margin: 0;
+  clip-path: inset(-10px 100% -10px -10px);
+  transition: clip-path 0.9s steps(16, end) var(--d, 0.3s);
+}
+.autograph-page.in-view .scrawl { clip-path: inset(-10px -10px -10px -10px); }
+
+.s-hags     { grid-area: hags; justify-self: end; font-size: 38px; color: var(--pink-text); transform: rotate(8deg); --d: 0.5s; }
+.s-creative { grid-area: creative; justify-self: center; font-size: 28px; color: var(--ink-blue); transform: rotate(-5deg); --d: 1.6s; }
+.s-4gotten  { grid-area: forgot; justify-self: end; text-align: right; font-size: 27px; color: var(--graphite); transform: rotate(-3deg); --d: 2s; }
+.s-4gotten p { margin: 0; }
+.s-from { font-size: 21px; display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.s-from svg { width: 56px; height: auto; }
+.s-from svg path { fill: none; stroke: var(--graphite); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.s-coffee   { grid-area: coffee; font-size: 24px; color: var(--graphite); transform: rotate(2deg); --d: 2.4s; }
+
+/* Prachiti's own note, in navy "pen" */
+.ag-note {
+  grid-area: note;
+  --d: 0.2s;
+  transition-duration: 1.4s;
+  transition-timing-function: steps(24, end);
+}
+.ag-note p { font-family: var(--font-hand); font-size: 29px; line-height: 38px; color: var(--navy); margin: 0 0 0; }
+.ag-note .ag-email { margin-top: 38px; font-weight: 700; }
+.ag-note .ag-email a {
+  text-decoration: underline wavy rgba(214, 36, 122, 0.55);
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1.5px;
+}
+.ag-note .ag-email a:hover { color: var(--pink-text); }
+.ag-sig { margin-top: 18px !important; font-size: 33px !important; transform: rotate(-4deg); transform-origin: left; }
+.ag-heart { color: var(--pink-text); }
+
+/* email + LinkedIn as die-cut stickers */
+.ag-stickers { grid-area: stickers; display: flex; gap: 30px; justify-content: center; padding-top: 18px; }
+.ag-sticker { display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; }
+.st-face {
+  width: 86px; height: 86px;
+  display: flex; align-items: center; justify-content: center;
+  border: 5px solid #fff;
+  border-radius: 20px;
+  box-shadow: 0 1px 0 #e8e2d2, 0 10px 18px rgba(24, 36, 73, 0.2);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.st-mail .st-face { background: var(--pink); transform: rotate(-8deg); }
+.st-mail svg { width: 46px; }
+.st-mail svg path { fill: none; stroke: var(--navy); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.st-in .st-face {
+  background: var(--navy);
+  color: var(--yellow);
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 46px;
+  line-height: 1;
+  padding-bottom: 6px;
+  transform: rotate(7deg);
+}
+.st-label { font-family: var(--font-hand); font-weight: 600; font-size: 23px; color: var(--navy); }
+.ag-sticker:hover .st-face, .ag-sticker:focus-visible .st-face {
+  transform: rotate(0deg) translateY(-5px) scale(1.05);
+  box-shadow: 0 1px 0 #e8e2d2, 0 16px 26px rgba(24, 36, 73, 0.24);
+}
+
+/* "sign here" line: a signature scribbles itself in on hover */
+.sign-here {
+  grid-area: sign;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  align-items: end;
+  margin-top: 26px;
+  max-width: 400px;
+  text-decoration: none;
+}
+.sign-x { font-size: 26px; color: var(--navy); line-height: 1; }
+.sign-line { position: relative; height: 46px; border-bottom: 2px solid var(--navy); }
+.sign-scribble { position: absolute; left: 6px; bottom: 2px; width: 88%; height: 44px; overflow: visible; }
+.sign-scribble path {
+  fill: none; stroke: var(--ink-blue); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.9s ease-in-out;
+}
+.sign-here:hover .sign-scribble path, .sign-here:focus-visible .sign-scribble path { stroke-dashoffset: 0; }
+.sign-label {
+  grid-column: 2;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--navy);
+}
+.sign-here:hover .sign-label { color: var(--pink-text); }
+
+@media (max-width: 760px) {
+  .autograph-page {
+    padding: 36px 22px 40px 58px;
+    background-image:
+      linear-gradient(90deg, transparent 44px, rgba(240, 168, 212, 0.75) 44px, rgba(240, 168, 212, 0.75) 46px, transparent 46px),
+      repeating-linear-gradient(180deg, transparent 0 33px, rgba(61, 107, 245, 0.13) 33px 34px);
+    grid-template-columns: 1fr;
+    grid-template-areas: "title" "hags" "note" "stickers" "creative" "sign" "forgot" "coffee";
+    row-gap: 18px;
+  }
+  .ag-holes { left: 14px; }
+  .s-hags { justify-self: end; margin-top: -16px; font-size: 30px; }
+  .sign-label { font-size: 11.5px; white-space: nowrap; }
+  .ag-note p { font-size: 24px; line-height: 34px; }
+  .ag-note .ag-email { margin-top: 20px; overflow-wrap: anywhere; }
+  .ag-stickers { justify-content: flex-start; gap: 22px; }
+  .st-face { width: 72px; height: 72px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrawl { clip-path: none; transition: none; }
+  .autograph-page.in-view { transform: none; }
+  .sign-scribble path { transition: none; }
+}

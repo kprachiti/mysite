@@ -762,7 +762,7 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   color: var(--gray-text);
 }
 
-/* ---------------------------------- About collage + shared contact blurb -- */
+/* ---------------------------------- About collage ------------------------ */
 
 .about-collage {
   position: relative;
@@ -790,37 +790,6 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   .about-collage .art:nth-child(2) { width: 160px; top: 250px; left: 95px; }
   .about-collage .art:nth-child(3) { width: 150px; top: 480px; left: 0; }
 }
-
-.contact-blurb {
-  padding: 60px 0;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 40px;
-  align-items: center;
-}
-@media (max-width: 640px) {
-  .contact-blurb { grid-template-columns: 1fr; }
-}
-.contact-blurb p { font-size: 17px; color: var(--navy); }
-.contact-blurb .email-line { font-weight: 600; margin-top: 8px; }
-
-.icon-links {
-  display: flex;
-  gap: 14px;
-  margin-top: 20px;
-}
-.icon-links a {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease;
-}
-.icon-links a:hover { transform: translateY(-3px); }
-.icon-links .fill { background: var(--navy); color: #fff; }
-.icon-links .outline { border: 2px solid var(--navy); color: var(--navy); }
 
 /* ---------------------------------- Review / quote cards ------------------ */
 
