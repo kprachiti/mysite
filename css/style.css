@@ -415,6 +415,7 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 .project-card:hover .case-cta span { transform: translateY(0); }
 /* a tile with no case study yet: same hover blur, "Coming soon" instead of a link */
 .project-card.coming-soon { cursor: default; }
+.cta-lock { width: 0.85em; height: 0.85em; margin-left: -3px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 
 .project-card .meta {
   padding: 20px 4px 0;
