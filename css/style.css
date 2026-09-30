@@ -413,6 +413,8 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   transition: transform 0.3s ease;
 }
 .project-card:hover .case-cta span { transform: translateY(0); }
+/* a tile with no case study yet: same hover blur, "Coming soon" instead of a link */
+.project-card.coming-soon { cursor: default; }
 
 .project-card .meta {
   padding: 20px 4px 0;

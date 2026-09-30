@@ -6,7 +6,7 @@
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
   const NO_DRAW = 'a, button, input, textarea, select, label, summary, iframe, [contenteditable], ' +
-    'p, h1, h2, h3, h4, h5, li, figcaption, blockquote, strong, em, .doodle-chip, .lb-zoomable, .lb';
+    'p, h1, h2, h3, h4, h5, li, figcaption, blockquote, strong, em, .doodle-chip, .lb-zoomable, .lb, .project-card';
   const SVG_NS = 'http://www.w3.org/2000/svg';
 
   const PENCIL_ICON =
