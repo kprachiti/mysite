@@ -1,5 +1,5 @@
 // Doodle mode: click and drag on any empty part of the page to draw in pencil.
-// Doodles scroll with the page and fade away on their own about a second after they're drawn.
+// Doodles scroll with the page and stay for about a second, then fade away on their own.
 // Text, links and embeds are left alone so reading, selecting and clicking still work.
 // A switch in the footer turns doodle mode on/off; the choice is remembered on this browser.
 (function () {
@@ -19,7 +19,8 @@
   let enabled = true, tipClosed = false;
   try {
     enabled = localStorage.getItem(STORE_KEY) !== 'off';
-    tipClosed = localStorage.getItem(TIP_KEY) === '1';
+    tipClosed = sessionStorage.getItem(TIP_KEY) === '1';   // closed tip stays closed for this visit only
+    localStorage.removeItem(TIP_KEY);                        // clear the old permanent flag
   } catch (e) {}
 
   function init() {
@@ -40,7 +41,7 @@
     document.body.append(layer);
 
     // Pop-up index card in the lower-right corner: slides in shortly after the page loads and
-    // stays until the visitor closes it; once closed it doesn't come back on other pages.
+    // stays until the visitor closes it; once closed it doesn't come back on other pages this visit.
     const hint = document.createElement('div');
     hint.className = 'doodle-chip hint';
     hint.setAttribute('role', 'status');
@@ -51,7 +52,7 @@
 
     hint.querySelector('.doodle-chip-close').addEventListener('click', () => {
       tipClosed = true;
-      try { localStorage.setItem(TIP_KEY, '1'); } catch (e) {}
+      try { sessionStorage.setItem(TIP_KEY, '1'); } catch (e) {}
       hint.classList.add('fade');
       setTimeout(() => { hint.hidden = true; }, 350);
     });
@@ -68,8 +69,8 @@
       setTimeout(() => { hint.hidden = !enabled || tipClosed; }, 2400);
     }
 
-    // The line is drawn as a chain of short segments; each one fades out about a second after
-    // it's drawn (CSS animation), so the doodle trails away behind the pencil.
+    // The line is drawn as a chain of short segments; each one holds for about a second, then fades out
+    // (CSS animation), so the doodle trails away behind the pencil.
     const SEGMENT = 6;                          // curve pieces per segment
     let seg = null, d = '', count = 0, px = 0, py = 0, sx = 0, sy = 0, drawing = false, armed = false;
 

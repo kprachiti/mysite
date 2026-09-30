@@ -117,7 +117,7 @@ iframe { cursor: auto; }
   stroke-linejoin: round;
   opacity: 0.9;
   /* each segment fades away on its own about a second after it's drawn */
-  animation: doodleFade 0.7s ease-in 0.45s forwards;
+  animation: doodleFade 0.9s ease-in 1s forwards;
 }
 @keyframes doodleFade { to { opacity: 0; } }
 html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
