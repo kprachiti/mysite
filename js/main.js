@@ -1,3 +1,12 @@
+// Footer sign-off is "painted" on the first time it scrolls into view
+(function () {
+  const footer = document.querySelector('.site-footer');
+  if (!footer) return;
+  if (!('IntersectionObserver' in window)) { footer.classList.add('painted'); return; }
+  const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { footer.classList.add('painted'); io.disconnect(); } }, { threshold: 0.4 });
+  io.observe(footer);
+})();
+
 // Autoplaying walkthrough videos stay paused for visitors who prefer reduced motion
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   document.addEventListener('DOMContentLoaded', () => {
