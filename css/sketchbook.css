@@ -222,26 +222,6 @@ html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
 .hero .featured-tag { margin-top: 90px; }
 @media (max-width: 640px) { .hero .featured-tag { margin-top: 40px; } }
 
-/* "prev. UX @ IBM": handwritten just below the nametag, arrow pointing up at it */
-
-/* design-loop doodle: in the clear space below-right of the sticky note */
-/* Hero captions, balanced on either side of the original board: the girl doodle in the left
-   margin beside the nametag, the design loop in the right margin by the sticky note, level with
-   each other. Narrower screens have no margins, so they tuck into the gaps below the notes. */
-.sticky-board .sketch-girl  { left: -138px; top: 340px; width: 142px; }
-.sticky-board .sketch-cycle { left: 855px; top: 170px; width: 150px; transform: rotate(-6deg); }
-@media (min-width: 1360px) {
-  .sticky-board .sketch-cycle { width: 185px; }
-}
-@media (min-width: 1000px) and (max-width: 1199px) {
-  .sticky-board .sketch-girl  { left: -96px; top: 345px; width: 100px; }
-}
-@media (max-width: 999px) {
-  .sticky-board .sketch-girl  { left: 6%; top: 63%; width: 110px; }
-}
-@media (max-width: 1199px) {
-  .sticky-board .sketch-cycle { left: 84%; top: 69%; width: 150px; }
-}
 .sketch path.dot { stroke-width: 2.6; }
 .sketch path.nostroke { stroke: none; }
 .sketch path.filled {
@@ -327,10 +307,6 @@ html.doodling, html.doodling * { user-select: none; -webkit-user-select: none; }
 
 /* phone layout of the sticky board (see style.css @480px) */
 @media (max-width: 480px) {
-  .sticky-board .sketch-girl  { left: 0; top: 37%; width: 26%; }
-  /* no free space around the notes on phones: the board grows and the loop sits below the notecard */
-  .sticky-board.has-cycle { height: 585px; }
-  .sticky-board .sketch-cycle { left: 38%; top: 79%; width: 200px; }
   .receipt-slot { left: 0; width: 36%; }
   .receipt { font-size: 5.1px; padding: 5px 4px 11px; }
   .receipt .r-row { gap: 2px; }

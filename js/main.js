@@ -1,12 +1,3 @@
-// Intro (letter stickers, doodled frame, page turn) cleanup
-if (document.documentElement.classList.contains('intro-run')) {
-  setTimeout(() => {
-    document.documentElement.classList.remove('intro-run');
-    const overlay = document.getElementById('intro-overlay');
-    if (overlay) overlay.remove();
-  }, 6100);
-}
-
 // Autoplaying walkthrough videos stay paused for visitors who prefer reduced motion
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   document.addEventListener('DOMContentLoaded', () => {

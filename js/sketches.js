@@ -1,8 +1,6 @@
 // Home page scrapbook extras and pencil sketches.
-//  - Hero (nothing on load or scroll): hover or tap a note:
-//    a stick-figure girl (paintbrush + laptop) is doodled beside the nametag, a one-line design-loop doodle
-//    (empathize → define → ideate → prototype → test → back again) appears by the sticky note,
-//    and a coffee receipt prints out from under the notecard.
+//  - Hero (nothing on load or scroll): hovering or tapping the notecard prints a coffee receipt
+//    out from under it.
 //  - "featured projects": an arrow sketches toward the work as it scrolls into view.
 //  - Project cards: a themed doodle draws on the corner when the card scrolls in;
 //    hovering a card underlines its title.
@@ -30,52 +28,9 @@
     '<feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="2" result="warp"/>' +
     '<feDisplacementMap in="grainy" in2="warp" scale="1.8"/></filter>';
 
-  // Design loop: one continuous pencil line that curls once per stage (labels alternate
-  // above and below), then swoops back underneath to the start, as if drawn without lifting the pencil.
-  function designLoop() {
-    const words = ['empathize', 'define', 'ideate', 'prototype', 'test'];
-    const B = 70;                                     // baseline
-    let d = `M8 ${B} L20 ${B}`;
-    const strokes = [];
-    words.forEach((word, i) => {
-      const cx = 35 + i * 40, s = i % 2 ? 1 : -1;     // curl above (-1) or below (+1) the line
-      d += ` C${cx + 2} ${B} ${cx + 10} ${B + 14 * s} ${cx + 2} ${B + 20 * s}` +
-           ` C${cx - 6} ${B + 26 * s} ${cx - 12} ${B + 14 * s} ${cx - 2} ${B + 6 * s}` +
-           ` C${cx + 6} ${B} ${cx + 14} ${B} ${cx + 25} ${B}`;
-    });
-    strokes.push(['path', d]);
-    words.forEach((word, i) => {
-      const cx = 35 + i * 40, above = i % 2 === 0;
-      strokes.push(['text', word, { x: cx, y: above ? 40 : 113, size: 20, anchor: 'middle' }]);
-    });
-    // back to the start, with an arrowhead
-    strokes.push(['path', `M220 ${B} C238 110 170 134 110 132 C50 130 6 118 8 84 M3 91 L8 82 L14 90`, 'thin']);
-    return strokes;
-  }
-
   // Each doodle: viewBox + strokes, drawn one after another.
   // ['path', d, className?, fill?], ['text', words, { x, y, size, anchor?, cls? }] or ['blob', { cx, cy, r, color }]
   const DOODLES = {
-    cycle: ['0 20 240 120', designLoop()],
-    // nametag caption: stick-figure girl, arms up in a V with a paintbrush and a laptop,
-    // pencil-shaded hair, smile and a touch of sticky-note-pink blush
-    girl: ['0 0 124 130', [
-      ['path', 'M47 44 C44 27 53 24 60 26 C69 23 78 29 73 44 C75 55 75 63 77 71 C73 72 70 71 68 69 C70 60 70 52 69 45 C67 37 53 36 51 45 C50 52 50 60 52 69 C50 71 46 72 43 71 C45 63 46 55 47 44 Z', null, 'rgba(95, 98, 104, 0.5)'],
-      ['path', 'M51 45 C50 55 56 58 60 58 C65 58 70 55 69 45', null],
-      ['path', 'M56 45 l0.4 0.6 M64 45 l0.4 0.6', 'dot'],
-      ['path', 'M56.5 50 Q60 53.5 63.5 50', 'thin'],
-      ['path', 'M52.2 50.5 a2.4 1.6 0 1 0 4.8 0 a2.4 1.6 0 1 0 -4.8 0 M63 50.5 a2.4 1.6 0 1 0 4.8 0 a2.4 1.6 0 1 0 -4.8 0', 'nostroke', '#ffa8f2'],
-      ['path', 'M60 58 L60 66 M60 64 L47 100 L73 100 Z', null],
-      ['path', 'M58 70 L36 36 M62 70 L84 36', null],
-      // paintbrush: slim handle held in the fist, a metal ferrule, and a fat bristle tuft dipped in pink
-      ['path', 'M36 36 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0 M25.3 28.6 L41.0 37.3 Q42.5 39.8 39.6 39.8 L24.4 30.1', null],
-      ['path', 'M25.8 27.7 L21.6 25.0 L19.4 28.6 L23.8 31.0 Z M23.9 26.5 L21.8 29.9', 'thin', '#fffdf6'],
-      ['path', 'M21.6 25.0 C20.8 20.5 14.5 17.4 7.4 17.6 C10.4 24.3 15.0 30.3 19.4 28.6 Z', 'thin', '#ff8ddc'],
-      ['path', 'M7.9 23.6 q-2.4 3.6 0 4.8 q2.4 -1.2 0 -4.8 Z M11.9 30.6 q-1.7 2.6 0 3.5 q1.7 -0.9 0 -3.5 Z', 'nostroke', '#ff8ddc'],
-      ['path', 'M78 30 L80 8 L104 6 L102 28 Z M78 30 L102 28 L110 34 L84 36 Z', null, '#fffdf6'],
-      ['path', 'M54 100 L52 124 L47 125 M66 100 L68 124 L73 125', null],
-      ['path', 'M20 50 l0 7 M16.5 53.5 l7 0 M114 12 l0 7 M110.5 15.5 l7 0', 'thin'],
-    ]],
     arrow: ['0 0 120 90', [
       ['path', 'M6 18 C44 2 96 8 104 42 C108 58 104 70 97 80'],
       // arrowhead: two barbs set back along the curve's final direction
@@ -375,16 +330,7 @@
   }
 
   function heroExtras(board) {
-    // 1. "prev. UX @ IBM" written beside the nametag
-    const ibm = sketch('girl', 'sketch-girl');
-    board.append(ibm);
-
-    // 2. Design-cycle doodle beside the sticky note
-    const cycle = sketch('cycle', 'sketch-cycle');
-    board.append(cycle);
-    board.classList.add('has-cycle');
-
-    // 3. Coffee receipt printed out from under the notecard
+    // Coffee receipt printed out from under the notecard
     const card = board.querySelector('.note-blurb');
     const slot = document.createElement('div');
     slot.className = 'receipt-slot';
@@ -393,8 +339,6 @@
     if (card) card.append(slot);
 
     const items = [
-      { note: board.querySelector('.note-name'), reveal: () => ibm.classList.add('drawn') },
-      { note: board.querySelector('.note-empathy'), reveal: () => cycle.classList.add('drawn') },
       { note: card, reveal: () => slot.classList.add('printing') },
     ].filter((i) => i.note);
 

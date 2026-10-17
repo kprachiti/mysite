@@ -56,18 +56,7 @@
       hint.classList.add('fade');
       setTimeout(() => { hint.hidden = true; }, 350);
     });
-    // On the home page, wait for the opening animation to turn to home before showing the tip
-    const root = document.documentElement;
-    if (root.classList.contains('intro-run')) {
-      const obs = new MutationObserver(() => {
-        if (root.classList.contains('intro-run')) return;
-        obs.disconnect();
-        setTimeout(() => { hint.hidden = !enabled || tipClosed; }, 900);
-      });
-      obs.observe(root, { attributes: true, attributeFilter: ['class'] });
-    } else {
-      setTimeout(() => { hint.hidden = !enabled || tipClosed; }, 2400);
-    }
+    setTimeout(() => { hint.hidden = !enabled || tipClosed; }, 2400);
 
     // The line is drawn as a chain of short segments; each one holds for about a second, then fades out
     // (CSS animation), so the doodle trails away behind the pencil.
