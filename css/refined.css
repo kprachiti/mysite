@@ -108,9 +108,12 @@ h1, h2, h3, h4 {
   -webkit-mask-size: 100% 500%; mask-size: 100% 500%;
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
   -webkit-mask-position: 0 100%; mask-position: 0 100%;
-  transition: -webkit-mask-position 1s cubic-bezier(0.45, 0, 0.55, 1), mask-position 1s cubic-bezier(0.45, 0, 0.55, 1);
 }
-.project-card:hover .thumb-ht, .project-card:focus-visible .thumb-ht { -webkit-mask-position: 0 50%; mask-position: 0 50%; }
+/* hover: the halftone ripples down over the cover; leaving, a second ripple carries the cover back */
+.project-card.ht-in .thumb-ht { animation: thumbWaveIn 1.3s cubic-bezier(0.45, 0, 0.55, 1) forwards; }
+.project-card.ht-out .thumb-ht { animation: thumbWaveOut 1.3s cubic-bezier(0.45, 0, 0.55, 1) forwards; }
+@keyframes thumbWaveIn  { from { -webkit-mask-position: 0 100%; mask-position: 0 100%; } to { -webkit-mask-position: 0 50%; mask-position: 0 50%; } }
+@keyframes thumbWaveOut { from { -webkit-mask-position: 0 50%;  mask-position: 0 50%; }  to { -webkit-mask-position: 0 0%;  mask-position: 0 0%; } }
 .project-card .case-cta { z-index: 3; }
 .project-card .meta {
   display: grid; grid-template-columns: 1fr auto; column-gap: 32px; align-items: baseline;
@@ -261,8 +264,8 @@ body.home .site-header { border-bottom: 0; }
 .hh-text { position: relative; z-index: 2; pointer-events: none; }
 .hh-text > * { pointer-events: auto; }
 .hs-title {
-  font-family: var(--font-serif); font-weight: 300; font-variation-settings: 'opsz' 60;
-  font-size: clamp(38px, 4.2vw, 60px); line-height: 1.06; letter-spacing: -0.03em;
+  font-family: var(--font-serif); font-weight: 600; font-variation-settings: 'opsz' 60;
+  font-size: clamp(42px, 4.9vw, 70px); line-height: 1.04; letter-spacing: -0.025em;
   color: var(--ink); max-width: 13ch; margin: 40px 0 0;
 }
 .hs-title em { font-style: italic; color: var(--accent); white-space: nowrap; }
@@ -298,19 +301,19 @@ body.home .site-header { border-bottom: 0; }
 .mt-medium { margin-top: 10px; font-size: 13.5px; color: #cfc8b9; }
 .lip-stack:hover .museum-tag, .lip-stack:focus-visible .museum-tag { opacity: 1; transform: none; }
 
-/* slow, occasional wave: every 24s a wavy edge carries the pixel halftone down the painting, it rests,
+/* slow, regular wave: every 13s a wavy edge carries the pixel halftone down the painting, it rests,
    then a second wave carries the painting back. The two masks are exact complements. */
 .lip-base, .lip-ht {
   -webkit-mask-size: 100% 500%; mask-size: 100% 500%;
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-  animation: lipWave 24s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation: lipWave 13s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 .lip-base { -webkit-mask-image: url(../images/hero/wave-mask-base.svg); mask-image: url(../images/hero/wave-mask-base.svg); }
 .lip-ht   { -webkit-mask-image: url(../images/hero/wave-mask-halftone.svg); mask-image: url(../images/hero/wave-mask-halftone.svg); }
 @keyframes lipWave {
-  0%, 45%  { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
-  62%, 72% { -webkit-mask-position: 0 50%;  mask-position: 0 50%; }
-  89%, 100% { -webkit-mask-position: 0 0%;  mask-position: 0 0%; }
+  0%, 16%  { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+  41%, 55% { -webkit-mask-position: 0 50%;  mask-position: 0 50%; }
+  80%, 100% { -webkit-mask-position: 0 0%;  mask-position: 0 0%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .lip-ht { display: none; }
@@ -332,16 +335,18 @@ body.home .site-header { border-bottom: 0; }
   .scroll-cue { width: 52px; margin-left: 20px; }
 }
 @media (max-width: 480px) {
-  .hs-title { font-size: 34px; max-width: 9ch; }
+  .hs-title { font-size: 38px; max-width: 9ch; }
   .lip-stack { height: 250px; right: -84px; top: 40px; }
 }
 
 /* ---------- Cursor: a small deep-red dot (the pencil and doodle mode are retired for now) ---------- */
-html, body { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='8' cy='8' r='5' fill='%238f1d1f'/%3E%3C/svg%3E") 8 8, auto; }
+html, body { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='10' cy='10' r='6.5' fill='%238f1d1f'/%3E%3C/svg%3E") 10 10, auto; }
 a, button, [role="button"], label, summary, .lb-zoomable, .lip-stack {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='8' fill='%238f1d1f'/%3E%3C/svg%3E") 12 12, pointer;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Ccircle cx='14' cy='14' r='10' fill='%238f1d1f'/%3E%3C/svg%3E") 14 14, pointer;
 }
 input, textarea { cursor: text; }
 
-/* ---------- About: the frame round the pears painting in red pencil ---------- */
-.about-collage .art:first-child .sketch-frame path { stroke: var(--accent); }
+/* ---------- About: the chai painting's frame and note in red pencil ---------- */
+.about-collage .art:nth-child(2) .sketch-frame path,
+.sketch-art-note.art-note-hands-tea path { stroke: var(--accent); }
+.sketch-art-note.art-note-hands-tea text { fill: var(--accent); }

@@ -31,9 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
     ht.className = 'thumb-ht';
     ht.alt = '';
     ht.setAttribute('aria-hidden', 'true');
-    ht.loading = 'lazy';
     ht.src = img.getAttribute('src').replace(/[^/]+$/, `ht/${name}.webp`);
     img.after(ht);
+    const card = img.closest('.project-card');
+    const on = () => { card.classList.remove('ht-out'); card.classList.add('ht-in'); };
+    const off = () => { if (card.classList.contains('ht-in')) { card.classList.remove('ht-in'); card.classList.add('ht-out'); } };
+    card.addEventListener('mouseenter', on);
+    card.addEventListener('mouseleave', off);
+    card.addEventListener('focus', on);
+    card.addEventListener('blur', off);
   });
 
   // Project tiles: the "View case study" label follows the cursor over the image (mouse only)
