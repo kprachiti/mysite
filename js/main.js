@@ -24,6 +24,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Project tiles: the "View case study" label follows the cursor over the image (mouse only)
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.project-card .thumb').forEach((thumb) => {
+      const cta = thumb.querySelector('.case-cta');
+      if (!cta) return;
+      thumb.addEventListener('pointermove', (e) => {
+        const r = thumb.getBoundingClientRect();
+        cta.style.setProperty('--cx', `${e.clientX - r.left}px`);
+        cta.style.setProperty('--cy', `${e.clientY - r.top}px`);
+        cta.classList.add('follow');
+      });
+    });
+  }
+
   // Scroll-reveal animations
   const revealTargets = document.querySelectorAll(
     '.project-card, .case-section, .reveal, .paintings-grid figure'

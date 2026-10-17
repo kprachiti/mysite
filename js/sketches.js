@@ -1,13 +1,9 @@
 // Home page scrapbook extras and pencil sketches.
 //  - Hero (nothing on load or scroll): hovering or tapping the notecard prints a coffee receipt
 //    out from under it.
-//  - "featured projects": an arrow sketches toward the work as it scrolls into view.
-//  - Project cards: a themed doodle draws on the corner when the card scrolls in;
-//    hovering a card underlines its title.
 //  - About page: each painting gets a hand-doodled hanging frame when it scrolls into view.
 (function () {
   const SVG_NS = 'http://www.w3.org/2000/svg';
-  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   // Pencil-grain filter: speckles the stroke like graphite on paper and adds a slight wobble.
   function ensureGraphite() {
@@ -31,14 +27,6 @@
   // Each doodle: viewBox + strokes, drawn one after another.
   // ['path', d, className?, fill?], ['text', words, { x, y, size, anchor?, cls? }] or ['blob', { cx, cy, r, color }]
   const DOODLES = {
-    arrow: ['0 0 120 90', [
-      ['path', 'M6 18 C44 2 96 8 104 42 C108 58 104 70 97 80'],
-      // arrowhead: two barbs set back along the curve's final direction
-      ['path', 'M108.6 74.1 L97 80 L98.6 67.1'],
-    ]],
-    underline: ['0 0 200 12', [
-      ['path', 'M2 7 C50 4 130 9 198 5'],
-    ]],
     // About page: notes beside each painting (arrow points back at the painting)
     'note-still-life': ['0 0 200 80', [
       ['path', 'M26 36 C14 38 8 46 4 58 M2 49 L4 59 L12 53', 'thin'],
@@ -56,32 +44,7 @@
       ['text', 'first showcase piece', { x: 30, y: 30, size: 23 }],
       ['text', '@ Crocker Museum', { x: 30, y: 58, size: 23 }],
     ]],
-    // themed corner doodles, keyed by case-study slug
-    ibmCard: ['0 0 76 70', [
-      ['path', 'M10 12 L64 10 L66 46 L8 48 Z'],
-      ['path', 'M20 22 L27 28 L20 34'],
-      ['path', 'M31 35 L42 35'],
-      ['path', 'M31 48 L28 58 M43 47 L46 58 M20 59 L54 58'],
-    ]],
-    adobe: ['0 0 76 70', [
-      ['path', 'M34 6 C36 24 40 28 58 31 C40 34 36 38 34 58 C32 38 28 34 10 31 C28 28 32 24 34 6 Z'],
-      ['path', 'M60 6 C61 13 62 14 69 15 C62 16 61 17 60 24 C59 17 58 16 51 15 C58 14 59 13 60 6 Z', 'thin'],
-      ['path', 'M62 48 L62 58 M57 53 L67 53', 'thin'],
-    ]],
-    haven: ['0 0 76 70', [
-      ['path', 'M8 34 L38 8 L68 34'],
-      ['path', 'M15 29 L15 62 L61 62 L61 29'],
-      ['path', 'M38 54 C22 43 27 30 38 38 C49 30 54 43 38 54 Z'],
-    ]],
-    wopet: ['0 0 76 70', [
-      ['path', 'M26 56 C22 44 50 42 50 54 C50 62 28 64 26 56 Z'],
-      ['path', 'M18 40 C12 34 18 26 23 32 C27 37 23 44 18 40 Z'],
-      ['path', 'M30 30 C26 22 34 16 37 24 C39 30 33 35 30 30 Z'],
-      ['path', 'M44 30 C44 22 52 20 52 28 C52 34 45 36 44 30 Z'],
-      ['path', 'M56 42 C56 34 64 34 63 41 C62 47 56 48 56 42 Z'],
-    ]],
   };
-  const CARD_DOODLE = { ibm: 'ibmCard', adobe: 'adobe', haven: 'haven', wopet: 'wopet' };
 
   function sketch(name, className) {
     const [viewBox, strokes] = DOODLES[name];
@@ -362,33 +325,6 @@
     document.querySelectorAll('.about-collage .art').forEach(frameArt);
     const photo = document.querySelector('.sticky-board.has-photo .note-photo');
     if (photo) framePhoto(photo);
-
-    // Arrow from "featured projects" down to the work (home page only)
-    const tag = document.querySelector('.projects') && document.querySelector('.featured-tag');
-    if (tag) {
-      const arrow = sketch('arrow', 'sketch-arrow');
-      tag.append(arrow);
-      onScrollIn(tag, () => setTimeout(() => draw(arrow, true), 150), 1);
-    }
-
-    // Project cards: corner doodle on scroll, title underline on hover
-    document.querySelectorAll('.project-card').forEach((card) => {
-      const slug = (card.getAttribute('href') || '').replace(/^.*\/|\.html$/g, '');
-      if (CARD_DOODLE[slug]) {
-        const corner = sketch(CARD_DOODLE[slug], 'sketch-corner');
-        card.append(corner);
-        onScrollIn(card, () => setTimeout(() => draw(corner, true), 350), 0.35);
-      }
-      const title = card.querySelector('.meta h3');
-      if (title && canHover) {
-        const line = sketch('underline', 'sketch-underline');
-        title.append(line);
-        card.addEventListener('mouseenter', () => draw(line, true));
-        card.addEventListener('mouseleave', () => draw(line, false));
-        card.addEventListener('focus', () => draw(line, true));
-        card.addEventListener('blur', () => draw(line, false));
-      }
-    });
   }
 
   if (document.readyState === 'loading') {
