@@ -1,17 +1,3 @@
-// Home hero canvas: designed at 1072px wide and zoomed to fit its column
-(function () {
-  const wrap = document.querySelector('.hk-wrap');
-  const canvas = wrap && wrap.querySelector('.hk-canvas');
-  if (!canvas) return;
-  const fit = () => {
-    const cs = getComputedStyle(wrap);
-    const w = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    canvas.style.setProperty('--z', Math.min(1, w / 1072).toFixed(4));
-  };
-  fit();
-  addEventListener('resize', fit);
-})();
-
 // Autoplaying walkthrough videos stay paused for visitors who prefer reduced motion
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   document.addEventListener('DOMContentLoaded', () => {
