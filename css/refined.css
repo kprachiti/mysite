@@ -6,13 +6,16 @@
    Loaded last on every page so it can be reviewed, tuned or removed as one unit. */
 
 :root {
-  --paper: #f5f1ea;
-  --paper-2: #ede7dc;
-  --ink: #1e2230;
-  --ink-soft: #464b58;
-  --muted: #7b7f89;
-  --rule: #dcd5c8;
-  --accent: #a4553b;           /* clay: hover and small details only */
+  /* palette taken from the lipstick painting */
+  --paper: #f4f1eb;            /* primed canvas */
+  --paper-2: #ebe6dc;
+  --ink: #23272e;              /* the shadow's blue-black */
+  --ink-soft: #4a4d52;
+  --muted: #85817a;
+  --rule: #ddd5c6;
+  --accent: #b62d26;           /* lipstick red */
+  --accent-deep: #6e1d22;      /* the bullet's shaded side */
+  --gold: #b8963f;             /* brass tube */
   --font-serif: 'Source Serif 4', 'Iowan Old Style', Georgia, serif;
   --font-sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
   --font-head: var(--font-serif);
@@ -37,17 +40,17 @@ h1, h2, h3, h4 {
   letter-spacing: -0.01em;
   line-height: 1.15;
 }
-::selection { background: rgba(164, 85, 59, 0.18); }
+::selection { background: rgba(182, 45, 38, 0.16); }
 
 /* ---------- Header: stamp mark + name, small mono links ---------- */
 .site-header { padding: 22px 0 18px; border-bottom: 1px solid var(--rule); }
 .brand { gap: 12px; color: var(--ink); }
-.brand-mark { width: 31px; height: auto; overflow: visible; transition: transform 0.35s ease; }
+.brand-mark { width: 34px; height: auto; overflow: visible; transition: transform 0.35s ease; }
 .brand-mark .bm-edge, .brand-mark .bm-inner { fill: none; stroke: var(--ink); stroke-width: 1.1; }
 .brand-mark .bm-inner { stroke-width: 0.6; opacity: 0.55; }
-.brand-mark .bm-text { font-family: var(--font-serif); font-style: italic; font-size: 19px; fill: var(--ink); }
+.brand-mark .bm-text { font-family: var(--font-serif); font-style: italic; font-size: 19px; fill: var(--accent); }
 .brand:hover .brand-mark { transform: rotate(-6deg); }
-.brand-name { font-family: var(--font-serif); font-size: 19px; font-weight: 500; letter-spacing: -0.005em; }
+.brand-name { display: none; font-family: var(--font-serif); font-size: 19px; font-weight: 500; letter-spacing: -0.005em; }
 
 .main-nav { gap: 30px; }
 .main-nav a {
@@ -89,7 +92,7 @@ h1, h2, h3, h4 {
   text-transform: uppercase;
   color: var(--muted);
 }
-.featured-tag::before { content: ''; width: 28px; height: 1px; background: var(--ink); opacity: 0.5; }
+.featured-tag::before { content: ''; width: 28px; height: 1px; background: var(--gold); }
 .featured-tag::after { display: none; }
 
 /* ---------- Project list: editorial captions, a quiet hover label that follows the cursor ---------- */
@@ -106,6 +109,7 @@ h1, h2, h3, h4 {
   padding: 22px 0 0;
 }
 .project-card .meta::before {
+  color: var(--gold) !important;
   counter-increment: proj;
   content: counter(proj, decimal-leading-zero);
   grid-row: 1 / 3;
@@ -138,7 +142,7 @@ h1, h2, h3, h4 {
   left: var(--cx, 50%);
   top: var(--cy, 50%);
   transform: translate(-50%, -50%);
-  background: var(--ink);
+  background: var(--accent-deep);
   color: var(--paper);
   border-radius: 3px;
   padding: 7px 12px;
@@ -218,10 +222,10 @@ h1, h2, h3, h4 {
 .case-section h2 { font-size: 30px; display: block; margin-bottom: 18px; }
 .case-section h2::before { display: none; }
 .highlight { font-weight: 600; }
-.highlight-orange, .highlight-pink, .highlight-blue { color: var(--ink); }
+.highlight-orange, .highlight-pink, .highlight-blue { color: var(--accent-deep); }
 .case-section p a:hover { color: var(--accent); }
 .stat-box { border-radius: 4px; }
-.stat-box.filled { background: var(--ink); }
+.stat-box.filled { background: var(--accent-deep); }
 .stat-box.outline { background: transparent; border-color: var(--rule); }
 .stat-box .num { font-family: var(--font-serif); font-weight: 400; }
 .stat-box.outline .num { color: var(--ink); }
@@ -247,90 +251,71 @@ h1, h2, h3, h4 {
 .main-nav a:hover { color: var(--accent); }
 @media (max-width: 640px) { .main-nav a::before, .main-nav a::after { content: none; } }
 
-/* ---------- Home: a mirrored split. Statement + work grid on the left, the painting on the right ---------- */
+/* ---------- Home ---------- */
 body.home {
   background-image:
-    linear-gradient(rgba(30, 34, 48, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(30, 34, 48, 0.045) 1px, transparent 1px);
+    linear-gradient(rgba(35, 39, 46, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(35, 39, 46, 0.04) 1px, transparent 1px);
   background-size: 44px 44px;
 }
 body.home .site-header { border-bottom: 0; }
-body.home .site-header .container { max-width: none; padding: 0 48px; }
-.home-split { display: grid; grid-template-columns: minmax(0, 1fr) 44vw; align-items: start; }
-.hs-left { padding: 40px 32px 40px 48px; min-width: 0; }
+
+/* hero: a modest statement on the left, the lipstick small on the right with its shadow running off-screen */
+.home-hero { position: relative; min-height: 520px; padding: 72px 0 40px; }
+.hh-text { position: relative; z-index: 2; }
 .hs-title {
   font-family: var(--font-serif); font-weight: 300; font-variation-settings: 'opsz' 60;
-  font-size: clamp(44px, 5.2vw, 80px); line-height: 1.02; letter-spacing: -0.035em;
-  color: var(--ink); max-width: 15ch; margin: 24px 0 64px;
+  font-size: clamp(38px, 4.2vw, 60px); line-height: 1.06; letter-spacing: -0.03em;
+  color: var(--ink); max-width: 13ch; margin: 40px 0 0;
 }
+.hs-title em { font-style: italic; color: var(--accent); white-space: nowrap; }
 
-/* work grid: two columns, mono captions */
-.home .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 48px 24px; }
-.home .project-card .thumb .photo { aspect-ratio: 3 / 2; }
-.home .project-card .meta { display: block; padding-top: 14px; }
-.home .project-card .meta::before { display: none; }
-.home .project-card h3 {
-  grid-column: 1; font-family: var(--font-mono); font-weight: 400; font-size: 13px;
-  letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 4px; color: var(--ink);
+/* curly hand-drawn arrow nudging down to the work: draws itself, rests, redraws */
+.scroll-cue { display: inline-block; margin: 28px 0 0 34%; width: 76px; color: var(--ink-soft); }
+.scroll-cue svg { width: 100%; height: auto; overflow: visible; }
+.scroll-cue path {
+  fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: cueDraw 5s ease-in-out infinite;
 }
-.home .project-card .tag-line {
-  margin: 0 0 6px; font-style: normal; font-size: 11.5px; white-space: normal;
-  letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
-}
-.home .project-card .desc { grid-column: 1 / -1; font-size: 14px; color: var(--muted); }
+.scroll-cue path.head { animation-name: cueHead; }
+.scroll-cue:hover { color: var(--accent); }
+@keyframes cueDraw { 0% { stroke-dashoffset: 1; } 30%, 82% { stroke-dashoffset: 0; } 96%, 100% { stroke-dashoffset: -1; } }
+@keyframes cueHead { 0%, 26% { stroke-dashoffset: 1; } 36%, 82% { stroke-dashoffset: 0; } 96%, 100% { stroke-dashoffset: -1; } }
 
-/* the painting panel: stays in view while the work scrolls past; the shadow runs off the right edge */
-.hs-art { align-self: stretch; }
-.hs-art-inner { position: sticky; top: 0; height: 100vh; overflow: visible; border-left: 1px solid var(--rule); }
-.upto { position: absolute; left: 28px; top: 36px; z-index: 3; font-family: var(--font-mono); font-size: 13px; color: var(--ink-soft); }
-.upto-h { margin: 0 0 12px; font-size: 15px; color: var(--ink); }
-.upto-h span { color: var(--accent); }
-.upto dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 22px; margin: 0; }
-.upto dt { color: var(--ink); }
-.upto dd { margin: 0; color: var(--muted); }
-
-.lip-stack { position: absolute; bottom: 3vh; right: -15vh; height: 78vh; aspect-ratio: 882 / 1180; margin: 0; }
+.lip-stack { position: absolute; top: 34px; right: -150px; height: 500px; aspect-ratio: 882 / 1180; margin: 0; z-index: 1; }
 .lip-stack img { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-/* the loop: pixels sweep down leaving a halftone; hold; a second sweep brings the painting back */
-.lip-base, .lip-ht, .lip-px { animation: 8s cubic-bezier(0.55, 0.05, 0.4, 0.95) infinite; }
-.lip-ht, .lip-px { clip-path: inset(0 0 100% 0); }
-.lip-base { animation-name: lipBase; }
-.lip-ht { animation-name: lipHalftone; }
-.lip-px { animation-name: lipPixels; }
-/* the painting is hidden wherever the halftone has taken over, so the dots read on bare paper */
-@keyframes lipBase {
-  0%    { clip-path: inset(0 0 0 0); }
-  30%   { clip-path: inset(100% 0 0 0); }
-  49.9% { clip-path: inset(100% 0 0 0); }
-  50%   { clip-path: inset(0 0 100% 0); }
-  80%, 100% { clip-path: inset(0 0 0 0); }
+/* slow, occasional wave: every 24s a wavy edge carries the pixel halftone down the painting, it rests,
+   then a second wave carries the painting back. The two masks are exact complements. */
+.lip-base, .lip-ht {
+  -webkit-mask-size: 100% 500%; mask-size: 100% 500%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  animation: lipWave 24s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
-@keyframes lipHalftone {
-  0%    { clip-path: inset(0 0 100% 0); }
-  30%   { clip-path: inset(0 0 0 0); }
-  50%   { clip-path: inset(0 0 0 0); }
-  80%   { clip-path: inset(100% 0 0 0); }
-  80.1%, 100% { clip-path: inset(0 0 100% 0); }
+.lip-base { -webkit-mask-image: url(../images/hero/wave-mask-base.svg); mask-image: url(../images/hero/wave-mask-base.svg); }
+.lip-ht   { -webkit-mask-image: url(../images/hero/wave-mask-halftone.svg); mask-image: url(../images/hero/wave-mask-halftone.svg); }
+@keyframes lipWave {
+  0%, 45%  { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+  62%, 72% { -webkit-mask-position: 0 50%;  mask-position: 0 50%; }
+  89%, 100% { -webkit-mask-position: 0 0%;  mask-position: 0 0%; }
 }
-@keyframes lipPixels {
-  0%    { clip-path: inset(-7% 0 100% 0); }
-  30%   { clip-path: inset(100% 0 -7% 0); }
-  49.9% { clip-path: inset(100% 0 -7% 0); }
-  50%   { clip-path: inset(-7% 0 100% 0); }
-  80%   { clip-path: inset(100% 0 -7% 0); }
-  100%  { clip-path: inset(100% 0 -7% 0); }
+@media (prefers-reduced-motion: reduce) {
+  .lip-ht { display: none; }
+  .lip-base { animation: none; -webkit-mask: none; mask: none; }
+  .scroll-cue path { animation: none; stroke-dashoffset: 0; }
 }
-@media (prefers-reduced-motion: reduce) { .lip-ht, .lip-px { display: none; } .lip-base { animation: none; } }
 
-@media (max-width: 900px) {
-  body.home .site-header .container { padding: 0 24px; }
-  .home-split { grid-template-columns: 1fr; }
-  .hs-left { display: contents; }
-  .hs-title { order: 1; padding: 0 24px; margin: 24px 0 8px; }
-  .hs-art { order: 2; }
-  .hs-art-inner { position: relative; height: auto; border-left: 0; padding-top: 20px; }
-  .upto { position: static; padding: 0 24px; font-size: 12px; }
-  .lip-stack { position: relative; right: auto; bottom: auto; height: 112vw; margin: 12px 0 0 28vw; }
-  .home .projects { order: 3; padding: 32px 24px 0; grid-template-columns: 1fr; gap: 44px; }
+#work { scroll-margin-top: 24px; }
+#work .featured-tag { margin: 24px 0 34px; }
+
+@media (max-width: 760px) {
+  .home-hero { min-height: 0; padding: 32px 0 20px; }
+  .hs-title { max-width: 11ch; margin-top: 8px; }
+  .lip-stack { top: 24px; right: -96px; height: 300px; opacity: 0.95; }
+  .scroll-cue { margin-left: 22%; width: 60px; }
+}
+@media (max-width: 480px) {
+  .hs-title { font-size: 34px; max-width: 9ch; }
+  .lip-stack { height: 250px; right: -84px; top: 40px; }
 }

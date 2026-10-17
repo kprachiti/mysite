@@ -33,9 +33,23 @@
   </div>
 </header>
 
-<main id="main" class="home-split">
-  <div class="hs-left">
-    <h1 class="hs-title">Prachiti Kamle crafts web experiences layer by layer</h1>
+<main id="main">
+  <section class="home-hero">
+    <div class="container hh-text">
+      <h1 class="hs-title">Prachiti Kamle crafts web experiences <em>layer by layer</em></h1>
+      <a class="scroll-cue" href="#work" aria-label="Scroll down to the projects">
+        <svg viewBox="0 0 120 150" aria-hidden="true"><path pathLength="1" d="M18 8 C70 6 104 30 92 58 C82 82 44 74 50 52 C56 30 92 44 88 84 C85 110 66 128 52 140"/><path pathLength="1" class="head" d="M44 124 L52 141 L68 130"/></svg>
+      </a>
+    </div>
+    <!-- the lipstick painting; a pixel-halftone layer washes over it in a slow wave now and then -->
+    <figure class="lip-stack">
+      <img class="lip-base" src="images/hero/painted-lipstick.webp" alt="Oil painting by Prachiti: a giant red lipstick casting a long shadow, with a tiny figure in a red swimsuit leaning against it" width="882" height="1180">
+      <img class="lip-ht" src="images/hero/lipstick-halftone.webp" alt="" aria-hidden="true" width="882" height="1180">
+    </figure>
+  </section>
+
+  <section class="container" id="work">
+    <div class="featured-tag">Selected work</div>
     <div class="projects">
 
       <a class="project-card" href="work/ibm.html">
@@ -111,26 +125,7 @@
       </div>
 
     </div>
-  </div>
-
-  <aside class="hs-art" aria-label="Painting by Prachiti">
-    <div class="hs-art-inner">
-      <div class="upto">
-        <p class="upto-h"><span aria-hidden="true">*</span> what i'm up to</p>
-        <dl>
-          <dt>2026</dt><dd>UI/UX Design @ HelloAlfred</dd>
-          <dt>2026</dt><dd>Experience Design @ IBM</dd>
-          <dt>2025</dt><dd>Product Marketing @ Adobe</dd>
-        </dl>
-      </div>
-      <!-- the lipstick painting, with pre-rendered halftone + pixel layers that sweep over it on a loop -->
-      <figure class="lip-stack">
-        <img class="lip-base" src="images/hero/painted-lipstick.webp" alt="Oil painting by Prachiti: a giant red lipstick casting a long shadow, with a tiny figure in a red swimsuit leaning against it" width="882" height="1180">
-        <img class="lip-ht" src="images/hero/lipstick-halftone.webp" alt="" aria-hidden="true" width="882" height="1180">
-        <img class="lip-px" src="images/hero/lipstick-pixels.webp" alt="" aria-hidden="true" width="882" height="1180">
-      </figure>
-    </div>
-  </aside>
+  </section>
 </main>
 
 <footer class="site-footer">
