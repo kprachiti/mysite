@@ -24,6 +24,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Project tiles: a pixel-halftone copy of each cover washes in on hover (same effect as the home lipstick)
+  document.querySelectorAll('.project-card .thumb .photo > img').forEach((img) => {
+    const name = (img.getAttribute('src') || '').split('/').pop().replace(/\.\w+$/, '');
+    const ht = document.createElement('img');
+    ht.className = 'thumb-ht';
+    ht.alt = '';
+    ht.setAttribute('aria-hidden', 'true');
+    ht.loading = 'lazy';
+    ht.src = img.getAttribute('src').replace(/[^/]+$/, `ht/${name}.webp`);
+    img.after(ht);
+  });
+
   // Project tiles: the "View case study" label follows the cursor over the image (mouse only)
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     document.querySelectorAll('.project-card .thumb').forEach((thumb) => {

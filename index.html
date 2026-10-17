@@ -37,18 +37,32 @@
   <section class="home-hero">
     <div class="container hh-text">
       <h1 class="hs-title">Prachiti Kamle crafts web experiences <em>layer by layer</em></h1>
-      <a class="scroll-cue" href="#work" aria-label="Scroll down to the projects">
-        <svg viewBox="0 0 120 150" aria-hidden="true"><path pathLength="1" d="M18 8 C70 6 104 30 92 58 C82 82 44 74 50 52 C56 30 92 44 88 84 C85 110 66 128 52 140"/><path pathLength="1" class="head" d="M44 124 L52 141 L68 130"/></svg>
-      </a>
     </div>
     <!-- the lipstick painting; a pixel-halftone layer washes over it in a slow wave now and then -->
-    <figure class="lip-stack">
+    <figure class="lip-stack" tabindex="0">
       <img class="lip-base" src="images/hero/painted-lipstick.webp" alt="Oil painting by Prachiti: a giant red lipstick casting a long shadow, with a tiny figure in a red swimsuit leaning against it" width="882" height="1180">
       <img class="lip-ht" src="images/hero/lipstick-halftone.webp" alt="" aria-hidden="true" width="882" height="1180">
+      <figcaption class="museum-tag">
+        <span class="mt-artist">Prachiti Kamle</span>
+        <span class="mt-title">&ldquo;Hugs &amp; Kisses&rdquo;, 2022</span>
+        <span class="mt-medium">Oil on Canvas, 8&Prime; &times; 6&Prime;</span>
+      </figcaption>
     </figure>
   </section>
 
   <section class="container" id="work">
+    <a class="scroll-cue" href="#work" aria-label="Scroll down to the projects">
+      <svg viewBox="0 0 120 150" aria-hidden="true">
+        <filter id="cue-graphite" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="7" result="noise"/>
+          <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.75" result="grain"/>
+          <feComposite in="SourceGraphic" in2="grain" operator="in" result="grainy"/>
+          <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="2" result="warp"/>
+          <feDisplacementMap in="grainy" in2="warp" scale="1.8"/>
+        </filter>
+        <g filter="url(#cue-graphite)"><path pathLength="1" d="M18 8 C70 6 104 30 92 58 C82 82 44 74 50 52 C56 30 92 44 88 84 C85 110 66 128 52 140"/><path pathLength="1" class="head" d="M44 124 L52 141 L68 130"/></g>
+      </svg>
+    </a>
     <div class="featured-tag">Selected work</div>
     <div class="projects">
 
@@ -146,8 +160,6 @@
 </div>
 
 <script src="js/main.js"></script>
-<script src="js/pencil-cursor.js"></script>
-<script src="js/doodle.js"></script>
 <script src="js/sketches.js"></script>
 </body>
 </html>
