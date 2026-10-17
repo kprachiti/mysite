@@ -34,29 +34,33 @@
 </header>
 
 <main id="main">
-  <section class="hero container">
-    <div class="hero-split">
-      <div class="hero-intro">
-        <p class="hero-hi">Hi, I'm Prachiti</p>
-        <h1 class="hero-title">UX designer <span class="amp">&amp;</span> oil&nbsp;painter</h1>
-        <p class="hero-lede">Designing creative solutions for social good. I study Informatics at UT Austin and I'm currently designing at HelloAlfred, after internships at IBM and Adobe.</p>
+  <!-- Hero: one composed canvas (title + painted cut-outs + scrapbook notes), scaled to fit by js/main.js -->
+  <section class="hero hero-k" aria-labelledby="hero-title">
+    <div class="hk-wrap container">
+      <div class="hk-canvas">
+        <p class="hk-hi">Hi, I'm Prachiti</p>
+        <h1 class="hk-title" id="hero-title"><span class="hk-l1">UX Designer</span> <span class="hk-l2"><span class="amp">&amp;</span> Painter</span></h1>
+        <img class="hk-obj hk-lily" src="images/hero/painted-lily.webp" alt="" aria-hidden="true" width="700" height="478">
+        <img class="hk-obj hk-pears" src="images/hero/painted-pears-bowl.webp" alt="" aria-hidden="true" width="640" height="558">
+        <div class="sticky-board hk-board">
+          <div class="note note-name">
+            <img class="nametag-img" src="images/hero/nametag.png" alt="Nametag reading Hello, my name is Prachiti Kamle, with a UT Austin longhorn logo">
+          </div>
+          <div class="note note-empathy">
+            <img src="images/hero/empathy-note.png" alt="Pink sticky note: designing creative solutions for social good">
+          </div>
+          <div class="note note-blurb">
+            <img src="images/hero/blue-notecard.png" alt="Blue index card: Studying Informatics + UI/UX at UT Austin. Probably tinkering on Figma, definitely sipping a coffee.">
+          </div>
+          <img class="note-shadow-stain" src="images/hero/coffee-stain.png" alt="" aria-hidden="true">
+        </div>
       </div>
-      <div class="hero-board">
-    <div class="sticky-board">
-      <div class="note note-name">
-        <img class="nametag-img" src="images/hero/nametag.png" alt="Nametag reading Hello, my name is Prachiti Kamle, with a UT Austin longhorn logo">
-      </div>
-      <div class="note note-empathy">
-        <img src="images/hero/empathy-note.png" alt="Pink sticky note: designing creative solutions for social good">
-      </div>
-      <div class="note note-blurb">
-        <img src="images/hero/blue-notecard.png" alt="Blue index card: Studying Informatics + UI/UX at UT Austin. Probably tinkering on Figma, definitely sipping a coffee.">
-      </div>
-      <img class="note-shadow-stain" src="images/hero/coffee-stain.png" alt="" aria-hidden="true">
     </div>
-      </div>
-    </div>
+  </section>
 
+  <section class="statement container">
+    <p class="st-lead">I'm Prachiti, a UX designer and oil painter.<br>Welcome to my little sketchbook.</p>
+    <p class="st-body">Designing creative solutions for social good. I study Informatics at UT Austin and I'm currently designing at HelloAlfred, after internships at IBM and Adobe. The paintings scattered around here are my own.</p>
     <div class="featured-tag">Selected work</div>
   </section>
 
