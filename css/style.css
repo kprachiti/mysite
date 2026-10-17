@@ -610,6 +610,18 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 }
 .figma-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
+/* Full-width product walkthrough video (IBM final designs) */
+.walkthrough { margin: 24px 0; }
+.walkthrough video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1668 / 844;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 10px 26px rgba(24, 36, 73, 0.16);
+}
+
 .ph {
   background: linear-gradient(135deg, #e7e4db, #d9d5c8);
   aspect-ratio: 4/3;

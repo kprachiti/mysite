@@ -7,6 +7,13 @@ if (document.documentElement.classList.contains('intro-run')) {
   }, 6100);
 }
 
+// Autoplaying walkthrough videos stay paused for visitors who prefer reduced motion
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('video[autoplay]').forEach((v) => { v.removeAttribute('autoplay'); v.pause(); });
+  });
+}
+
 // Mobile nav toggle
 document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.querySelector('.nav-toggle');
