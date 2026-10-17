@@ -45,7 +45,7 @@ h1, h2, h3, h4 {
 /* ---------- Header: stamp mark + name, small mono links ---------- */
 .site-header { padding: 22px 0 18px; border-bottom: 1px solid var(--rule); }
 .brand { gap: 12px; color: var(--ink); }
-.brand-mark { width: 34px; height: auto; overflow: visible; transition: transform 0.35s ease; }
+.brand-mark { width: 36px; height: 36px; image-rendering: pixelated; border-radius: 3px; transition: transform 0.35s ease; }
 .brand-mark .bm-edge, .brand-mark .bm-inner { fill: none; stroke: var(--ink); stroke-width: 1.1; }
 .brand-mark .bm-inner { stroke-width: 0.6; opacity: 0.55; }
 .brand-mark .bm-text { font-family: var(--font-serif); font-style: italic; font-size: 19px; fill: var(--accent); }
@@ -283,15 +283,16 @@ body.home .site-header { border-bottom: 0; }
   stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0.75; filter: url(#cue-graphite);
   animation: cueDraw 1.1s ease-out 0.4s 1 forwards;
 }
-/* a museum-label style spec row under the statement */
-.hs-spec {
-  display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0 36px;
-  margin: 44px 0 0; padding-top: 16px; border-top: 1px solid var(--rule); max-width: 640px;
-}
-.hs-spec dt { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
-.hs-spec dd { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+/* "what i'm up to": a short mono note under the statement */
+.upto { margin: 48px 0 0; font-family: var(--font-mono); }
+.upto-h { margin: 0 0 12px; font-size: 17px; color: var(--ink); letter-spacing: 0.01em; }
+.upto-h span { color: var(--accent); font-size: 1.25em; vertical-align: -0.12em; margin-right: 4px; }
+.upto ul { list-style: none; margin: 0; padding: 0 0 0 26px; }
+.upto li { font-size: 15px; line-height: 1.9; color: var(--muted); }
 @media (max-width: 760px) {
-  .hs-spec { grid-template-columns: 1fr; gap: 12px; margin-top: 28px; max-width: 60%; }
+  .upto { margin-top: 28px; }
+  .upto-h { font-size: 15px; }
+  .upto li { font-size: 13.5px; }
   .hs-eyebrow { margin-top: 8px; }
 }
 .hs-title em { font-style: italic; color: var(--accent); white-space: nowrap; }
