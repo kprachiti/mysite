@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap');
 
 /* Refined layer: an editorial sketchbook.
    Warm paper, an editorial serif for statements, a quiet sans for reading, tiny mono labels,
@@ -427,9 +427,38 @@ body, body.dotted-bg, body.home {
   background-size: 220px 220px, auto, auto;
 }
 
-/* ---------- Logo: a maroon "pk" ---------- */
-.brand-pk { font-family: var(--font-serif); font-size: 30px; line-height: 1; letter-spacing: -0.04em; color: var(--accent-deep); }
-.brand:hover .brand-pk { color: var(--accent); }
+/* ---------- Logo: "pk" on a maroon wall label, like the painting's museum tag ---------- */
+.brand-pk {
+  display: inline-block; padding: 5px 9px 7px; border-radius: 3px;
+  background: var(--accent-deep); color: #f6f1e7;
+  font-family: var(--font-serif); font-size: 24px; line-height: 1; letter-spacing: -0.03em;
+  box-shadow: 0 6px 14px rgba(58, 38, 34, 0.16);
+  transition: background-color 0.2s ease;
+}
+.brand:hover .brand-pk { background: var(--accent); }
 
 /* ---------- Text colour: dark brown from the lipstick (shaded bullet / tube shadow) ---------- */
 :root { --ink: #3a2622; --ink-soft: #5b463f; --muted: #8c7a71; --type-grey: #3a2622; }
+
+/* =====================================================================
+   Two fonts only. EB Garamond (main): statement, headings, project and page titles, footer line.
+   Inter (secondary): everything else: nav, labels, metadata, descriptions, captions, notes.
+   ===================================================================== */
+:root { --font-mono: var(--font-sans); --font-hand: var(--font-serif); }
+.featured-tag { font-family: var(--font-sans); font-size: 15px; letter-spacing: 0.01em; }
+.project-card h3 {
+  font-family: var(--font-serif); font-weight: 400; font-size: 30px; letter-spacing: -0.02em;
+  text-transform: none; line-height: 1.1; color: var(--ink);
+}
+.project-card .tag-line {
+  font-family: var(--font-sans); font-size: 12px; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); align-self: center;
+}
+.project-card .tag-line::before { content: none; }
+.project-card .desc { font-family: var(--font-sans); font-size: 15px; color: var(--ink-soft); margin-top: 6px; }
+@media (max-width: 640px) { .project-card h3 { font-size: 24px; } .project-card .tag-line { font-size: 11px; margin-top: 6px; } }
+.case-cta span, .museum-tag { font-family: var(--font-sans); letter-spacing: 0.01em; }
+.mt-title { font-family: var(--font-serif); font-size: 16px; }
+.case-title .sub, .meta-grid .label, .case-section h3, .case-section h4, .quote-card blockquote,
+.case-nav a, .footer-copy, .footer-nav a { font-family: var(--font-sans); }
+.sketch text { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
