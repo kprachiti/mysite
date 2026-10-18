@@ -321,7 +321,7 @@ body.home .site-header { border-bottom: 0; }
   80%, 100% { -webkit-mask-position: 0 0%;  mask-position: 0 0%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tile-frame path { animation: none !important; stroke-dashoffset: 0 !important; }
+  .scroll-cue path.none { animation: none !important; stroke-dashoffset: 0 !important; }
   .lip-ht { display: none; }
   .lip-base { animation: none; -webkit-mask: none; mask: none; }
   .scroll-cue path { animation: none; stroke-dashoffset: 0; }
@@ -355,16 +355,8 @@ input, textarea { cursor: text; }
 .sketch-art-note.art-note-hands-tea path { stroke: var(--accent); }
 .sketch-art-note.art-note-hands-tea text { fill: var(--accent); }
 
-/* ---------- Project tiles: a very light graphite frame drawn round each cover ---------- */
-.tile-frame { position: absolute; left: -9px; top: -9px; width: calc(100% + 18px); pointer-events: none; overflow: visible; z-index: 0; }
-.tile-frame path {
-  fill: none; stroke: #6b6e74; stroke-width: 1.5; stroke-linecap: round; vector-effect: non-scaling-stroke;
-  opacity: 0.85; stroke-dasharray: 1; stroke-dashoffset: 1;
-}
-.tile-frame path.faint { opacity: 0.5; }
-.project-card.in-view .tile-frame path { transition: stroke-dashoffset 1.2s ease-in-out 0.25s; stroke-dashoffset: 0; }
-.project-card.in-view .tile-frame path.faint { transition-delay: 0.9s; }
-.project-card .thumb { z-index: 1; }
+/* ---------- Project tiles: a thick, straight frame tight to the cover ---------- */
+.project-card .thumb { z-index: 1; border: 3px solid var(--ink); border-radius: 3px; }
 
 /* =====================================================================
    Typography system (after akshithavenkat.com):
@@ -425,16 +417,19 @@ body { font-family: var(--font-sans); font-size: 15px; }
 .footer-copy, .footer-nav a { font-family: var(--font-mono); text-transform: lowercase; letter-spacing: 0.02em; }
 
 /* ---------- Background: white primed canvas (linen weave + grain) ---------- */
-:root { --paper: #fbfaf7; --paper-2: #f2efe9; --rule: #e2dcd2; }
+:root { --paper: #fefefc; --paper-2: #f5f3ef; --rule: #e6e1d9; }
 body, body.dotted-bg, body.home {
-  background-color: #fbfaf7;
+  background-color: #fefefc;
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='8'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .42 0 0 0 0 .38 0 0 0 .34 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
-    repeating-linear-gradient(0deg, rgba(120, 108, 92, 0.065) 0 1px, transparent 1px 3px),
-    repeating-linear-gradient(90deg, rgba(120, 108, 92, 0.055) 0 1px, transparent 1px 3px);
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='8'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .42 0 0 0 0 .38 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, rgba(120, 108, 92, 0.03) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(120, 108, 92, 0.025) 0 1px, transparent 1px 3px);
   background-size: 220px 220px, auto, auto;
 }
 
 /* ---------- Logo: a maroon "pk" ---------- */
 .brand-pk { font-family: var(--font-serif); font-size: 30px; line-height: 1; letter-spacing: -0.04em; color: var(--accent-deep); }
 .brand:hover .brand-pk { color: var(--accent); }
+
+/* ---------- Text colour: dark brown from the lipstick (shaded bullet / tube shadow) ---------- */
+:root { --ink: #3a2622; --ink-soft: #5b463f; --muted: #8c7a71; --type-grey: #3a2622; }

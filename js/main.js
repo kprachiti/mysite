@@ -24,32 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Project tiles: a simple pencil frame round each cover (two light passes, corners slightly overshooting)
-  document.querySelectorAll('.project-card .thumb').forEach((thumb, n) => {
-    const NS = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('class', 'tile-frame');
-    svg.setAttribute('viewBox', '0 0 1000 100');
-    svg.setAttribute('preserveAspectRatio', 'none');
-    svg.setAttribute('aria-hidden', 'true');
-    const j = (k) => (Math.sin(n * 7.1 + k * 3.7) * 0.6).toFixed(2);   // tiny, repeatable wobble
-    const main = `M-6 ${2 + +j(1)} L1004 ${1.4 + +j(2)} M${998 + +j(3)} -3 L${999 + +j(4)} 103 M1006 ${98.6 + +j(5)} L-4 ${99 + +j(6)} M${1.2 + +j(7)} 104 L${0.8 + +j(8)} -4`;
-    const faint = `M14 ${3.6 + +j(9)} L760 ${2.8 + +j(10)} M${996.5 + +j(11)} 30 L${997.4 + +j(12)} 96`;
-    svg.innerHTML = `<g filter="url(#tile-graphite)"><path pathLength="1" d="${main}"/><path pathLength="1" class="faint" d="${faint}"/></g>`;
-    thumb.before(svg);
-    const fit = () => { svg.style.height = `${thumb.offsetHeight + 18}px`; };
-    fit();
-    if ('ResizeObserver' in window) new ResizeObserver(fit).observe(thumb);
-  });
-  if (document.querySelector('.tile-frame')) {
-    const defs = document.createElement('div');
-    defs.innerHTML = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="tile-graphite" x="-2%" y="-10%" width="104%" height="120%">' +
-      '<feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="4" result="n"/>' +
-      '<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.75" result="g"/>' +
-      '<feComposite in="SourceGraphic" in2="g" operator="in"/></filter></svg>';
-    document.body.append(defs.firstChild);
-  }
-
   // Project tiles: a pixel-halftone copy of each cover washes in on hover (same effect as the home lipstick)
   document.querySelectorAll('.project-card .thumb .photo > img').forEach((img) => {
     const name = (img.getAttribute('src') || '').split('/').pop().replace(/\.\w+$/, '');
