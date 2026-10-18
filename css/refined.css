@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..600&family=Instrument+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 /* Refined layer: an editorial sketchbook.
    Warm paper, an editorial serif for statements, a quiet sans for reading, tiny mono labels,
@@ -16,8 +16,10 @@
   --accent: #b62d26;           /* lipstick red */
   --accent-deep: #6e1d22;      /* the bullet's shaded side */
   --gold: #b8963f;             /* brass tube */
-  --font-serif: 'Source Serif 4', 'Iowan Old Style', Georgia, serif;
-  --font-sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+  --font-serif: 'EB Garamond', Garamond, Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --type-grey: #5c5c5c;           /* the soft grey of the display serif */
   --font-head: var(--font-serif);
   --font-body: var(--font-sans);
   --navy: var(--ink);
@@ -363,3 +365,61 @@ input, textarea { cursor: text; }
 .project-card.in-view .tile-frame path { transition: stroke-dashoffset 1.2s ease-in-out 0.25s; stroke-dashoffset: 0; }
 .project-card.in-view .tile-frame path.faint { transition-delay: 0.9s; }
 .project-card .thumb { z-index: 1; }
+
+/* =====================================================================
+   Typography system (after akshithavenkat.com):
+   - EB Garamond, regular weight, tight tracking, soft grey: statements and headings
+   - Inter: navigation in bracketed caps, and reading text
+   - IBM Plex Mono: labels, captions, project names and metadata, mostly lowercase or caps
+   ===================================================================== */
+h1, h2, h3, h4 { font-variation-settings: normal; }
+body { font-family: var(--font-sans); font-size: 15px; }
+
+/* nav: [ WORK ]   [ ABOUT ]   [ RESUME ] */
+.main-nav { gap: 56px; }
+.main-nav a { font-family: var(--font-sans); font-size: 15px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.01em; color: var(--ink); padding: 2px 0; }
+.main-nav a + a { border-left: 0; }
+.main-nav a::before { content: '[ '; } .main-nav a::after { content: ' ]'; }
+.main-nav a.active, .main-nav a:hover { color: var(--accent); }
+@media (max-width: 640px) { .main-nav { gap: 0; } .main-nav a::before, .main-nav a::after { content: none; } }
+
+/* home statement: lowercase, regular weight, grey, a red asterisk after the name */
+.hs-title {
+  font-family: var(--font-serif); font-weight: 400; color: var(--type-grey);
+  font-size: clamp(46px, 5.4vw, 80px); line-height: 0.96; letter-spacing: -0.045em; max-width: 12ch;
+}
+.hs-title .ast { color: var(--accent); font-size: 0.62em; vertical-align: 0.52em; margin-left: 0.02em; letter-spacing: 0; }
+
+/* section labels: "* browse my gallery" */
+.featured-tag { font-family: var(--font-mono); font-size: 17px; letter-spacing: 0.01em; text-transform: none; color: var(--ink); gap: 10px; }
+.featured-tag::before { content: '*'; width: auto; height: auto; background: none; color: var(--accent); font-size: 1.3em; line-height: 1; transform: translateY(0.12em); }
+
+/* project captions: name in mono caps, "• role year" in grey on the right */
+.project-card h3 { font-family: var(--font-mono); font-weight: 400; font-size: 17px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); line-height: 1.35; }
+.project-card .tag-line { font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.project-card .tag-line::before { content: '\2022\00a0\00a0'; }
+.project-card .desc { font-family: var(--font-sans); font-size: 14px; color: var(--muted); margin-top: 4px; }
+.project-card .meta { border-top: 0; padding-top: 2px; margin-top: 14px; }
+@media (max-width: 640px) { .project-card h3 { font-size: 14px; } .project-card .tag-line { font-size: 12px; } }
+
+/* hover labels in the same mono */
+.case-cta span, .museum-tag { font-family: var(--font-mono); }
+
+/* case studies */
+.case-title h1 { font-family: var(--font-serif); font-weight: 400; color: var(--type-grey); letter-spacing: -0.04em; line-height: 1; font-size: clamp(42px, 5.4vw, 72px); }
+.case-title .sub { font-family: var(--font-mono); font-style: normal; font-size: 14px; letter-spacing: 0.02em; color: var(--muted); }
+.case-section h2 { font-family: var(--font-serif); font-weight: 400; color: var(--type-grey); letter-spacing: -0.03em; font-size: 36px; line-height: 1.05; }
+.case-section h3, .case-section h4 { font-family: var(--font-mono); font-weight: 400; font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; }
+.meta-grid .label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; }
+.meta-grid .value { font-family: var(--font-sans); font-weight: 400; }
+.highlight { font-weight: 500; }
+.stat-box .num { font-family: var(--font-serif); }
+.quote-card blockquote { font-family: var(--font-mono); }
+.case-nav a { font-family: var(--font-mono); text-transform: lowercase; font-size: 14px; }
+
+/* about */
+.contact-blurb p, .about-layout p { font-family: var(--font-sans); }
+
+/* footer: a quiet serif line, mono links */
+.footer-line { font-family: var(--font-serif); font-weight: 400; font-size: 21px; letter-spacing: -0.02em; color: var(--type-grey); }
+.footer-copy, .footer-nav a { font-family: var(--font-mono); text-transform: lowercase; letter-spacing: 0.02em; }
