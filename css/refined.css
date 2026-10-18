@@ -355,8 +355,10 @@ input, textarea { cursor: text; }
 .sketch-art-note.art-note-hands-tea path { stroke: var(--accent); }
 .sketch-art-note.art-note-hands-tea text { fill: var(--accent); }
 
-/* ---------- Project tiles: a thick, straight frame tight to the cover ---------- */
-.project-card .thumb { z-index: 1; border: 3px solid var(--ink); border-radius: 3px; }
+/* ---------- Project tiles: double pencil frame (js/sketches.js frameTile), like the headshot's ---------- */
+.project-card { position: relative; }
+.project-card .thumb { z-index: 1; }
+.project-card .sketch-tile-frame { position: absolute; z-index: 0; pointer-events: none; }
 
 /* =====================================================================
    Typography system (after akshithavenkat.com):
@@ -391,7 +393,7 @@ body { font-family: var(--font-sans); font-size: 15px; }
 .project-card .tag-line { font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .project-card .tag-line::before { content: '\2022\00a0\00a0'; }
 .project-card .desc { font-family: var(--font-sans); font-size: 14px; color: var(--muted); margin-top: 4px; }
-.project-card .meta { border-top: 0; padding-top: 2px; margin-top: 14px; }
+.project-card .meta { border-top: 0; padding-top: 2px; margin-top: 26px; }
 @media (max-width: 640px) { .project-card h3 { font-size: 14px; } .project-card .tag-line { font-size: 12px; } }
 
 /* hover labels in the same mono */

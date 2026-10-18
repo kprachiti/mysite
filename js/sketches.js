@@ -117,16 +117,20 @@
       line(x - o, y - o, x + w + o, y - o) + ' ' + line(x + w + o, y - o, x + w + o, y + h + o) + ' ' +
       line(x + w + o, y + h + o, x - o, y + h + o) + ' ' + line(x - o, y + h + o, x - o, y - o);
 
-    const out = style === 'scallop' ? 12 : style === 'ornate' || style === 'hearts' ? 18 : 16;
+    const out = style === 'scallop' ? 12 : style === 'tile' ? 11 : style === 'ornate' || style === 'hearts' || style === 'double' ? 18 : 16;
     const strokes = [];
-    if (style !== 'hearts') {
+    if (style !== 'hearts' && style !== 'double' && style !== 'tile') {
       // nail + string (the painting frames hang, like the reference sheet)
       const nx = x + w / 2, ny = y - out - Math.min(34, h * 0.18);
       strokes.push(['path', `M${f(nx - 3)} ${f(ny)} a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 M${f(nx)} ${f(ny)} l0.4 0.4`, 'thin']);
       strokes.push(['path', line(nx, ny + 3, x + w * 0.22, y - out) + ' ' + line(nx, ny + 3, x + w * 0.78, y - out), 'thin']);
     }
 
-    if (style === 'hearts') {
+    if (style === 'double' || style === 'tile') {
+      // double pencil line, no ornaments (headshot and project tiles)
+      strokes.push(['path', rect(style === 'tile' ? 5 : 8)]);
+      strokes.push(['path', rect(out), 'thin']);
+    } else if (style === 'hearts') {
       // double-line frame with a little heart on each corner
       strokes.push(['path', rect(8)]);
       strokes.push(['path', rect(out), 'thin']);
@@ -219,6 +223,26 @@
 
   // About hero: heart-cornered frame doodled around the headshot. The photo clips its own
   // overflow, so the frame is a sibling on the board, sized and placed to match the photo.
+  function frameTile(thumb, n) {
+    const card = thumb.parentElement;
+    let svg = null, drawn = false;
+    const build = () => {
+      const w = thumb.offsetWidth, h = thumb.offsetHeight;
+      if (!w || !h) return;
+      const pad = 16, calm = rng(900 + n * 37);
+      const r = () => calm() * 0.35;           // keep the lines nearly straight
+      DOODLES['frame-tile'] = [`${-pad} ${-pad} ${w + pad * 2} ${h + pad * 2}`, frameStrokes('tile', 0, 0, w, h, r)];
+      const next = sketch('frame-tile', 'sketch-tile-frame');
+      Object.assign(next.style, { left: `${thumb.offsetLeft - pad}px`, top: `${thumb.offsetTop - pad}px`, width: `${w + pad * 2}px`, height: `${h + pad * 2}px` });
+      if (drawn) next.classList.add('drawn');
+      if (svg) svg.replaceWith(next); else card.prepend(next);
+      svg = next;
+    };
+    build();
+    if ('ResizeObserver' in window) new ResizeObserver(build).observe(thumb);
+    onScrollIn(thumb, () => setTimeout(() => { drawn = true; if (svg) svg.classList.add('drawn'); }, 250), 0.25);
+  }
+
   function framePhoto(photo) {
     const board = photo.parentElement;
     let svg = null, wantDrawn = false;
@@ -226,7 +250,7 @@
       const w = photo.offsetWidth, h = photo.offsetHeight;
       if (!w || !h) return;
       const pad = 36;
-      DOODLES['frame-photo'] = [`${-pad} ${-pad} ${w + pad * 2} ${h + pad * 2}`, frameStrokes('hearts', 0, 0, w, h, rng(4242))];
+      DOODLES['frame-photo'] = [`${-pad} ${-pad} ${w + pad * 2} ${h + pad * 2}`, frameStrokes('double', 0, 0, w, h, rng(4242))];
       const next = sketch('frame-photo', 'sketch-photo-frame');
       Object.assign(next.style, {
         left: `${photo.offsetLeft - pad}px`, top: `${photo.offsetTop - pad}px`,
@@ -321,8 +345,13 @@
     const board = document.querySelector('.sticky-board:not(.has-photo)');
     if (board) heroExtras(board);
 
+    // Project tiles: the same double pencil frame, tight round each cover, drawn as it scrolls in
+    document.querySelectorAll('.project-card .thumb').forEach(frameTile);
+
     // About page: doodled frames around each painting
     document.querySelectorAll('.about-collage .art').forEach(frameArt);
+    const photo = document.querySelector('.sticky-board.has-photo .note-photo');
+    if (photo) framePhoto(photo);
   }
 
   if (document.readyState === 'loading') {
