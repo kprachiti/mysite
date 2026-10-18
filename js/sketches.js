@@ -323,8 +323,6 @@
 
     // About page: doodled frames around each painting
     document.querySelectorAll('.about-collage .art').forEach(frameArt);
-    const photo = document.querySelector('.sticky-board.has-photo .note-photo');
-    if (photo) framePhoto(photo);
   }
 
   if (document.readyState === 'loading') {
