@@ -388,7 +388,7 @@ body { font-family: var(--font-sans); font-size: 15px; }
   font-family: var(--font-serif); font-weight: 400; color: var(--type-grey);
   font-size: clamp(46px, 5.4vw, 80px); line-height: 0.96; letter-spacing: -0.045em; max-width: 12ch;
 }
-.hs-title .ast { color: var(--accent); font-size: 0.62em; vertical-align: 0.52em; margin-left: 0.02em; letter-spacing: 0; }
+.hs-title .hs-name { color: var(--accent); }
 
 /* section labels: "* browse my gallery" */
 .featured-tag { font-family: var(--font-mono); font-size: 17px; letter-spacing: 0.01em; text-transform: none; color: var(--ink); gap: 10px; }
