@@ -714,7 +714,8 @@ p { margin: 0 0 1em; color: var(--gray-text); }
   grid-template-columns: 1.1fr 0.9fr;
   gap: 40px;
   align-items: start;
-  padding: 20px 0 60px;
+  padding-top: 20px;      /* top/bottom only, so .container keeps its side gutter */
+  padding-bottom: 60px;
 }
 @media (max-width: 720px) {
   .about-layout { grid-template-columns: 1fr; }
@@ -819,14 +820,16 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 }
 
 .contact-blurb {
-  padding: 60px 0;
+  padding-top: 60px;      /* top/bottom only, so .container keeps its side gutter */
+  padding-bottom: 60px;
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 40px;
   align-items: center;
 }
 @media (max-width: 640px) {
-  .contact-blurb { grid-template-columns: 1fr; }
+  /* stacked: the label's own margin is enough space, and the blank band above it is halved */
+  .contact-blurb { grid-template-columns: 1fr; gap: 0; padding-top: 0; }
 }
 .contact-blurb p { font-size: 17px; color: var(--navy); }
 .contact-blurb .email-line { font-weight: 600; margin-top: 8px; }
