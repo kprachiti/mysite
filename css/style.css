@@ -646,8 +646,11 @@ p { margin: 0 0 1em; color: var(--gray-text); }
 /* text + a wide image side by side: give the image a bit more room */
 .two-col.text-left { grid-template-columns: 1fr 1.15fr; align-items: center; }
 .two-col.reflect-photo { grid-template-columns: 1fr 420px; gap: 40px; align-items: center; }
+/* text with a small cut-out illustration beside it */
+.two-col.side-art { grid-template-columns: 1fr 200px; gap: 48px; align-items: center; }
 @media (max-width: 640px) {
-  .two-col, .two-col.text-left, .two-col.reflect-photo { grid-template-columns: 1fr; }
+  .two-col, .two-col.text-left, .two-col.reflect-photo, .two-col.side-art { grid-template-columns: 1fr; }
+  .two-col.side-art > [role="img"] { max-width: 140px !important; }
 }
 
 .reflection {
