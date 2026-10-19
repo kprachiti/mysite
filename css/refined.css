@@ -406,7 +406,6 @@ body { font-family: var(--font-sans); font-size: 15px; }
 .case-title .sub { font-family: var(--font-mono); font-style: normal; font-size: 14px; letter-spacing: 0.02em; color: var(--muted); }
 .case-section h2 { font-family: var(--font-serif); font-weight: 400; color: var(--type-grey); letter-spacing: -0.03em; font-size: 36px; line-height: 1.05; }
 .case-section h3, .case-section h4 { font-family: var(--font-mono); font-weight: 400; font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; }
-.case-section h3 { margin: 34px 0 10px; }   /* sub-parts within a section (e.g. IBM "Designing with AI") */
 .meta-grid .label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; }
 .meta-grid .value { font-family: var(--font-sans); font-weight: 400; }
 .highlight { font-weight: 500; }
