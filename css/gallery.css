@@ -1,0 +1,168 @@
+/* =====================================================================
+   Gallery home: a warmly lit wall. Late sun comes through a window on the
+   left, falls across the wall in soft panes, and each case study hangs as a
+   framed canvas under its own spotlight with a title card beside it.
+   Loaded on index.html only, after refined.css.
+   ===================================================================== */
+
+:root {
+  --wall: #f6e7da;
+  --wall-warm: #f0b893;
+  --wall-glow: #f7cfb0;
+  --frame: #4a3128;
+  --frame-edge: #2e1d17;
+  --mat: #fbf6ee;
+  --label: #fdf9f3;
+}
+
+/* ---------- The wall ---------- */
+body.home {
+  background-color: var(--wall);
+  background-image:
+    radial-gradient(120% 90% at -10% 35%, rgba(240, 160, 112, 0.85) 0%, rgba(244, 190, 150, 0.55) 30%, rgba(246, 222, 202, 0) 62%),
+    radial-gradient(80% 60% at 100% 0%, rgba(255, 250, 244, 0.9) 0%, rgba(255, 250, 244, 0) 60%),
+    linear-gradient(180deg, #f8eadf 0%, #f4e2d3 55%, #f1dccb 100%);
+  background-attachment: fixed;
+  background-size: auto;
+}
+
+/* film grain over everything, very light */
+body.home::before {
+  content: ''; position: fixed; inset: -50%; z-index: 60; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.24  0 0 0 0 0.2  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.22; mix-blend-mode: multiply;
+}
+
+/* sunlight through the window: soft panes thrown diagonally across the wall,
+   drifting a little as if the sun were moving */
+.gallery-light {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+}
+.gallery-light .panes {
+  position: absolute; left: -8vw; top: 14vh; width: 92vw; height: 70vh;
+  display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); gap: 3.2vw 2.6vw;
+  transform: perspective(1200px) rotateX(52deg) rotateZ(-14deg) skewX(-18deg);
+  transform-origin: 20% 50%;
+  filter: blur(18px);
+  opacity: 0.75;
+  animation: sunDrift 46s ease-in-out infinite alternate;
+}
+.gallery-light .panes span {
+  border-radius: 28px;
+  background: linear-gradient(110deg, rgba(250, 247, 214, 0.95), rgba(255, 246, 228, 0.7));
+  mix-blend-mode: screen;
+}
+/* the dark window-frame corner and a green-gold light leak on the left edge */
+.gallery-light::before {
+  content: ''; position: absolute; left: -12vw; bottom: -16vh; width: 52vw; height: 34vh;
+  background: radial-gradient(closest-side, rgba(46, 30, 24, 0.55), rgba(46, 30, 24, 0) 100%);
+  transform: rotate(-12deg); filter: blur(30px);
+}
+.gallery-light::after {
+  content: ''; position: absolute; left: -10vw; top: 42vh; width: 26vw; height: 50vh;
+  background: radial-gradient(closest-side, rgba(214, 222, 120, 0.45), rgba(214, 222, 120, 0));
+  filter: blur(24px);
+}
+@keyframes sunDrift {
+  from { translate: 0 0; opacity: 0.72; }
+  to   { translate: 4vw 2.5vh; opacity: 0.6; }
+}
+
+.home .page-wrap { position: relative; z-index: 1; }
+.home .site-header, .home .site-footer { background: transparent; }
+
+/* ---------- Hanging the work ---------- */
+.home #work .featured-tag { margin-bottom: 56px; }
+.home .projects { display: flex; flex-direction: column; gap: 132px; padding-bottom: 40px; }
+
+.home .project-card {
+  display: grid; grid-template-columns: minmax(0, 1fr) 236px; column-gap: 44px; align-items: end;
+}
+.home .project-card:nth-child(even) { grid-template-columns: 236px minmax(0, 1fr); }
+.home .project-card:nth-child(even) .thumb { order: 2; }
+.home .project-card:nth-child(even) .meta { order: 1; }
+
+/* the frame: walnut moulding, cream mat, a shadow cast down and to the right (light comes from the left) */
+.home .project-card .thumb {
+  position: relative; overflow: visible;
+  padding: 22px; background: var(--mat); border-radius: 2px;
+  border: 11px solid var(--frame);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.06),
+    inset 3px 3px 10px rgba(58, 38, 34, 0.12),
+    0 1px 0 1px var(--frame-edge),
+    18px 26px 34px -10px rgba(86, 46, 28, 0.35),
+    40px 60px 80px -30px rgba(86, 46, 28, 0.25);
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.5s ease;
+}
+.home .project-card .thumb .photo { position: relative; overflow: hidden; border-radius: 0; box-shadow: inset 0 0 0 1px rgba(58, 38, 34, 0.08); }
+.home .project-card .thumb .photo > img { display: block; width: 100%; height: auto; }
+
+/* picture light: a warm cone of light falling on each canvas from above */
+.home .project-card .thumb::before {
+  content: ''; position: absolute; left: 8%; right: 8%; top: -120px; height: 260px; z-index: -1; pointer-events: none;
+  background: radial-gradient(50% 60% at 50% 30%, rgba(255, 226, 170, 0.75), rgba(255, 226, 170, 0) 70%);
+  filter: blur(6px); opacity: 0.8; transition: opacity 0.5s ease;
+}
+/* the brass lamp itself, sitting on the frame's top edge */
+.home .project-card .thumb::after {
+  content: ''; position: absolute; left: 50%; top: -24px; width: 120px; height: 9px; translate: -50% 0;
+  border-radius: 5px 5px 2px 2px;
+  background: linear-gradient(180deg, #c9a45a, #8d6b2c);
+  box-shadow: 0 2px 4px rgba(46, 30, 24, 0.3), 0 10px 22px 6px rgba(255, 214, 150, 0.45);
+}
+.home .project-card:hover .thumb {
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.06),
+    inset 3px 3px 10px rgba(58, 38, 34, 0.12),
+    0 1px 0 1px var(--frame-edge),
+    22px 34px 40px -10px rgba(86, 46, 28, 0.38),
+    48px 72px 90px -30px rgba(86, 46, 28, 0.28);
+}
+.home .project-card:hover .thumb::before { opacity: 1; }
+.home .project-card .sketch-tile-frame { display: none; }   /* real frames now, no pencil outlines */
+
+/* the title card: a small museum label at eye level beside the work */
+.home .project-card .meta {
+  display: block; margin: 0 0 6px; padding: 18px 20px 20px; border: 0;
+  background: var(--label); border-radius: 2px;
+  box-shadow: 0 1px 0 rgba(58, 38, 34, 0.06), 6px 10px 18px -6px rgba(86, 46, 28, 0.28);
+}
+.home .project-card h3 {
+  font-family: var(--font-serif); font-weight: 500; font-size: 22px; line-height: 1.15; letter-spacing: -0.01em;
+  margin: 0 0 10px; color: var(--ink);
+}
+.home .project-card .tag-line {
+  display: block; white-space: normal; margin: 0 0 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(58, 38, 34, 0.14);
+  font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+}
+.home .project-card .desc { font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
+.home .project-card .meta::after {
+  content: 'View case study \2192'; display: block; margin-top: 14px;
+  font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+}
+.home .project-card.coming-soon .meta::after { content: 'Installation in progress'; color: var(--muted); }
+
+/* ---------- Corner details, like a gallery's quiet signage ---------- */
+.gallery-hud {
+  position: fixed; bottom: 18px; z-index: 20; pointer-events: none;
+  font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.04em; color: rgba(58, 38, 34, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+.gallery-hud.left { left: 24px; }
+.gallery-hud.right { right: 24px; }
+.gallery-hud svg { width: 13px; height: 13px; vertical-align: -2px; margin-right: 6px; stroke: currentColor; fill: none; stroke-width: 1.4; }
+
+@media (max-width: 900px) {
+  .home .project-card, .home .project-card:nth-child(even) { grid-template-columns: 1fr; row-gap: 22px; }
+  .home .project-card:nth-child(even) .thumb, .home .project-card:nth-child(even) .meta { order: 0; }
+  .home .project-card .meta { max-width: 340px; }
+  .home .projects { gap: 88px; }
+  .home .project-card .thumb { padding: 14px; border-width: 8px; }
+  .gallery-hud { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gallery-light .panes { animation: none; }
+  .home .project-card .thumb { transition: none; }
+}

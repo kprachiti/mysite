@@ -21,11 +21,15 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/sketchbook.css">
 <link rel="stylesheet" href="css/refined.css">
+<link rel="stylesheet" href="css/gallery.css">
 <link rel="stylesheet" href="css/page-transition.css">
 <script src="js/page-transition.js"></script>
 </head>
 <body class="dotted-bg home">
 <a class="skip-link" href="#main">Skip to content</a>
+
+<!-- late sun through a window, falling across the gallery wall -->
+<div class="gallery-light" aria-hidden="true"><div class="panes"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
 
 <div class="page-wrap">
 <header class="site-header">
@@ -168,7 +172,11 @@
 </footer>
 </div>
 
+<div class="gallery-hud left" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="2.5" y="3" width="11" height="9" rx="1"/><path d="M5 15h6M8 12v3"/></svg><span class="hud-count">5 works on view</span></div>
+<div class="gallery-hud right" aria-hidden="true"><span class="hud-clock"></span></div>
+
 <script src="js/main.js"></script>
+<script src="js/gallery.js"></script>
 <script src="js/sketches.js"></script>
 </body>
 </html>
