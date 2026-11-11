@@ -28,9 +28,6 @@
 <body class="dotted-bg home">
 <a class="skip-link" href="#main">Skip to content</a>
 
-<!-- late sun through a window, falling across the gallery wall -->
-<div class="gallery-light" aria-hidden="true"><div class="panes"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
-
 <div class="page-wrap">
 <header class="site-header">
   <div class="container">
@@ -46,113 +43,80 @@
   </div>
 </header>
 
-<main id="main">
-  <section class="home-hero">
-    <div class="container hh-text">
-      <h1 class="hs-title"><span class="hs-name">prachiti</span> crafts web experiences layer by layer</h1>
-    </div>
-    <!-- the lipstick painting; a pixel-halftone layer washes over it in a slow wave now and then -->
-    <figure class="lip-stack" tabindex="0">
-      <img class="lip-base" src="images/hero/painted-lipstick.webp" alt="Oil painting by Prachiti: a giant red lipstick casting a long shadow, with a tiny figure in a red swimsuit leaning against it" width="882" height="1180">
-      <img class="lip-ht" src="images/hero/lipstick-halftone.webp" alt="" aria-hidden="true" width="882" height="1180">
-      <figcaption class="museum-tag">
-        <span class="mt-artist">Prachiti Kamle</span>
-        <span class="mt-title">&ldquo;Hugs &amp; Kisses&rdquo;, 2022</span>
-        <span class="mt-medium">Oil on Canvas, 8&Prime; &times; 6&Prime;</span>
-      </figcaption>
-    </figure>
-  </section>
+<main id="main" class="gallery-main">
+  <h1 class="visually-hidden">Prachiti Kamle crafts web experiences layer by layer</h1>
+  <!-- A round gallery room. You stand in the middle; drag, scroll or use the arrows to walk from piece to piece.
+       Each .station hangs on the circular wall; js/gallery.js places them and turns the room. -->
+  <div class="room" aria-roledescription="3D gallery" aria-label="Gallery of Prachiti's work. Use the left and right arrow keys to walk between pieces.">
+    <div class="stage">
+      <div class="ring">
+        <div class="walls" aria-hidden="true"></div>
 
-  <section class="container" id="work">
-    <a class="scroll-cue" href="#work" aria-label="Scroll down to the projects">
-      <svg viewBox="0 0 120 150" aria-hidden="true">
-        <filter id="cue-graphite" x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="7" result="noise"/>
-          <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.75" result="grain"/>
-          <feComposite in="SourceGraphic" in2="grain" operator="in" result="grainy"/>
-          <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="2" result="warp"/>
-          <feDisplacementMap in="grainy" in2="warp" scale="1.8"/>
-        </filter>
-        <g filter="url(#cue-graphite)"><path pathLength="1" d="M18 8 C70 6 104 30 92 58 C82 82 44 74 50 52 C56 30 92 44 88 84 C85 110 66 128 52 140"/><path pathLength="1" class="head" d="M55.6 124.8 L52 140 L67.4 138.6"/></g>
-      </svg>
-    </a>
-    <div class="featured-tag">browse my gallery</div>
-    <div class="projects">
+        <div class="station title-wall" data-title="Introduction">
+          <p class="wall-text"><span class="hs-name">prachiti</span> crafts web experiences <em>layer by layer</em></p>
+          <p class="wall-sub">A gallery of case studies in UX and product design</p>
+        </div>
 
-      <!-- Not linked yet: hovering shows "Coming soon" and the tile can't be clicked through -->
-      <div class="project-card coming-soon" aria-disabled="true">
-        <div class="thumb">
-          <div class="photo">
-            <img src="images/projects/helloalfred.webp" alt="HelloAlfred logo: health for all" loading="lazy">
+        <div class="station work coming-soon" data-title="UI/UX Design @ HelloAlfred" aria-disabled="true">
+          <div class="frame"><img src="images/projects/helloalfred.webp" alt="HelloAlfred logo: health for all" width="1400" height="367"></div>
+          <div class="title-card">
+            <h2>UI/UX Design @ HelloAlfred</h2>
+            <p class="tc-meta">Internship, Fall 2026</p>
+            <p class="tc-desc">Developing and testing natural-language patient education UX</p>
+            <p class="tc-cta">Installation in progress</p>
           </div>
-          <div class="case-cta" aria-hidden="true"><span>Coming soon<svg class="cta-lock" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7.5" rx="1.6"/><path d="M5.3 7V5a2.7 2.7 0 0 1 5.4 0v2"/></svg></span></div>
         </div>
-        <div class="meta">
-          <h3>UI/UX Design @ HelloAlfred</h3>
-          <p class="tag-line">Internship, Fall 2026</p>
-          <p class="desc">Developing and testing natural-language patient education UX</p>
-        </div>
+
+        <a class="station work" href="work/ibm.html" data-title="Experience Design @ IBM">
+          <div class="frame"><img src="images/projects/ibm.png" alt="IBM Information Management System configuration center screens, tilted collage" width="1151" height="302"></div>
+          <div class="title-card">
+            <h2>Experience Design @ IBM</h2>
+            <p class="tc-meta">Internship, Summer 2026</p>
+            <p class="tc-desc">Creating web UI for Information Management System tools</p>
+            <p class="tc-cta">View case study &rarr;</p>
+          </div>
+        </a>
+
+        <a class="station work" href="work/adobe.html" data-title="Performance/Product Marketing @ Adobe">
+          <div class="frame"><img src="images/projects/adobe.png" alt="Adobe GenStudio for Performance Marketing landing page on a laptop" width="1151" height="302"></div>
+          <div class="title-card">
+            <h2>Performance/Product Marketing @ Adobe</h2>
+            <p class="tc-meta">Internship, Summer 2025</p>
+            <p class="tc-desc">Boosting paid social campaign content production with AI tools</p>
+            <p class="tc-cta">View case study &rarr;</p>
+          </div>
+        </a>
+
+        <a class="station work" href="work/haven.html" data-title="Haven">
+          <div class="frame"><img src="images/projects/haven.png" alt="Haven app screens: home feed with health topics, and message center" width="1156" height="304"></div>
+          <div class="title-card">
+            <h2>Haven</h2>
+            <p class="tc-meta">Personal Project, Fall 2025</p>
+            <p class="tc-desc">Creating a safe space for women's health support</p>
+            <p class="tc-cta">View case study &rarr;</p>
+          </div>
+        </a>
+
+        <a class="station work" href="work/wopet.html" data-title="Redesigning Wopet">
+          <div class="frame"><img src="images/projects/wopet.png" alt="WoPet app splash screen with logo and playful pet-toy confetti" width="1151" height="302"></div>
+          <div class="title-card">
+            <h2>Redesigning Wopet</h2>
+            <p class="tc-meta">Personal Project, Spring 2025</p>
+            <p class="tc-desc">Reimagining the remote pet-care experience</p>
+            <p class="tc-cta">View case study &rarr;</p>
+          </div>
+        </a>
       </div>
-
-      <a class="project-card" href="work/ibm.html">
-        <div class="thumb">
-          <div class="photo">
-            <img src="images/projects/ibm.png" alt="IBM Information Management System configuration center screens, tilted collage" loading="lazy">
-          </div>
-          <div class="case-cta"><span>View case study</span></div>
-        </div>
-        <div class="meta">
-          <h3>Experience Design @ IBM</h3>
-          <p class="tag-line">Internship, Summer 2026</p>
-          <p class="desc">Creating web UI for Information Management System tools</p>
-        </div>
-      </a>
-
-      <a class="project-card" href="work/adobe.html">
-        <div class="thumb">
-          <div class="photo">
-            <img src="images/projects/adobe.png" alt="Adobe GenStudio for Performance Marketing landing page on a laptop" loading="lazy">
-          </div>
-          <div class="case-cta"><span>View case study</span></div>
-        </div>
-        <div class="meta">
-          <h3>Performance/Product Marketing @ Adobe</h3>
-          <p class="tag-line">Internship, Summer 2025</p>
-          <p class="desc">Boosting paid social campaign content production with AI tools</p>
-        </div>
-      </a>
-
-      <a class="project-card" href="work/haven.html">
-        <div class="thumb">
-          <div class="photo">
-            <img src="images/projects/haven.png" alt="Haven app screens: home feed with health topics, and message center" loading="lazy">
-            <span class="thumb-logo" style="color:var(--pink-text)">Haven</span>
-          </div>
-          <div class="case-cta"><span>View case study</span></div>
-        </div>
-        <div class="meta">
-          <h3>Haven</h3>
-          <p class="tag-line">Personal Project, Fall 2025</p>
-          <p class="desc">Creating a safe space for women's health support</p>
-        </div>
-      </a>
-
-      <a class="project-card" href="work/wopet.html">
-        <div class="thumb">
-          <div class="photo">
-            <img src="images/projects/wopet.png" alt="WoPet app splash screen with logo and playful pet-toy confetti" loading="lazy">
-          </div>
-          <div class="case-cta"><span>View case study</span></div>
-        </div>
-        <div class="meta">
-          <h3>Redesigning Wopet</h3>
-          <p class="tag-line">Personal Project, Spring 2025</p>
-          <p class="desc">Reimagining the remote pet-care experience</p>
-        </div>
-      </a>
-
     </div>
-  </section>
+    <div class="floor" aria-hidden="true"></div>
+  </div>
+
+  <nav class="walk" aria-label="Walk through the gallery">
+    <button type="button" class="walk-prev" aria-label="Previous piece">&larr;</button>
+    <p class="walk-now" aria-live="polite"><span class="walk-idx">1 / 7</span> <span class="walk-title">Introduction</span></p>
+    <button type="button" class="walk-next" aria-label="Next piece">&rarr;</button>
+  </nav>
+  <p class="walk-hint" aria-hidden="true">drag, scroll or use the arrow keys to walk</p>
 </main>
 
 <footer class="site-footer">
