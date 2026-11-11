@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="css/sketchbook.css">
 <link rel="stylesheet" href="css/refined.css">
 <link rel="stylesheet" href="css/gallery.css">
+<link rel="stylesheet" href="css/museum.css">
 <link rel="stylesheet" href="css/page-transition.css">
 <script src="js/page-transition.js"></script>
 </head>
@@ -43,80 +44,96 @@
   </div>
 </header>
 
-<main id="main" class="gallery-main">
-  <h1 class="visually-hidden">Prachiti Kamle crafts web experiences layer by layer</h1>
-  <!-- A round gallery room. You stand in the middle; drag, scroll or use the arrows to walk from piece to piece.
-       Each .station hangs on the circular wall; js/gallery.js places them and turns the room. -->
-  <div class="room" aria-roledescription="3D gallery" aria-label="Gallery of Prachiti's work. Use the left and right arrow keys to walk between pieces.">
-    <div class="stage">
-      <div class="ring">
-        <div class="walls" aria-hidden="true"></div>
+<main id="main" class="museum-main">
+  <!-- 1. The museum from above: a little pixel visitor wanders among the works.
+       js/museum.js draws it on the canvas and lays clickable buttons over each frame. -->
+  <section class="map-view" aria-label="Museum map">
+    <div class="map-intro">
+      <h1 class="map-title"><span class="hs-name">prachiti</span> crafts web experiences <em>layer by layer</em></h1>
+      <p class="map-sub">Welcome in. Hover a work to read its label, then step into the center to see the case studies.</p>
+    </div>
+    <div class="museum">
+      <canvas class="museum-canvas" aria-hidden="true"></canvas>
+      <div class="map-hits"></div>
+      <button type="button" class="map-center"><span class="mc-label">see case studies</span></button>
+    </div>
+    <div class="art-tag map-tag" aria-hidden="true"></div>
+  </section>
 
-        <div class="station title-wall" data-title="Introduction">
-          <p class="wall-text"><span class="hs-name">prachiti</span> crafts web experiences <em>layer by layer</em></p>
-          <p class="wall-sub">A gallery of case studies in UX and product design</p>
-        </div>
-
+  <!-- 2. Inside the gallery: a round room you walk around (js/gallery.js) -->
+  <section class="room-view" aria-label="Gallery room" hidden>
+    <div class="room" aria-roledescription="3D gallery" aria-label="Use the left and right arrow keys to walk between works.">
+      <div class="stage">
+        <div class="ring">
+          <div class="walls" aria-hidden="true"></div>
         <div class="station work coming-soon" data-title="UI/UX Design @ HelloAlfred" aria-disabled="true">
           <div class="frame"><img src="images/projects/helloalfred.webp" alt="HelloAlfred logo: health for all" width="1400" height="367"></div>
-          <div class="title-card">
-            <h2>UI/UX Design @ HelloAlfred</h2>
-            <p class="tc-meta">Internship, Fall 2026</p>
-            <p class="tc-desc">Developing and testing natural-language patient education UX</p>
-            <p class="tc-cta">Installation in progress</p>
+          <div class="art-tag">
+            <p class="at-artist">Prachiti Kamle</p>
+            <p class="at-title"><em>UI/UX Design @ HelloAlfred</em>, 2026</p>
+            <p class="at-line">Internship, Fall 2026</p>
+            <p class="at-line">Developing and testing natural-language patient education UX</p>
+            <p class="at-ed">Work 1 of 5</p>
+            <p class="at-cta">Installation in progress</p>
           </div>
         </div>
-
         <a class="station work" href="work/ibm.html" data-title="Experience Design @ IBM">
           <div class="frame"><img src="images/projects/ibm.png" alt="IBM Information Management System configuration center screens, tilted collage" width="1151" height="302"></div>
-          <div class="title-card">
-            <h2>Experience Design @ IBM</h2>
-            <p class="tc-meta">Internship, Summer 2026</p>
-            <p class="tc-desc">Creating web UI for Information Management System tools</p>
-            <p class="tc-cta">View case study &rarr;</p>
+          <div class="art-tag">
+            <p class="at-artist">Prachiti Kamle</p>
+            <p class="at-title"><em>Experience Design @ IBM</em>, 2026</p>
+            <p class="at-line">Internship, Summer 2026</p>
+            <p class="at-line">Creating web UI for Information Management System tools</p>
+            <p class="at-ed">Work 2 of 5</p>
+            <p class="at-cta">View case study &rarr;</p>
           </div>
         </a>
-
         <a class="station work" href="work/adobe.html" data-title="Performance/Product Marketing @ Adobe">
           <div class="frame"><img src="images/projects/adobe.png" alt="Adobe GenStudio for Performance Marketing landing page on a laptop" width="1151" height="302"></div>
-          <div class="title-card">
-            <h2>Performance/Product Marketing @ Adobe</h2>
-            <p class="tc-meta">Internship, Summer 2025</p>
-            <p class="tc-desc">Boosting paid social campaign content production with AI tools</p>
-            <p class="tc-cta">View case study &rarr;</p>
+          <div class="art-tag">
+            <p class="at-artist">Prachiti Kamle</p>
+            <p class="at-title"><em>Performance/Product Marketing @ Adobe</em>, 2025</p>
+            <p class="at-line">Internship, Summer 2025</p>
+            <p class="at-line">Boosting paid social campaign content production with AI tools</p>
+            <p class="at-ed">Work 3 of 5</p>
+            <p class="at-cta">View case study &rarr;</p>
           </div>
         </a>
-
         <a class="station work" href="work/haven.html" data-title="Haven">
           <div class="frame"><img src="images/projects/haven.png" alt="Haven app screens: home feed with health topics, and message center" width="1156" height="304"></div>
-          <div class="title-card">
-            <h2>Haven</h2>
-            <p class="tc-meta">Personal Project, Fall 2025</p>
-            <p class="tc-desc">Creating a safe space for women's health support</p>
-            <p class="tc-cta">View case study &rarr;</p>
+          <div class="art-tag">
+            <p class="at-artist">Prachiti Kamle</p>
+            <p class="at-title"><em>Haven</em>, 2025</p>
+            <p class="at-line">Personal Project, Fall 2025</p>
+            <p class="at-line">Creating a safe space for women's health support</p>
+            <p class="at-ed">Work 4 of 5</p>
+            <p class="at-cta">View case study &rarr;</p>
           </div>
         </a>
-
         <a class="station work" href="work/wopet.html" data-title="Redesigning Wopet">
           <div class="frame"><img src="images/projects/wopet.png" alt="WoPet app splash screen with logo and playful pet-toy confetti" width="1151" height="302"></div>
-          <div class="title-card">
-            <h2>Redesigning Wopet</h2>
-            <p class="tc-meta">Personal Project, Spring 2025</p>
-            <p class="tc-desc">Reimagining the remote pet-care experience</p>
-            <p class="tc-cta">View case study &rarr;</p>
+          <div class="art-tag">
+            <p class="at-artist">Prachiti Kamle</p>
+            <p class="at-title"><em>Redesigning Wopet</em>, 2025</p>
+            <p class="at-line">Personal Project, Spring 2025</p>
+            <p class="at-line">Reimagining the remote pet-care experience</p>
+            <p class="at-ed">Work 5 of 5</p>
+            <p class="at-cta">View case study &rarr;</p>
           </div>
         </a>
+        </div>
       </div>
+      <div class="floor" aria-hidden="true"></div>
     </div>
-    <div class="floor" aria-hidden="true"></div>
-  </div>
-
-  <nav class="walk" aria-label="Walk through the gallery">
-    <button type="button" class="walk-prev" aria-label="Previous piece">&larr;</button>
-    <p class="walk-now" aria-live="polite"><span class="walk-idx">1 / 7</span> <span class="walk-title">Introduction</span></p>
-    <button type="button" class="walk-next" aria-label="Next piece">&rarr;</button>
-  </nav>
-  <p class="walk-hint" aria-hidden="true">drag, scroll or use the arrow keys to walk</p>
+    <canvas class="walker" aria-hidden="true"></canvas>
+    <button type="button" class="room-back">&uarr; museum map</button>
+    <nav class="walk" aria-label="Walk through the gallery">
+      <button type="button" class="walk-prev" aria-label="Previous work">&larr;</button>
+      <p class="walk-now" aria-live="polite"><span class="walk-idx">1 / 5</span> <span class="walk-title"></span></p>
+      <button type="button" class="walk-next" aria-label="Next work">&rarr;</button>
+    </nav>
+    <p class="walk-hint" aria-hidden="true">drag, scroll or use the arrow keys to walk</p>
+  </section>
 </main>
 
 <footer class="site-footer">
@@ -140,6 +157,7 @@
 <div class="gallery-hud right" aria-hidden="true"><span class="hud-clock"></span></div>
 
 <script src="js/main.js"></script>
+<script src="js/museum.js"></script>
 <script src="js/gallery.js"></script>
 <script src="js/sketches.js"></script>
 </body>

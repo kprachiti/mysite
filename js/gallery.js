@@ -1,16 +1,19 @@
-// Gallery home: a round room you walk through.
+// The gallery room: a round white room you walk around, entered from the museum map (js/museum.js).
 // The wall is built from thin slices arranged in a circle; each .station hangs on it.
-// Drag, scroll, swipe, arrow keys or the walk buttons turn the room; it glides, then settles on the nearest piece.
+// Drag, scroll, swipe, arrow keys or the walk buttons turn the room; it glides, then settles on the nearest work.
+// Your pixel visitor stands at the bottom, seen from behind, and walks while the room turns.
 (function () {
-  const room = document.querySelector('.room');
-  if (!room) return;
+  const roomView = document.querySelector('.room-view');
+  if (!roomView) return;
+  const room = roomView.querySelector('.room');
   const stage = room.querySelector('.stage');
   const ring = room.querySelector('.ring');
   const walls = room.querySelector('.walls');
   const stations = [...ring.querySelectorAll('.station')];
-  const idxEl = document.querySelector('.walk-idx');
-  const titleEl = document.querySelector('.walk-title');
-  const hint = document.querySelector('.walk-hint');
+  const idxEl = roomView.querySelector('.walk-idx');
+  const titleEl = roomView.querySelector('.walk-title');
+  const hint = roomView.querySelector('.walk-hint');
+  const walker = roomView.querySelector('.walker');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const n = stations.length, step = 360 / n;
@@ -19,23 +22,26 @@
   const N = 40, segA = 360 / N;   // wall slices
   const wrap = (a) => ((a % 360) + 540) % 360 - 180;   // -180..180
 
-  // ---- build the wall
-  const segW = 2 * RW * Math.tan(Math.PI / N);
+  let built = false, visible = false;
   const segs = [];
-  for (let i = 0; i < N; i++) {
-    const s = document.createElement('div');
-    s.className = 'seg';
-    Object.assign(s.style, {
-      width: `${segW + 1.5}px`, left: `${-(segW + 1.5) / 2}px`,
-      transform: `rotateY(${-i * segA}deg) translateZ(${-RW}px)`,
-      backgroundSize: `${N * segW}px 100%`, backgroundPosition: `${-i * segW}px 0`,
-    });
-    walls.appendChild(s);
-    segs.push({ el: s, a: i * segA, shown: true });
+  function build() {
+    const segW = 2 * RW * Math.tan(Math.PI / N);
+    for (let i = 0; i < N; i++) {
+      const s = document.createElement('div');
+      s.className = 'seg';
+      Object.assign(s.style, {
+        width: `${segW + 1.5}px`, left: `${-(segW + 1.5) / 2}px`,
+        transform: `rotateY(${-i * segA}deg) translateZ(${-RW}px)`,
+        backgroundSize: `${N * segW}px 100%`, backgroundPosition: `${-i * segW}px 0`,
+      });
+      walls.appendChild(s);
+      segs.push({ el: s, a: i * segA, shown: true });
+    }
+    stations.forEach((st, i) => { st.style.transform = `rotateY(${-i * step}deg) translateZ(${-R}px)`; st._a = i * step; st._shown = true; });
+    built = true;
   }
-  stations.forEach((st, i) => { st.style.transform = `rotateY(${-i * step}deg) translateZ(${-R}px)`; st._a = i * step; st._shown = true; });
 
-  // ---- camera: perspective chosen so a piece fills about half the screen
+  // ---- camera: perspective chosen so a work fills about half the screen
   let P = 900;
   function fit() {
     const w = innerWidth, h = innerHeight;
@@ -46,11 +52,11 @@
 
   // ---- motion state
   let theta = 0, vel = 0, target = null, dragging = false, lastX = 0, moved = 0, pid = 0, phase = 0, dirty = true, cur = -1;
+  let walkT = 0, walkDir = 0, still = 0;
 
   function nearest(a) { return Math.round(a / step) * step; }
   function goTo(i) {
-    const a = i * step;
-    target = theta + wrap(a - theta);
+    target = theta + wrap(i * step - theta);
     if (reduce) { theta = target; target = null; }
     dirty = true; kick();
   }
@@ -77,10 +83,25 @@
     }
   }
 
-  let raf = 0;
-  function kick() { if (!raf) raf = requestAnimationFrame(tick); }
-  function tick() {
+  // ---- your pixel visitor, from behind: walks sideways while the room turns, then looks at the work
+  const wctx = walker.getContext('2d');
+  function drawWalker(dTheta, dt) {
+    if (!window.PKSprites) return;
+    const { visitor, PAL } = window.PKSprites;
+    if (Math.abs(dTheta) > 0.03 && !reduce) { walkDir = dTheta > 0 ? 1 : -1; still = 0; walkT += dt; }
+    else still += dt;
+    const moving = still < 0.12;
+    const rows = moving ? visitor(walkDir > 0 ? 'right' : 'left', 1 + (Math.floor(walkT / 0.14) % 2)) : visitor('up', 0);
+    walker.width = 8; walker.height = 12;
+    wctx.clearRect(0, 0, 8, 12);
+    rows.forEach((r, y) => [...r].forEach((ch, x) => { if (ch !== '.' && PAL[ch]) { wctx.fillStyle = PAL[ch]; wctx.fillRect(x, y, 1, 1); } }));
+  }
+
+  let raf = 0, lastT = performance.now();
+  function kick() { if (!raf && visible) raf = requestAnimationFrame(tick); }
+  function tick(now) {
     raf = 0;
+    const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
     const before = theta;
     if (!dragging) {
       if (target !== null) {
@@ -95,7 +116,8 @@
     const d = theta - before;
     phase += Math.abs(d) * 0.35;
     if (d !== 0 || dirty) { render(d); dirty = false; }
-    if (dragging || target !== null || Math.abs(vel) > 0.06 || Math.abs(theta - nearest(theta)) > 0.02) kick();
+    drawWalker(d, dt);
+    if (dragging || target !== null || Math.abs(vel) > 0.06 || Math.abs(theta - nearest(theta)) > 0.02 || still < 0.2) kick();
   }
 
   function settled() { if (hint) hint.classList.add('gone'); }
@@ -111,7 +133,7 @@
     const dx = e.clientX - lastX; lastX = e.clientX; moved += Math.abs(dx);
     // only take over the pointer once it's really a drag, so a plain click still opens the work
     if (moved > 6 && !room.classList.contains('dragging')) { room.setPointerCapture(pid); room.classList.add('dragging'); }
-    const k = 52 / Math.max(innerWidth, 1);   // a full-width drag turns about one piece
+    const k = 52 / Math.max(innerWidth, 1);   // a full-width drag turns about one work
     theta -= dx * k; vel = -dx * k; kick();
   });
   const end = () => { if (!dragging) return; dragging = false; room.classList.remove('dragging'); if (moved > 6) settled(); kick(); };
@@ -130,21 +152,33 @@
 
   // ---- keys and buttons
   document.addEventListener('keydown', (e) => {
-    if (e.target.closest && e.target.closest('input, textarea')) return;
+    if (!visible || (e.target.closest && e.target.closest('input, textarea'))) return;
     if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current() + 1); settled(); }
     if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current() - 1); settled(); }
   });
-  document.querySelector('.walk-next')?.addEventListener('click', () => { goTo(current() + 1); settled(); });
-  document.querySelector('.walk-prev')?.addEventListener('click', () => { goTo(current() - 1); settled(); });
+  roomView.querySelector('.walk-next')?.addEventListener('click', () => { goTo(current() + 1); settled(); });
+  roomView.querySelector('.walk-prev')?.addEventListener('click', () => { goTo(current() - 1); settled(); });
   // tabbing to a work walks you over to it
   stations.forEach((st, i) => st.addEventListener('focusin', () => goTo(i)));
 
-  addEventListener('resize', () => { fit(); kick(); });
-  fit(); render(0); kick();
+  addEventListener('resize', () => { if (built) { fit(); kick(); } });
+
+  // called by the museum map when you step in, facing work i
+  window.PKGallery = {
+    show(i) {
+      if (!built) build();
+      visible = true; fit();
+      theta = (i || 0) * step; vel = 0; target = null; cur = -1;
+      render(0); lastT = performance.now(); still = 1; kick();
+      requestAnimationFrame(() => { dirty = true; kick(); });   // draw again once the room is on screen
+      roomView.querySelector('.walk-next')?.focus({ preventScroll: true });
+    },
+    hide() { visible = false; },
+  };
 
   // ---- corner signage: works on view and a quiet local clock
   const count = document.querySelector('.hud-count');
-  if (count) count.textContent = ring.querySelectorAll('.station.work').length + ' works on view';
+  if (count) count.textContent = n + ' works on view';
   const clock = document.querySelector('.hud-clock');
   if (clock) {
     const fmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit', second: '2-digit' });

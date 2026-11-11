@@ -1,33 +1,33 @@
 /* =====================================================================
-   Gallery home: a round, warmly lit room you walk through.
-   You stand in the middle; the work hangs on the circular wall around you.
-   js/gallery.js builds the wall, places each .station and turns the room.
+   Home page: the museum. The map view (css/museum.css) leads into this room:
+   a round white gallery you walk around, with a concrete floor and a ceiling
+   spotlight over each work. js/gallery.js builds the wall and turns the room.
    Loaded on index.html only, after refined.css.
    ===================================================================== */
 
 :root {
-  --frame: #4a3128;
-  --frame-edge: #2e1d17;
-  --mat: #fbf6ee;
-  --label: #fdf9f3;
+  --frame: #3a2a24;
+  --frame-edge: #241915;
+  --mat: #fbfaf7;
 }
 
-/* the whole page is the room: no page scroll, the footer's links live in the header and About page */
+/* the whole page is the museum: no page scroll, the footer's links live in the header and About page */
 body.home { overflow: hidden; height: 100vh; height: 100dvh; background: #fff; }
 .home .site-footer { display: none; }
 .home .site-header { position: absolute; top: 0; left: 0; right: 0; z-index: 30; background: transparent; }
 .home .page-wrap { min-height: 0; }
 
-/* film grain over everything, very light */
+/* very light film grain over everything */
 body.home::before {
   content: ''; position: fixed; inset: -50%; z-index: 40; pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.24  0 0 0 0 0.2  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.2; mix-blend-mode: multiply;
+  opacity: 0.12; mix-blend-mode: multiply;
 }
 
 /* ---------- The room ---------- */
+.room-view { position: fixed; inset: 0; z-index: 1; }
 .room {
-  position: fixed; inset: 0; overflow: hidden; z-index: 1;
+  position: absolute; inset: 0; overflow: hidden;
   cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
 }
 .room.dragging { cursor: grabbing; }
@@ -35,97 +35,81 @@ body.home::before {
 .ring { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
 .walls { position: absolute; left: 0; top: 0; transform-style: preserve-3d; }
 
-/* one slice of the circular wall; the painted panorama runs continuously across all of them */
+/* one slice of the circular wall; the white plaster panorama runs continuously across all of them */
 .seg {
   position: absolute; top: -900px; height: 1230px;
   background-image: url(../images/gallery/wall.webp); background-repeat: repeat-x;
   backface-visibility: hidden;
 }
 
-/* the floor lives in screen space, under the walls; sunlight from the window pools on it */
+/* polished concrete, under the walls */
 .floor {
   position: absolute; left: 0; right: 0; bottom: 0; height: 52%; z-index: 1;
   background:
-    radial-gradient(38% 34% at 28% 96%, rgba(250, 226, 176, 0.75), rgba(250, 226, 176, 0) 70%),
-    radial-gradient(30% 26% at 62% 88%, rgba(250, 230, 186, 0.55), rgba(250, 230, 186, 0) 70%),
-    linear-gradient(180deg, #f6f4f0 0%, #efebe5 100%);
+    radial-gradient(40% 30% at 50% 100%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #e4e2de 0%, #d8d5cf 60%, #cfcbc4 100%);
 }
-/* ---------- A station: one piece on the wall ---------- */
+
+/* ---------- A station: one work on the wall ---------- */
 .station {
-  position: absolute; left: 0; top: 0; width: 880px; margin-left: -440px;
+  position: absolute; left: 0; top: 0; width: 880px; margin-left: -440px; translate: 0 -50%;
   display: flex; align-items: flex-end; justify-content: center; gap: 40px;
   transform-style: flat; backface-visibility: hidden;
   color: var(--ink); text-decoration: none;
   --f: 0;   /* how squarely you're facing it, 0..1, set by js */
 }
-.station.work, .station[data-title] { translate: 0 -50%; }
 .station:focus-visible { outline: none; }
-.station:focus-visible .frame, .station:focus-visible .cutout { outline: 2px solid var(--accent); outline-offset: 10px; }
+.station:focus-visible .frame { outline: 2px solid var(--accent); outline-offset: 10px; }
 
-/* picture light washing the wall above each work, brighter as you face it */
-.station.work::before, .station .cutout::before {
-  content: ''; position: absolute; left: 50%; top: -150px; width: 760px; height: 420px; translate: -50% 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(50% 55% at 50% 32%, rgba(255, 224, 166, 0.8), rgba(255, 224, 166, 0) 72%);
-  opacity: calc(0.35 + var(--f) * 0.65);
+/* light from the ceiling spot, pooling on the wall around the work */
+.station::before {
+  content: ''; position: absolute; left: 300px; top: -170px; width: 720px; height: 470px; translate: -50% 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(48% 56% at 50% 40%, rgba(255, 246, 228, 0.9), rgba(255, 246, 228, 0) 72%);
+  opacity: calc(0.4 + var(--f) * 0.6);
 }
-.station.work::before { left: 300px; }
 
-/* the frame: walnut moulding, cream mat, a shadow cast down and right (the window is on the left) */
+/* the frame: slim dark moulding, white mat, a soft shadow under it */
 .frame {
   position: relative; flex: 0 0 600px; padding: 22px; background: var(--mat);
-  border: 11px solid var(--frame); border-radius: 2px;
+  border: 9px solid var(--frame); border-radius: 1px;
   box-shadow:
-    inset 0 0 0 1px rgba(0, 0, 0, 0.06), inset 3px 3px 10px rgba(58, 38, 34, 0.12),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.05), inset 2px 2px 8px rgba(40, 30, 25, 0.1),
     0 1px 0 1px var(--frame-edge),
-    18px 26px 34px -10px rgba(86, 46, 28, 0.38), 44px 64px 84px -30px rgba(86, 46, 28, 0.28);
+    0 22px 30px -12px rgba(40, 30, 25, 0.32), 0 50px 70px -36px rgba(40, 30, 25, 0.22);
   transition: translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.frame img { display: block; width: 100%; height: auto; box-shadow: inset 0 0 0 1px rgba(58, 38, 34, 0.08); pointer-events: none; }
-.frame::after {     /* brass picture lamp on the top edge */
-  content: ''; position: absolute; left: 50%; top: -25px; width: 130px; height: 9px; translate: -50% 0;
-  border-radius: 5px 5px 2px 2px; background: linear-gradient(180deg, #c9a45a, #8d6b2c);
-  box-shadow: 0 2px 4px rgba(46, 30, 24, 0.3), 0 10px 22px 6px rgba(255, 214, 150, calc(0.2 + var(--f) * 0.4));
+.frame img { display: block; width: 100%; height: auto; box-shadow: inset 0 0 0 1px rgba(40, 30, 25, 0.08); pointer-events: none; }
+/* the ceiling spotlight aimed at the work, high above it */
+.frame::after {
+  content: ''; position: absolute; left: 50%; top: -230px; width: 34px; height: 20px; translate: -50% 0;
+  border-radius: 4px 4px 10px 10px; background: linear-gradient(180deg, #f4f4f2, #d9d7d3);
+  box-shadow: 0 -40px 0 -14px #cfccc7, 0 2px 3px rgba(0, 0, 0, 0.12), 0 14px 26px 8px rgba(255, 244, 220, calc(0.2 + var(--f) * 0.5));
 }
 a.station:hover .frame { translate: 0 -5px; }
 
-/* the title card: a museum label at eye level beside the work */
-.title-card {
-  flex: 0 0 230px; padding: 18px 20px 20px; background: var(--label); border-radius: 2px;
-  box-shadow: 0 1px 0 rgba(58, 38, 34, 0.06), 6px 10px 18px -6px rgba(86, 46, 28, 0.3);
-  opacity: calc(0.55 + var(--f) * 0.45);
-}
-.title-card h2 { font-family: var(--font-serif); font-weight: 500; font-size: 22px; line-height: 1.15; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--ink); }
-.title-card .tc-meta {
-  margin: 0 0 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(58, 38, 34, 0.14);
-  font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
-}
-.title-card .tc-desc { margin: 0; font-family: var(--font-sans); font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
-.title-card .tc-cta { margin: 14px 0 0; font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
-.coming-soon .tc-cta { color: var(--muted); }
+.station .art-tag { flex: 0 0 250px; opacity: calc(0.6 + var(--f) * 0.4); }
 .coming-soon { cursor: inherit; }
 
-/* the lipstick, hung as a cut-out with its painted shadow, the pixel wave still washing over it */
-.cutout { position: relative; margin: 0; outline: none; }
-.lip-art { position: relative; height: 470px; aspect-ratio: 882 / 1180; }
-.lip-art img { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.cutout::before { left: 50%; top: -60px; width: 560px; height: 460px; }
-
-/* the title wall: exhibition lettering, as if painted straight onto the plaster */
-.title-wall { flex-direction: column; align-items: center; text-align: center; gap: 22px; }
-.wall-text {
-  margin: 0; max-width: 13ch; font-family: var(--font-serif); font-weight: 400;
-  font-size: 92px; line-height: 1; letter-spacing: -0.035em; color: var(--ink);
+/* ---------- You, and the way around ---------- */
+.walker {
+  position: fixed; left: 50%; bottom: 84px; z-index: 34; translate: -50% 0; pointer-events: none;
+  width: 64px; height: 96px; image-rendering: pixelated; image-rendering: crisp-edges;
+  filter: drop-shadow(0 6px 4px rgba(40, 30, 25, 0.18));
 }
-.wall-text .hs-name { color: var(--accent); }
-.wall-text em { font-style: normal; }
-.wall-sub { margin: 0; font-family: var(--font-sans); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.room-back {
+  position: fixed; left: max(24px, calc((100vw - var(--max-w)) / 2 + 24px)); top: 84px; z-index: 35;
+  padding: 8px 14px; border: 0; border-radius: 999px; cursor: pointer;
+  background: rgba(255, 255, 255, 0.85); color: var(--ink); box-shadow: 0 6px 18px -8px rgba(40, 30, 25, 0.35);
+  font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.06em;
+}
+.room-back:hover { background: var(--accent-deep); color: var(--paper); }
+.room-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* ---------- Walking controls ---------- */
 .walk {
   position: fixed; left: 50%; bottom: 22px; translate: -50% 0; z-index: 35;
   display: flex; align-items: center; gap: 6px; padding: 6px;
-  background: rgba(253, 249, 243, 0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  border-radius: 999px; box-shadow: 0 8px 24px -8px rgba(86, 46, 28, 0.35);
+  background: rgba(255, 255, 255, 0.86); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border-radius: 999px; box-shadow: 0 8px 24px -8px rgba(40, 30, 25, 0.3);
 }
 .walk button {
   width: 36px; height: 36px; border: 0; border-radius: 50%; background: transparent; color: var(--ink);
@@ -136,37 +120,35 @@ a.station:hover .frame { translate: 0 -5px; }
 .walk-now { margin: 0; min-width: 250px; text-align: center; font-family: var(--font-sans); font-size: 13px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .walk-idx { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 8px; }
 .walk-hint {
-  position: fixed; left: 50%; bottom: 76px; translate: -50% 0; z-index: 35; margin: 0; pointer-events: none;
+  position: fixed; right: 24px; top: 92px; z-index: 35; margin: 0; pointer-events: none;
   font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.06em; color: rgba(58, 38, 34, 0.7);
   transition: opacity 0.8s ease;
 }
 .walk-hint.gone { opacity: 0; }
 
-/* corner signage, like a gallery's quiet wall text */
+/* corner signage */
 .gallery-hud {
   position: fixed; bottom: 30px; z-index: 35; pointer-events: none;
-  font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.04em; color: rgba(58, 38, 34, 0.75);
+  font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.04em; color: rgba(58, 38, 34, 0.7);
   font-variant-numeric: tabular-nums;
 }
 .gallery-hud.left { left: 24px; }
 .gallery-hud.right { right: 24px; }
 .gallery-hud svg { width: 13px; height: 13px; vertical-align: -2px; margin-right: 6px; stroke: currentColor; fill: none; stroke-width: 1.4; }
 
-/* ---------- Phones: works hang with the card underneath ---------- */
+/* ---------- Phones: works hang with the label underneath ---------- */
 @media (max-width: 700px) {
   .station { width: 620px; margin-left: -310px; flex-direction: column; align-items: center; gap: 34px; }
+  .station::before { left: 50%; }
   .frame { flex: 0 0 auto; width: 600px; }
-  .title-card { flex: 0 0 auto; width: 420px; }
-  .title-card h2 { font-size: 30px; }
-  .title-card .tc-meta { font-size: 15px; }
-  .title-card .tc-desc { font-size: 19px; }
-  .title-card .tc-cta { font-size: 15px; }
-  .station.work::before { left: 50%; }
-  .wall-text { font-size: 96px; }
-  .wall-sub { font-size: 18px; }
-  .gallery-hud { display: none; }
+  .station .art-tag { flex: 0 0 auto; width: 440px; padding: 26px 30px; font-size: 19px; }
+  .station .art-tag .at-artist { font-size: 20px; }
+  .station .art-tag .at-title em { font-size: 25px; }
+  .station .art-tag .at-ed, .station .art-tag .at-cta { font-size: 16px; }
+  .gallery-hud, .walk-hint { display: none; }
   .walk-now { min-width: 0; max-width: 54vw; }
-  .walk-hint { bottom: 74px; }
+  .walker { bottom: 78px; width: 48px; height: 72px; }
+  .room-back { top: 76px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .frame { transition: none; }
