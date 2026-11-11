@@ -131,3 +131,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// Signed footer: when it scrolls into view, "pk" is written in (a pen tip follows the stroke)
+// and the portfolio's wall tag pops onto the wall.
+document.addEventListener('DOMContentLoaded', () => {
+  const footer = document.querySelector('.gallery-footer');
+  if (!footer) return;
+  const path = footer.querySelector('.sig-path'), svg = footer.querySelector('.signature'), pen = footer.querySelector('.sig-pen');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sign = () => {
+    footer.classList.add('signed');
+    if (reduce || !path || !pen || !path.getTotalLength) return;
+    const L = path.getTotalLength(), dur = 2200, delay = 150, t0 = performance.now() + delay;
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);   // close to the stroke's own easing
+    const vb = svg.viewBox.baseVal;
+    const step = (now) => {
+      const t = Math.min(1, Math.max(0, (now - t0) / dur));
+      const pt = path.getPointAtLength(ease(t) * L);
+      const sx = svg.clientWidth / vb.width, sy = svg.clientHeight / vb.height;
+      pen.style.transform = `translate(${pt.x * sx}px, ${pt.y * sy}px)`;
+      pen.style.opacity = t > 0 && t < 1 ? '1' : '0';
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  if (!('IntersectionObserver' in window)) return sign();
+  const io = new IntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting)) { io.disconnect(); sign(); }
+  }, { threshold: 0.4 });
+  io.observe(footer);
+});

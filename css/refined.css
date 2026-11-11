@@ -466,3 +466,51 @@ body, body.dotted-bg, body.home {
 .case-title .sub, .meta-grid .label, .case-section h3, .case-section h4, .quote-card blockquote,
 .case-nav a, .footer-copy, .footer-nav a { font-family: var(--font-sans); }
 .sketch text { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
+
+/* =====================================================================
+   The signed footer: the artist's "pk" written in on the left, the links in
+   the middle, and a wall tag for the whole portfolio on the right.
+   js/main.js adds .signed when the footer scrolls into view.
+   ===================================================================== */
+.gallery-footer { padding: 40px 0 44px; margin-top: 40px; background: transparent; border-top: 0; }
+.gallery-footer .container { display: block; position: relative; border-top: 1px solid rgba(31, 28, 26, 0.35); padding-top: 18px; }
+.gallery-footer .footer-line {
+  margin: 0; text-align: right; font-family: var(--font-serif); font-size: 15px; font-style: italic; color: var(--muted);
+}
+.gf-row { display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 32px; margin-top: 6px; }
+.gf-sign { position: relative; }
+.signature { display: block; width: 116px; height: 62px; overflow: visible; }
+.sig-path {
+  fill: none; stroke: var(--ink); stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+}
+.signed .sig-path { transition: stroke-dashoffset 2.2s cubic-bezier(0.45, 0.05, 0.4, 1) 0.15s; stroke-dashoffset: 0; }
+/* the pen tip, following the stroke as it's written (positioned by js) */
+.sig-pen {
+  position: absolute; left: 0; top: 0; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 0 3px rgba(182, 45, 38, 0.15); opacity: 0; pointer-events: none;
+}
+.gallery-footer .footer-copy { margin: 6px 0 0; font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.04em; text-transform: none; color: var(--muted); }
+.gallery-footer .footer-nav { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px 34px; align-items: center; padding-bottom: 6px; }
+.gallery-footer .footer-nav a { font-family: var(--font-sans); font-size: 13px; letter-spacing: 0.02em; text-transform: none; color: var(--ink); }
+.gallery-footer .footer-nav a:hover { color: var(--accent); }
+/* the portfolio's own wall tag, popping onto the wall */
+.footer-tag {
+  width: 168px; padding: 13px 15px 14px; background: #fff; border-radius: 1px;
+  font-family: var(--font-sans); font-size: 12px; line-height: 1.5; color: var(--ink-soft);
+  box-shadow: 0 1px 2px rgba(30, 25, 20, 0.08), 6px 10px 18px -6px rgba(30, 25, 20, 0.28);
+  opacity: 0; transform: translateY(16px) rotate(4deg) scale(0.92); transform-origin: 70% 100%;
+}
+.signed .footer-tag { opacity: 1; transform: rotate(-1.5deg); transition: opacity 0.4s ease 0.9s, transform 0.6s cubic-bezier(0.2, 1.4, 0.4, 1) 0.9s; }
+.footer-tag p { margin: 0; }
+.footer-tag .ft-title { font-family: var(--font-serif); font-style: italic; font-size: 17px; color: var(--ink); margin-bottom: 2px; }
+.footer-tag .ft-artist { font-weight: 600; color: var(--ink); }
+@media (max-width: 700px) {
+  .gf-row { grid-template-columns: 1fr auto; }
+  .gallery-footer .footer-nav { grid-column: 1 / -1; grid-row: 1; justify-content: flex-start; gap: 10px 22px; margin-bottom: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sig-path { stroke-dashoffset: 0; }
+  .footer-tag { opacity: 1; transform: rotate(-1.5deg); }
+  .signed .sig-path, .signed .footer-tag { transition: none; }
+}

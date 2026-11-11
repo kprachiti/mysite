@@ -1,0 +1,106 @@
+/* =====================================================================
+   Home page: a gallery wall. The case studies hang salon-style on clean,
+   textured white plaster, each with a small wall tag. Hovering a piece
+   turns it into ASCII (js/salon.js). Loaded on index.html only.
+   ===================================================================== */
+
+body.home {
+  --ink: #1f1c1a; --ink-soft: #4a4541; --muted: #8a847d; --type-grey: #1f1c1a;
+  background-color: #f7f6f2;
+  background-image:
+    /* gallery light washing down the wall from the ceiling */
+    radial-gradient(70% 45% at 50% -8%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 70%),
+    /* broad, soft mottling in the plaster */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.52  0 0 0 0 0.48  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E"),
+    /* fine grain of the paint */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.4  0 0 0 0 0.38  0 0 0 0 0.35  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 100% 900px, 600px 600px, 200px 200px;
+  background-repeat: no-repeat, repeat, repeat;
+}
+
+/* ---------- The wall ---------- */
+.salon {
+  display: grid; grid-template-columns: 1.1fr 1fr 1fr; column-gap: clamp(32px, 4.5vw, 72px); row-gap: 18px;
+  align-items: start; padding-top: 28px; padding-bottom: 72px;
+}
+.salon-intro { grid-column: 1; grid-row: 1; padding-top: 56px; }
+.salon-title {
+  margin: 0 0 18px; font-family: var(--font-serif); font-weight: 400; font-size: clamp(38px, 3.8vw, 56px);
+  line-height: 1.02; letter-spacing: -0.03em; color: var(--ink);
+}
+.salon-title .hs-name { color: var(--accent); }
+.salon-sub { margin: 0; max-width: 30ch; font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+
+/* where each piece hangs: two loose rows, offset like a salon wall, in reading order */
+.p1 { grid-column: 2; grid-row: 1; width: 100%; margin-top: 64px; }
+.p2 { grid-column: 3; grid-row: 1; width: 80%; justify-self: end; margin-top: 76px; }
+.p3 { grid-column: 1; grid-row: 2; width: 80%; justify-self: center; margin-top: 8px; }
+.p4 { grid-column: 2; grid-row: 2; width: 78%; justify-self: center; margin-top: 52px; }
+.p5 { grid-column: 3; grid-row: 2; width: 68%; justify-self: center; margin-top: 0; }
+
+/* ---------- A piece ---------- */
+.piece { position: relative; display: block; color: var(--ink); text-decoration: none; }
+.canvas {
+  position: relative; box-sizing: border-box; background: #fbfaf7;
+  box-shadow: 0 2px 3px rgba(30, 25, 20, 0.08), 0 22px 34px -16px rgba(30, 25, 20, 0.38);
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.45s ease;
+}
+.art { position: relative; aspect-ratio: var(--ar, 4/3); overflow: hidden; background: #ece8e1; }
+.art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 50% 50%); transition: opacity 0.2s linear; }
+.art .ascii { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; }
+.piece:hover .canvas, .piece:focus-visible .canvas { transform: translateY(-4px); box-shadow: 0 2px 3px rgba(30, 25, 20, 0.08), 0 30px 40px -16px rgba(30, 25, 20, 0.42); }
+.piece:focus-visible { outline: none; }
+.piece:focus-visible .canvas { outline: 2px solid var(--accent); outline-offset: 6px; }
+
+/* frame styles, mixed like a real salon wall */
+.f-black .canvas { border: 10px solid #1d1b1a; padding: 9%; }
+.f-oak .canvas {
+  border: 12px solid transparent; padding: 8%;
+  border-image: linear-gradient(135deg, #d8b98d, #b48a5c 45%, #caa676 70%, #9c7448) 1;
+}
+.f-white .canvas { border: 9px solid #fff; padding: 0; box-shadow: 0 0 0 1px rgba(30, 25, 20, 0.08), 0 22px 34px -16px rgba(30, 25, 20, 0.38); }
+.f-canvas .canvas { padding: 0; box-shadow: 4px 0 0 #d9d4cc, 0 2px 3px rgba(30, 25, 20, 0.1), 10px 24px 34px -16px rgba(30, 25, 20, 0.4); }   /* a stretched canvas: you see its edge */
+
+/* hung on a wire from a nail */
+.hung .canvas::before {
+  content: ''; position: absolute; left: 22%; right: 22%; top: -58px; height: 52px; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M0 100 L50 2 L100 100' fill='none' stroke='%23736b63' stroke-width='1.2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+.hung .canvas::after {
+  content: ''; position: absolute; left: 50%; top: -64px; width: 9px; height: 9px; translate: -50% 0; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #c9c4bc, #6f6860 70%); box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* the wall tag, at the piece's lower right like a museum label */
+.wall-tag {
+  position: relative; box-sizing: border-box; width: min(196px, 92%); margin: 16px 0 0 auto; padding: 11px 13px 12px;
+  background: #fff; border-radius: 1px; font-family: var(--font-sans); font-size: 11.5px; line-height: 1.45; color: var(--ink-soft);
+  box-shadow: 0 1px 2px rgba(30, 25, 20, 0.08), 5px 8px 14px -6px rgba(30, 25, 20, 0.25);
+}
+.wall-tag p { margin: 0; }
+.wt-no { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px !important; }
+.wt-title { color: var(--ink); }
+.wt-title em { font-family: var(--font-serif); font-style: italic; font-size: 15px; letter-spacing: -0.005em; }
+.wt-meta { margin-top: 2px !important; }
+.wt-desc { display: none; }
+.wt-cta { margin-top: 7px !important; padding-top: 7px; border-top: 1px solid #eee9e2; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); transition: color 0.2s ease; }
+.piece:hover .wt-cta, .piece:focus-visible .wt-cta { color: var(--accent); }
+.coming-soon { cursor: default; }
+.coming-soon:hover .wt-cta { color: var(--muted); }
+
+/* ---------- Smaller screens ---------- */
+@media (max-width: 1000px) {
+  .salon { grid-template-columns: 1fr 1fr; row-gap: 40px; }
+  .salon-intro { grid-column: 1 / -1; padding-top: 24px; }
+  .p1, .p2, .p3, .p4, .p5 { grid-column: auto; grid-row: auto; width: 88%; margin-top: 0; justify-self: center; }
+  .p2, .p5 { margin-top: 64px; }
+}
+@media (max-width: 560px) {
+  .salon { grid-template-columns: 1fr; row-gap: 40px; padding-bottom: 40px; }
+  .p1, .p2, .p3, .p4, .p5 { width: 78%; margin-top: 0; }
+  .p2 { margin-top: 56px; }
+  .p5 { width: 56%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .canvas, .art img { transition: none; }
+}
