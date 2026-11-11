@@ -1,7 +1,7 @@
 // The gallery room: a round white room you walk around, entered from the museum map (js/museum.js).
 // The wall is built from thin slices arranged in a circle; each .station hangs on it.
 // Drag, scroll, swipe, arrow keys or the walk buttons turn the room; it glides, then settles on the nearest work.
-// Your pixel visitor stands at the bottom, seen from behind, and walks while the room turns.
+// Your visitor (drawn by js/museum.js) stands at the bottom, seen from behind, and walks while the room turns.
 (function () {
   const roomView = document.querySelector('.room-view');
   if (!roomView) return;
@@ -83,25 +83,24 @@
     }
   }
 
-  // ---- your pixel visitor, from behind: walks sideways while the room turns, then looks at the work
+  // ---- your visitor, from behind: walks sideways while the room turns, then looks at the work
   const wctx = walker.getContext('2d');
   function drawWalker(dTheta, dt) {
-    if (!window.PKSprites) return;
-    const { visitor, PAL } = window.PKSprites;
+    if (!window.PKFigure) return;
     if (Math.abs(dTheta) > 0.03 && !reduce) { walkDir = dTheta > 0 ? 1 : -1; still = 0; walkT += dt; }
     else still += dt;
     const moving = still < 0.12;
-    const rows = moving ? visitor(walkDir > 0 ? 'right' : 'left', 1 + (Math.floor(walkT / 0.14) % 2)) : visitor('up', 0);
-    walker.width = 8; walker.height = 12;
-    wctx.clearRect(0, 0, 8, 12);
-    rows.forEach((r, y) => [...r].forEach((ch, x) => { if (ch !== '.' && PAL[ch]) { wctx.fillStyle = PAL[ch]; wctx.fillRect(x, y, 1, 1); } }));
+    const dpr = Math.min(2, window.devicePixelRatio || 1), w = walker.clientWidth, h = walker.clientHeight;
+    if (walker.width !== Math.round(w * dpr)) { walker.width = Math.round(w * dpr); walker.height = Math.round(h * dpr); }
+    wctx.setTransform(dpr, 0, 0, dpr, 0, 0); wctx.clearRect(0, 0, w, h);
+    window.PKFigure(wctx, w / 2, h - 8, h / 44, moving ? (walkDir > 0 ? 'right' : 'left') : 'back', walkT * 11, moving);
   }
 
   let raf = 0, lastT = performance.now();
   function kick() { if (!raf && visible) raf = requestAnimationFrame(tick); }
   function tick(now) {
     raf = 0;
-    const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+    const dt = Math.max(0, Math.min(0.05, (now - lastT) / 1000)); lastT = now;
     const before = theta;
     if (!dragging) {
       if (target !== null) {

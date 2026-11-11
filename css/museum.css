@@ -1,11 +1,11 @@
 /* =====================================================================
    Museum map (the home page's first view) and the wall labels shared with
-   the gallery room. The map is pixel art drawn by js/museum.js.
+   the gallery room. The map is painted on a canvas by js/museum.js.
    ===================================================================== */
 
 .map-view { position: fixed; inset: 0; z-index: 1; }
 .museum { position: absolute; inset: 0; transform-origin: 50% 55%; }
-.museum-canvas { position: absolute; left: 0; top: 0; image-rendering: pixelated; image-rendering: crisp-edges; }
+.museum-canvas { position: absolute; left: 0; top: 0; }
 .map-view.leaving .museum { animation: stepIn 0.52s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
 .map-view.leaving .map-intro, .map-view.leaving .map-tag { opacity: 0; transition: opacity 0.25s ease; }
 @keyframes stepIn { to { transform: scale(2.6); opacity: 0; } }
@@ -20,7 +20,7 @@ body:not(.in-room) .gallery-hud { display: none; }
 .map-title em { font-style: normal; }
 .map-sub { margin: 0; max-width: 34ch; font-family: var(--font-sans); font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
 
-/* hover targets laid over the pixel frames */
+/* hover targets laid over the painted works */
 .map-hit, .map-center {
   position: absolute; z-index: 2; padding: 0; border: 0; background: transparent; border-radius: 6px; cursor: pointer;
 }

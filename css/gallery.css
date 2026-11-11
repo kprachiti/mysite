@@ -93,8 +93,7 @@ a.station:hover .frame { translate: 0 -5px; }
 /* ---------- You, and the way around ---------- */
 .walker {
   position: fixed; left: 50%; bottom: 84px; z-index: 34; translate: -50% 0; pointer-events: none;
-  width: 64px; height: 96px; image-rendering: pixelated; image-rendering: crisp-edges;
-  filter: drop-shadow(0 6px 4px rgba(40, 30, 25, 0.18));
+  width: 80px; height: 112px;
 }
 .room-back {
   position: fixed; left: max(24px, calc((100vw - var(--max-w)) / 2 + 24px)); top: 84px; z-index: 35;
@@ -147,7 +146,7 @@ a.station:hover .frame { translate: 0 -5px; }
   .station .art-tag .at-ed, .station .art-tag .at-cta { font-size: 16px; }
   .gallery-hud, .walk-hint { display: none; }
   .walk-now { min-width: 0; max-width: 54vw; }
-  .walker { bottom: 78px; width: 48px; height: 72px; }
+  .walker { bottom: 78px; width: 60px; height: 84px; }
   .room-back { top: 76px; }
 }
 @media (prefers-reduced-motion: reduce) {

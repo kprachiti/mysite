@@ -1,8 +1,8 @@
-// The museum map: a little pixel museum seen from above.
-// Five works stand in a ring (you see their tops and a sliver of each face, painted in that work's colours),
-// a pixel visitor wanders between them, and vases, a bust, plants and a bench fill the room.
-// Hovering a work shows its wall label; the center of the ring (or any work) leads into the gallery room.
-// Everything is drawn at a low resolution and scaled up, so each logical pixel is a crisp square.
+// The museum map: a soft, warmly lit museum floor seen from above, in a hazy painted style.
+// A path of glowing stepping stones enters from the lower left, loops around a ring of five works
+// and branches into the center. A little visitor strolls the path from work to work, among vases,
+// a bust, plants and a bench. Hovering a work walks the visitor over and shows its wall label;
+// the center of the ring (or any work) leads into the gallery room.
 (function () {
   const view = document.querySelector('.map-view');
   if (!view) return;
@@ -16,259 +16,382 @@
   const ctx = canvas.getContext('2d');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const noHover = window.matchMedia('(hover: none)').matches;
+  const TAU = Math.PI * 2;
 
   if (noHover) {
     const sub = view.querySelector('.map-sub');
     if (sub) sub.textContent = 'Welcome in. Tap a work to read its label, then tap the center to see the case studies.';
   }
 
-  // ---------- palette and sprites ----------
-  const PAL = {
-    k: '#2b1d19', h: '#3a2622', s: '#e8b593', S: '#c98f6c', r: '#b62d26', R: '#8a1f1b', p: '#34405a', o: '#1e1a18',
-    W: '#ffffff', w: '#e9e4dc', x: '#d6cfc4', V: '#c46a4a', v: '#e39a74', U: '#3d5a8a', u: '#7f9dcc',
-    B: '#8a5a3c', b: '#6e4630', g: '#6f9a55', G: '#44703a', T: '#b8693f', t: '#d98a5c', M: '#9c7a45', m: '#c9a45a',
-  };
-  const body = { // the visitor, 8 x 12; rows 10-11 are the legs, swapped per walk frame
-    down: ['..kkkk..', '.khhhhk.', 'khhhhhhk', 'khsssshk', 'kskssksk', '.kssssk.', '.krrrrk.', 'krrrrrrk', 'ksrrrrsk', '.kppppk.'],
-    up:   ['..kkkk..', '.khhhhk.', 'khhhhhhk', 'khhhhhhk', 'khhhhhhk', '.khhhhk.', '.krrrrk.', 'krrrrrrk', 'ksrrrrsk', '.kppppk.'],
-    side: ['..kkkk..', '.khhhhk.', 'khhhhhhk', 'khhhsssk', 'khhhsksk', '.khhsssk', '..krrk..', '.krrrrk.', '.krrsrk.', '.kpppk..'],
-  };
-  const legs = {
-    front: [['.kpkkpk.', '.oo..oo.'], ['.kpk.kk.', '.oo.....'], ['.kk.kpk.', '.....oo.']],
-    side:  [['.kpkpk..', '.oo.oo..'], ['.kp.kp..', 'oo...oo.'], ['..kpk...', '..ooo...']],
-  };
-  function visitor(dir, frame) {
-    const top = dir === 'left' || dir === 'right' ? body.side : body[dir];
-    const l = (dir === 'left' || dir === 'right' ? legs.side : legs.front)[frame];
-    const rows = top.concat(l);
-    return dir === 'left' ? rows.map((r) => [...r].reverse().join('')) : rows;
+  // the works' cover images, drawn small onto their easels
+  const covers = works.map((st) => { const im = new Image(); im.src = st.querySelector('.frame img').getAttribute('src'); im.onload = () => { if (W) buildWorks(); }; return im; });
+
+  // ---------- the visitor: soft shapes, shared with the gallery room ----------
+  // dir: 'front' | 'back' | 'left' | 'right'; step: walk phase in radians (0 when still)
+  function drawFigure(g, x, y, s, dir, step, moving) {
+    const swing = moving ? Math.sin(step) : 0, bob = moving ? Math.abs(Math.sin(step)) * 1.2 * s : 0;
+    g.save(); g.translate(x, y - bob);
+    // shadow on the ground
+    g.save(); g.translate(3 * s, bob); g.scale(1, 0.34);
+    const sh = g.createRadialGradient(0, 0, 0, 0, 0, 10 * s);
+    sh.addColorStop(0, 'rgba(80,50,35,0.3)'); sh.addColorStop(1, 'rgba(80,50,35,0)');
+    g.fillStyle = sh; g.beginPath(); g.arc(0, 0, 10 * s, 0, TAU); g.fill(); g.restore();
+    const side = dir === 'left' || dir === 'right', flip = dir === 'left' ? -1 : 1;
+    // legs
+    g.strokeStyle = '#3b3f52'; g.lineCap = 'round'; g.lineWidth = 3.2 * s;
+    const leg = (dx, sw) => { g.beginPath(); g.moveTo(dx * s, -10 * s); g.lineTo((dx + sw * (side ? 3.5 : 1.2)) * s, -1 * s); g.stroke(); };
+    if (side) { leg(-1 * flip, swing * flip); leg(1 * flip, -swing * flip); } else { leg(-2.2, swing); leg(2.2, -swing); }
+    // body: a soft red top
+    const bodyG = g.createLinearGradient(-6 * s, -24 * s, 6 * s, -10 * s);
+    bodyG.addColorStop(0, '#d0463c'); bodyG.addColorStop(1, '#9e2621');
+    g.fillStyle = bodyG; g.beginPath(); g.roundRect(-6 * s, -24 * s, 12 * s, 15 * s, 5 * s); g.fill();
+    // arms
+    g.strokeStyle = '#b8332b'; g.lineWidth = 2.6 * s;
+    if (!side) { [-1, 1].forEach((k) => { g.beginPath(); g.moveTo(k * 5.5 * s, -21 * s); g.lineTo(k * 6.8 * s, (-13 - k * swing * 1.5) * s); g.stroke(); }); }
+    else { g.beginPath(); g.moveTo(0, -21 * s); g.lineTo(-swing * 3 * flip * s, -13 * s); g.stroke(); }
+    // head and hair
+    g.fillStyle = '#e8b593'; g.beginPath(); g.arc(0, -30 * s, 6 * s, 0, TAU); g.fill();
+    g.fillStyle = '#3a2622'; g.beginPath();
+    if (dir === 'back') { g.arc(0, -30.5 * s, 6.4 * s, 0, TAU); g.fill(); g.beginPath(); g.ellipse(0, -24 * s, 5 * s, 3.5 * s, 0, 0, TAU); }
+    else if (side) { g.arc(-1.6 * flip * s, -31.5 * s, 6 * s, Math.PI * (flip > 0 ? 0.55 : -0.45), Math.PI * (flip > 0 ? 2.05 : 1.05)); }
+    else { g.arc(0, -31.5 * s, 6.3 * s, Math.PI * 0.95, Math.PI * 2.05); }
+    g.fill();
+    if (dir === 'front') { g.fillStyle = '#3a2622'; [-2.2, 2.2].forEach((k) => { g.beginPath(); g.arc(k * s, -29.5 * s, 0.7 * s, 0, TAU); g.fill(); }); }
+    if (side) { g.fillStyle = '#3a2622'; g.beginPath(); g.arc(3 * flip * s, -29.5 * s, 0.7 * s, 0, TAU); g.fill(); }
+    g.restore();
   }
-  const PROPS = {
-    vase: ['...kkk...', '..kVVVk..', '..kVvVk..', '.kVVVVVk.', 'kVVvVVVVk', 'kVVVVVVVk', '.kVVVVVk.', '..kVVVk..', '.kkkkkkk.', '.kWWWWWk.', '.kwwwwwk.', '.kwwwwwk.', '.kwwwwwk.', '.kxxxxxk.', '.kkkkkkk.'],
-    urn:  ['..kkkkk..', '.kUUUUUk.', '..kUuUk..', '.kUUuUUk.', 'kUUUUUUUk', 'kUuUUUUUk', '.kUUUUUk.', '..kkkkk..', '.kWWWWWk.', '.kwwwwwk.', '.kwwwwwk.', '.kxxxxxk.', '.kkkkkkk.'],
-    bust: ['...kkk...', '..kMMMk..', '..kMmMk..', '...kMk...', '..kMMMk..', '.kMmMMMk.', '.kkkkkkk.', '.kWWWWWk.', '.kwwwwwk.', '.kwwwwwk.', '.kwwwwwk.', '.kwwwwwk.', '.kxxxxxk.', '.kkkkkkk.'],
-    plant: ['...g.g.g...', '..gGgGgGg..', '.gGgGGgGgg.', 'gGgGgGgGgGg', '.gGgGgGgGg.', '..ggGgGgg..', '...kkkkk...', '..kTTTTTk..', '..kTttTTk..', '..kTTTTTk..', '...kTTTk...', '....kkk....'],
-    bench: ['kkkkkkkkkkkkkkkkkk', 'kBBBBBBBBBBBBBBBBk', 'kbbbbbbbbbbbbbbbbk', 'kkkkkkkkkkkkkkkkkk', '.kk............kk.', '.kk............kk.'],
-  };
-  function blit(rows, x, y, shadow) {
-    const h = rows.length, w = rows[0].length, x0 = Math.round(x - w / 2), y0 = Math.round(y - h);
-    if (shadow) { ctx.fillStyle = 'rgba(70,52,40,0.16)'; ctx.fillRect(x0 + 1, y0 + h - 1, w, 2); }
-    for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) {
-      const ch = rows[r][c];
-      if (ch !== '.' && PAL[ch]) { ctx.fillStyle = PAL[ch]; ctx.fillRect(x0 + c, y0 + r, 1, 1); }
-    }
-  }
+  window.PKFigure = drawFigure;
 
   // ---------- layout ----------
-  let S = 4, LW = 0, LH = 0, cx = 0, cy = 0, rx = 0, ry = 0, frameLen = 34;
-  let floor = null, frames = [], props = [];
-  const artColors = works.map(() => ['#c9c2b8', '#a99f93', '#d9d2c8', '#8f857a']);
+  let W = 0, H = 0, dpr = 1, cx = 0, cy = 0, rx = 0, ry = 0, rPath = 0, narrow = false;
+  let ground = null, entry = [], ringStones = [], spur = [], workSprites = [], props = [];
 
-  // sample a few colours from each work's image for the sliver of canvas you see from above
-  works.forEach((st, i) => {
-    const src = st.querySelector('.frame img').getAttribute('src');
-    const im = new Image();
-    im.onload = () => {
-      const c = document.createElement('canvas'); c.width = 4; c.height = 1;
-      const x = c.getContext('2d'); x.drawImage(im, 0, 0, 4, 1);
-      const d = x.getImageData(0, 0, 4, 1).data;
-      artColors[i] = [0, 1, 2, 3].map((j) => `rgb(${d[j * 4]},${d[j * 4 + 1]},${d[j * 4 + 2]})`);
-      if (LW) buildFrames();
-    };
-    im.src = src;
-  });
+  // paint something once (blurs and all) into its own little canvas, to be placed each frame
+  function bake(x0, y0, w, h, paint) {
+    const c = document.createElement('canvas');
+    c.width = Math.ceil(w * dpr); c.height = Math.ceil(h * dpr);
+    const g = c.getContext('2d'); g.scale(dpr, dpr); g.translate(-x0, -y0); paint(g);
+    return { c, x0, y0, w, h };
+  }
+  const place = (b) => ctx.drawImage(b.c, b.x0, b.y0, b.w, b.h);
 
-  function rng(seed) { return () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646; }
+  function fit() {
+    W = museum.clientWidth; H = museum.clientHeight; dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    canvas.style.width = `${W}px`; canvas.style.height = `${H}px`;
+    narrow = W < 700;
+    cx = W * (narrow ? 0.5 : 0.56); cy = H * (narrow ? 0.64 : 0.58);
+    rx = Math.min(W * (narrow ? 0.3 : 0.25), H * (narrow ? 0.4 : 0.34) / 0.58); ry = rx * 0.58;
+    rPath = 0.7;
+    buildPath(); buildGround(); buildWorks(); buildProps(); placeHits();
+    if (!me.placed) { me.mode = 'entry'; me.s = 0; me.placed = true; }
+  }
 
-  function buildFloor() {
-    floor = document.createElement('canvas'); floor.width = LW; floor.height = LH;
-    const f = floor.getContext('2d'), rand = rng(7);
-    f.fillStyle = '#f4f2ee'; f.fillRect(0, 0, LW, LH);
-    f.fillStyle = '#efece6';                       // stone tiles, barely there
-    for (let x = 0; x < LW; x += 20) f.fillRect(x, 0, 1, LH);
-    for (let y = 0; y < LH; y += 14) f.fillRect(0, y, LW, 1);
-    for (let i = 0; i < LW * LH / 40; i++) {       // speckles in the stone
-      f.fillStyle = rand() < 0.5 ? '#ebe7e0' : '#f8f7f4';
-      f.fillRect(Math.floor(rand() * LW), Math.floor(rand() * LH), 1, 1);
+  // the route: an entry walk from the lower left, the loop around the ring, and a spur into the center
+  const ringPt = (phi, k = rPath) => [cx + rx * k * Math.cos(phi), cy + ry * k * Math.sin(phi)];
+  const joinPhi = () => Math.PI * 0.78;   // where the entry path meets the loop (lower left)
+  function curve(pts, n) {           // Catmull-Rom through the points, sampled evenly-ish
+    const out = [];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+      for (let t = 0; t < 1; t += 1 / n) {
+        const t2 = t * t, t3 = t2 * t;
+        out.push([0, 1].map((k) => 0.5 * ((2 * p1[k]) + (-p0[k] + p2[k]) * t + (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * t2 + (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * t3)));
+      }
     }
-    // the inlaid ring the works stand on, and the medallion at its center
-    ring(f, cx, cy, rx + 12, ry + 8, '#e2dbd0', 2);
-    ring(f, cx, cy, rx - 12, ry - 8, '#e8e2d8', 1);
-    fillEllipse(f, cx, cy, 15, 9, '#ece4d8');
-    ring(f, cx, cy, 15, 9, '#b9a58a', 1);
-    ring(f, cx, cy, 10, 6, '#c7b59c', 1);
+    out.push(pts[pts.length - 1]);
+    return out;
   }
-  function fillEllipse(g, x0, y0, a, b, col) {
-    g.fillStyle = col;
-    for (let y = -b; y <= b; y++) { const w = Math.round(a * Math.sqrt(1 - (y * y) / (b * b))); g.fillRect(Math.round(x0 - w), Math.round(y0 + y), w * 2 + 1, 1); }
+  function resample(line, gap) {      // points every `gap` px along a polyline, with the heading there
+    const out = []; let carry = 0;
+    for (let i = 0; i < line.length - 1; i++) {
+      const [x1, y1] = line[i], [x2, y2] = line[i + 1], seg = Math.hypot(x2 - x1, y2 - y1), ang = Math.atan2(y2 - y1, x2 - x1);
+      let d = carry ? gap - carry : 0;
+      while (d <= seg) { const t = d / seg; out.push([x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, ang]); d += gap; }
+      carry = seg - (d - gap);
+    }
+    return out;
   }
-  function ring(g, x0, y0, a, b, col, t) {
-    g.fillStyle = col;
-    const n = Math.ceil(2 * Math.PI * Math.max(a, b) * 2);
-    for (let i = 0; i < n; i++) { const th = (i / n) * 2 * Math.PI; g.fillRect(Math.round(x0 + a * Math.cos(th)), Math.round(y0 + b * Math.sin(th)), t, t); }
+  function buildPath() {
+    const j = ringPt(joinPhi());
+    const entryPts = narrow
+      ? [[W * 0.08, H * 1.04], [W * 0.14, H * 0.93], [j[0] - 10, j[1] + 18], j]
+      : [[W * -0.02, H * 1.04], [W * 0.14, H * 0.9], [W * 0.28, H * 0.86], [j[0] - 24, j[1] + 16], j];
+    entry = curve(entryPts, 16);
+    entryLen = 0; for (let k = 1; k < entry.length; k++) entryLen += Math.hypot(entry[k][0] - entry[k - 1][0], entry[k][1] - entry[k - 1][1]);
+    const loop = []; for (let k = 0; k <= 120; k++) loop.push(ringPt((k / 120) * TAU));
+    const gap = narrow ? 30 : 44;
+    ringStones = resample(loop, gap);
+    const sp = ringPt(Math.PI * 0.5);
+    spur = curve([sp, [cx, cy + ry * 0.36]], 8);
+    stones = [...resample(entry, gap), ...ringStones, ...resample(spur, gap).slice(1)];
+  }
+  let stones = [], entryLen = 1;
+
+  // ---------- painting the floor ----------
+  function buildGround() {
+    ground = document.createElement('canvas'); ground.width = canvas.width; ground.height = canvas.height;
+    const g = ground.getContext('2d'); g.scale(dpr, dpr);
+    // a warm, hazy floor: peach light from the left, pale cream to the right
+    const base = g.createLinearGradient(0, 0, W, H);
+    base.addColorStop(0, '#f6dccb'); base.addColorStop(0.55, '#f7ece2'); base.addColorStop(1, '#f6f1ea');
+    g.fillStyle = base; g.fillRect(0, 0, W, H);
+    const glow = g.createRadialGradient(W * -0.05, H * 0.55, 0, W * -0.05, H * 0.55, W * 0.7);
+    glow.addColorStop(0, 'rgba(240,168,124,0.55)'); glow.addColorStop(0.5, 'rgba(244,196,160,0.22)'); glow.addColorStop(1, 'rgba(244,196,160,0)');
+    g.fillStyle = glow; g.fillRect(0, 0, W, H);
+    const haze = g.createRadialGradient(W, 0, 0, W, 0, W * 0.6);
+    haze.addColorStop(0, 'rgba(255,253,250,0.85)'); haze.addColorStop(1, 'rgba(255,253,250,0)');
+    g.fillStyle = haze; g.fillRect(0, 0, W, H);
+    // a soft shadowed corner, as if from a doorway, lower left
+    g.save(); g.filter = 'blur(40px)'; g.fillStyle = 'rgba(70,44,34,0.22)';
+    g.beginPath(); g.ellipse(-W * 0.04, H * 1.04, W * 0.24, H * 0.14, -0.25, 0, TAU); g.fill(); g.restore();
+    // the round platform the works stand on, and the medallion at its heart
+    g.save(); g.filter = 'blur(10px)';
+    g.fillStyle = 'rgba(255,250,242,0.55)'; g.beginPath(); g.ellipse(cx, cy, rx * 1.12, ry * 1.12, 0, 0, TAU); g.fill();
+    g.restore();
+    // the stepping stones: pale, glowing slabs laid along the route
+    const sw = narrow ? 30 : 44, sh = narrow ? 15 : 20;
+    for (const [x, y, ang] of stones) {
+      g.save(); g.translate(x, y); g.scale(1, 0.62); g.rotate(ang);
+      g.filter = 'blur(6px)'; g.fillStyle = 'rgba(160,110,80,0.13)';
+      g.beginPath(); g.roundRect(-sw / 2 + 3, -sh / 2 + 5, sw, sh, sh / 2); g.fill();
+      g.filter = 'blur(1.6px)';
+      const sg = g.createLinearGradient(0, -sh / 2, 0, sh / 2);
+      sg.addColorStop(0, 'rgba(250,251,232,0.95)'); sg.addColorStop(1, 'rgba(236,240,212,0.9)');
+      g.fillStyle = sg; g.beginPath(); g.roundRect(-sw / 2, -sh / 2, sw, sh, sh / 2); g.fill();
+      g.restore();
+    }
+    // the medallion where the spur ends
+    g.save(); g.filter = 'blur(2px)';
+    g.fillStyle = 'rgba(252,247,232,0.95)'; g.beginPath(); g.ellipse(cx, cy, rx * 0.2, ry * 0.2, 0, 0, TAU); g.fill();
+    g.strokeStyle = 'rgba(200,160,110,0.5)'; g.lineWidth = 1.5; g.beginPath(); g.ellipse(cx, cy, rx * 0.15, ry * 0.15, 0, 0, TAU); g.stroke();
+    g.restore();
+    // a few soft tufts of grass by the path, as in a garden
+    const tufts = narrow ? [[0.86, 0.94], [0.08, 0.5]] : [[0.36, 0.95], [0.07, 0.62], [0.83, 0.92], [0.92, 0.5]];
+    for (const [fx, fy] of tufts) tuft(g, W * fx, H * fy);
+  }
+  function tuft(g, x, y) {
+    g.save(); g.lineCap = 'round';
+    for (let k = -3; k <= 3; k++) {
+      g.strokeStyle = k % 2 ? '#5f8a4a' : '#7ea35e'; g.lineWidth = 1.6;
+      g.beginPath(); g.moveTo(x + k * 2, y); g.quadraticCurveTo(x + k * 3, y - 10, x + k * 4.5 + 2, y - 16 - Math.abs(k)); g.stroke();
+    }
+    g.fillStyle = '#e0894a'; g.beginPath(); g.ellipse(x + 3, y - 20, 1.8, 4, 0.2, 0, TAU); g.fill();
+    g.restore();
   }
 
-  // a frame seen from above: the top of the moulding, plus a sliver of the face below it
-  function buildFrames() {
-    frames = works.map((st, i) => {
+  // ---------- the works: small framed canvases on easels, standing on the ring ----------
+  function buildWorks() {
+    const fw = narrow ? 80 : 132;
+    workSprites = works.map((st, i) => {
       const a = (-90 + (i * 360) / works.length) * Math.PI / 180;
-      const px = cx + rx * Math.cos(a), py = cy + ry * Math.sin(a);
-      let tx = -Math.sin(a) * rx, ty = Math.cos(a) * ry; const tl = Math.hypot(tx, ty); tx /= tl; ty /= tl;
-      const nx = -ty, ny = tx, hl = frameLen / 2, th = 1.2, F = 6;
-      const A = [px - tx * hl, py - ty * hl], B = [px + tx * hl, py + ty * hl];
-      const top = [[A[0] + nx * th, A[1] + ny * th], [B[0] + nx * th, B[1] + ny * th], [B[0] - nx * th, B[1] - ny * th], [A[0] - nx * th, A[1] - ny * th]];
-      const low = top.slice().sort((p, q) => q[1] - p[1]);
-      // the slab's lower long edge, in left-to-right order
-      const e = ny > 0 ? [top[0], top[1]] : [top[3], top[2]];
-      const facePoly = [e[0], e[1], [e[1][0], e[1][1] + F], [e[0][0], e[0][1] + F]];
-      const px_ = [];
-      raster(facePoly, (x, y, edge) => {
-        let col;
-        // a sliver of the work itself, in its own colours, framed in dark wood
-        if (edge) col = '#3a2a24';
-        else { const fr = ((x - A[0]) * tx + (y - A[1]) * ty) / frameLen; col = artColors[i][Math.max(0, Math.min(3, Math.floor(fr * 4)))]; }
-        px_.push([x, y, col]);
-      });
-      raster(top, (x, y, edge) => px_.push([x, y, edge ? '#5a3d30' : '#8a6150']));
-      const xs = px_.map((p) => p[0]), ys = px_.map((p) => p[1]);
-      const box = { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
-      const set = new Set(px_.map((p) => p[0] + ',' + p[1]));
-      const outline = [];
-      for (const [x, y] of px_) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (!set.has(x + dx + ',' + (y + dy))) outline.push([x + dx, y + dy]);
-      // where the visitor stands to look at it: a little inside the ring, in front of the work
-      const stand = [cx + (rx - 16) * Math.cos(a), cy + (ry - 10) * Math.sin(a) + 6];
-      const face = Math.abs(Math.cos(a)) > 0.8 ? (Math.cos(a) > 0 ? 'right' : 'left') : (Math.sin(a) < 0 ? 'up' : 'down');
-      return { i, a, px: px_, box, outline, base: low[0][1] + F, stand, face };
+      const x = cx + rx * Math.cos(a), y = cy + ry * Math.sin(a);
+      const im = covers[i], ar = im.naturalWidth ? im.naturalHeight / im.naturalWidth : 0.26;
+      const ah = fw * ar, mat = narrow ? 4 : 6, fr = narrow ? 4 : 5, lift = narrow ? 14 : 18;
+      const w = fw + (mat + fr) * 2, h = ah + (mat + fr) * 2;
+      // stand facing the visitor on the path, a little turned toward the center
+      const lean = Math.cos(a) * -0.08;
+      return { i, a, x, y, w, h, ah, fw, mat, fr, lift, lean, im,
+        box: { x0: x - w / 2 - 6, y0: y - lift - h - 8, x1: x + w / 2 + 6, y1: y + 6 },
+        stop: ringPt(a, rPath), face: Math.abs(Math.cos(a)) > 0.8 ? (Math.cos(a) > 0 ? 'right' : 'left') : (Math.sin(a) < 0 ? 'back' : 'front') };
     });
-    placeHits();
+    workSprites.forEach((wk) => {
+      const x0 = wk.x - wk.w - 30, y0 = wk.y - wk.lift - wk.h - 60, bw = wk.w * 2.4 + 60, bh = wk.lift + wk.h + 90;
+      wk.plain = bake(x0, y0, bw, bh, (g) => drawWork(g, wk, false));
+      wk.lit = bake(x0, y0, bw, bh, (g) => drawWork(g, wk, true));
+    });
   }
-  function raster(poly, put) {
-    const xs = poly.map((p) => p[0]), ys = poly.map((p) => p[1]);
-    const inside = (x, y) => {
-      let s = 0;
-      for (let k = 0; k < poly.length; k++) {
-        const [x1, y1] = poly[k], [x2, y2] = poly[(k + 1) % poly.length];
-        const c = (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1);
-        if (c !== 0) { if (s === 0) s = Math.sign(c); else if (Math.sign(c) !== s) return false; }
-      }
-      return true;
-    };
-    for (let y = Math.floor(Math.min(...ys)); y <= Math.ceil(Math.max(...ys)); y++)
-      for (let x = Math.floor(Math.min(...xs)); x <= Math.ceil(Math.max(...xs)); x++) {
-        if (!inside(x + 0.5, y + 0.5)) continue;
-        const edge = !inside(x + 1.5, y + 0.5) || !inside(x - 0.5, y + 0.5) || !inside(x + 0.5, y + 1.5) || !inside(x + 0.5, y - 0.5);
-        put(x, y, edge);
-      }
+  function drawWork(g, wk, lit) {
+    const { x, y, w, h, fw, ah, mat, fr, lift, lean, im } = wk;
+    g.save();
+    // soft shadow thrown to the right on the floor
+    g.save(); g.filter = 'blur(8px)'; g.fillStyle = 'rgba(110,70,50,0.25)';
+    g.beginPath(); g.ellipse(x + w * 0.22, y + 2, w * 0.55, 7, -0.06, 0, TAU); g.fill(); g.restore();
+    if (lit) {   // a warm glow when you're looking at it
+      g.save(); g.filter = 'blur(18px)'; g.fillStyle = 'rgba(255,214,150,0.75)';
+      g.beginPath(); g.ellipse(x, y - lift - h / 2, w * 0.7, h * 0.9 + 14, 0, 0, TAU); g.fill(); g.restore();
+    }
+    g.translate(x, y); g.transform(1, 0, lean, 1, 0, 0);
+    // the easel's legs
+    g.strokeStyle = '#7a5642'; g.lineWidth = 2.4; g.lineCap = 'round';
+    [[-w * 0.3, -w * 0.36], [w * 0.3, w * 0.36]].forEach(([a, b]) => { g.beginPath(); g.moveTo(a, -lift - h * 0.4); g.lineTo(b, 0); g.stroke(); });
+    // frame, mat, and the work itself
+    g.translate(-w / 2, -lift - h);
+    g.fillStyle = '#4a3128'; g.beginPath(); g.roundRect(0, 0, w, h, 2); g.fill();
+    g.fillStyle = '#fbf6ee'; g.fillRect(fr, fr, w - fr * 2, h - fr * 2);
+    if (im.naturalWidth) g.drawImage(im, fr + mat, fr + mat, fw, ah); else { g.fillStyle = '#ddd5ca'; g.fillRect(fr + mat, fr + mat, fw, ah); }
+    // a sheen across the glass
+    const sheen = g.createLinearGradient(0, 0, w, h);
+    sheen.addColorStop(0, 'rgba(255,255,255,0.18)'); sheen.addColorStop(0.5, 'rgba(255,255,255,0)'); sheen.addColorStop(1, 'rgba(255,240,220,0.12)');
+    g.fillStyle = sheen; g.fillRect(fr, fr, w - fr * 2, h - fr * 2);
+    if (lit) { g.strokeStyle = 'rgba(224,176,74,0.95)'; g.lineWidth = 2; g.beginPath(); g.roundRect(-3, -3, w + 6, h + 6, 4); g.stroke(); }
+    g.restore();
   }
 
-  function placeProps() {
-    const P = (k, fx, fy) => ({ k, x: Math.round(fx * LW), y: Math.round(fy * LH) });
-    props = LW < 200
-      ? [P('plant', 0.1, 0.95), P('vase', 0.9, 0.95), P('bust', 0.88, 0.36), P('urn', 0.12, 0.36)]
-      : [P('vase', 0.1, 0.66), P('bust', 0.24, 0.9), P('plant', 0.06, 0.92), P('bench', 0.5, 0.95),
-         P('urn', 0.87, 0.36), P('plant', 0.94, 0.92), P('vase', 0.8, 0.86), P('plant', 0.9, 0.2)];
+  // ---------- painted props ----------
+  function buildProps() {
+    const P = (k, fx, fy, s = 1) => ({ k, x: W * fx, y: H * fy, s });
+    props = narrow
+      ? [P('plant', 0.12, 0.42, 0.8), P('vase', 0.88, 0.42, 0.8), P('bust', 0.9, 0.96, 0.8)]
+      : [P('vase', 0.13, 0.68), P('bust', 0.24, 0.97), P('plant', 0.05, 0.9), P('bench', 0.56, 0.98),
+         P('urn', 0.88, 0.4), P('plant', 0.95, 0.94), P('vase', 0.82, 0.86, 0.9), P('plant', 0.9, 0.22, 0.85)];
+    props.forEach((p) => { p.img = bake(p.x - 60 * p.s, p.y - 90 * p.s, 140 * p.s, 110 * p.s, (g) => drawProp(g, p)); });
+  }
+  function shadowUnder(g, x, y, w) { g.save(); g.filter = 'blur(6px)'; g.fillStyle = 'rgba(110,70,50,0.22)'; g.beginPath(); g.ellipse(x + w * 0.35, y, w, w * 0.28, 0, 0, TAU); g.fill(); g.restore(); }
+  function plinth(g, x, y, w, h) {
+    const pg = g.createLinearGradient(x - w / 2, 0, x + w / 2, 0);
+    pg.addColorStop(0, '#fffdf9'); pg.addColorStop(1, '#e6ded3');
+    g.fillStyle = pg; g.beginPath(); g.roundRect(x - w / 2, y - h, w, h, 2); g.fill();
+    g.fillStyle = '#fffefb'; g.beginPath(); g.ellipse(x, y - h, w / 2, w * 0.16, 0, 0, TAU); g.fill();
+  }
+  function drawProp(g, p) {
+    const { x, y } = p, s = p.s;
+    g.save();
+    if (p.k === 'vase' || p.k === 'urn') {
+      shadowUnder(g, x, y, 18 * s); plinth(g, x, y, 26 * s, 30 * s);
+      const top = y - 30 * s, c1 = p.k === 'vase' ? '#e08a64' : '#7f9dcc', c2 = p.k === 'vase' ? '#a8492f' : '#34507e';
+      const vg = g.createRadialGradient(x - 4 * s, top - 18 * s, 2, x, top - 14 * s, 16 * s);
+      vg.addColorStop(0, c1); vg.addColorStop(1, c2);
+      g.fillStyle = vg; g.beginPath();
+      if (p.k === 'vase') { g.ellipse(x, top - 13 * s, 10 * s, 13 * s, 0, 0, TAU); g.fill(); g.beginPath(); g.roundRect(x - 4 * s, top - 32 * s, 8 * s, 9 * s, 2 * s); }
+      else { g.ellipse(x, top - 11 * s, 12 * s, 10 * s, 0, 0, TAU); g.fill(); g.beginPath(); g.roundRect(x - 7 * s, top - 24 * s, 14 * s, 6 * s, 3 * s); }
+      g.fill();
+    } else if (p.k === 'bust') {
+      shadowUnder(g, x, y, 18 * s); plinth(g, x, y, 26 * s, 34 * s);
+      const top = y - 34 * s, bg = g.createRadialGradient(x - 3 * s, top - 22 * s, 2, x, top - 14 * s, 18 * s);
+      bg.addColorStop(0, '#e2c27a'); bg.addColorStop(1, '#8a6a34');
+      g.fillStyle = bg; g.beginPath(); g.roundRect(x - 10 * s, top - 10 * s, 20 * s, 10 * s, 5 * s); g.fill();
+      g.beginPath(); g.ellipse(x, top - 19 * s, 6.5 * s, 8 * s, 0, 0, TAU); g.fill();
+    } else if (p.k === 'plant') {
+      shadowUnder(g, x, y, 16 * s);
+      const pot = g.createLinearGradient(x - 9 * s, 0, x + 9 * s, 0); pot.addColorStop(0, '#d98a5c'); pot.addColorStop(1, '#a95a33');
+      g.fillStyle = pot; g.beginPath(); g.moveTo(x - 10 * s, y - 16 * s); g.lineTo(x + 10 * s, y - 16 * s); g.lineTo(x + 7 * s, y); g.lineTo(x - 7 * s, y); g.fill();
+      g.filter = 'blur(0.4px)';
+      for (let k = 0; k < 9; k++) {
+        const ang = -Math.PI / 2 + (k - 4) * 0.32, len = (18 + (k % 3) * 6) * s;
+        g.fillStyle = k % 2 ? '#5f8a4a' : '#86ad66';
+        g.save(); g.translate(x, y - 16 * s); g.rotate(ang + Math.PI / 2); g.beginPath(); g.ellipse(0, -len / 2, 4 * s, len / 2, 0, 0, TAU); g.fill(); g.restore();
+      }
+    } else if (p.k === 'bench') {
+      shadowUnder(g, x, y, 34 * s);
+      g.fillStyle = '#6e4630'; [-26, 22].forEach((dx) => g.fillRect(x + dx * s, y - 12 * s, 4 * s, 12 * s));
+      const bg = g.createLinearGradient(0, y - 18 * s, 0, y - 10 * s); bg.addColorStop(0, '#a87250'); bg.addColorStop(1, '#7c5038');
+      g.fillStyle = bg; g.beginPath(); g.roundRect(x - 32 * s, y - 18 * s, 64 * s, 7 * s, 3 * s); g.fill();
+    }
+    g.restore();
   }
 
-  // invisible buttons over each frame, so the works can be hovered, focused and clicked
+  // invisible buttons over each work, so they can be hovered, focused and clicked
   function placeHits() {
     hits.innerHTML = '';
-    frames.forEach((f) => {
-      const st = works[f.i], b = document.createElement('button');
+    workSprites.forEach((wk) => {
+      const st = works[wk.i], b = document.createElement('button');
       b.type = 'button'; b.className = 'map-hit';
       b.setAttribute('aria-label', `${st.dataset.title}: read its label, or open it in the gallery`);
-      const pad = 4;
-      Object.assign(b.style, { left: `${(f.box.x0 - pad) * S}px`, top: `${(f.box.y0 - pad) * S}px`, width: `${(f.box.x1 - f.box.x0 + 1 + pad * 2) * S}px`, height: `${(f.box.y1 - f.box.y0 + 1 + pad * 2) * S}px` });
-      b.addEventListener('pointerenter', () => focusWork(f.i));
-      b.addEventListener('focus', () => focusWork(f.i));
-      b.addEventListener('pointerleave', () => blurWork(f.i));
-      b.addEventListener('blur', () => blurWork(f.i));
+      Object.assign(b.style, { left: `${wk.box.x0}px`, top: `${wk.box.y0}px`, width: `${wk.box.x1 - wk.box.x0}px`, height: `${wk.box.y1 - wk.box.y0}px` });
+      b.addEventListener('pointerenter', () => focusWork(wk.i));
+      b.addEventListener('focus', () => focusWork(wk.i));
+      b.addEventListener('pointerleave', () => blurWork(wk.i));
+      b.addEventListener('blur', () => blurWork(wk.i));
       b.addEventListener('click', () => {
-        if (noHover && armed !== f.i) { armed = f.i; focusWork(f.i); return; }   // on touch, the first tap reads the label
-        armed = -1; enter(f.i);
+        if (noHover && armed !== wk.i) { armed = wk.i; focusWork(wk.i); return; }   // on touch, the first tap reads the label
+        armed = -1; enter(wk.i);
       });
       hits.appendChild(b);
     });
-    Object.assign(center.style, { left: `${(cx - 18) * S}px`, top: `${(cy - 12) * S}px`, width: `${36 * S}px`, height: `${24 * S}px` });
+    const cw = rx * 0.5, ch = ry * 0.5;
+    Object.assign(center.style, { left: `${cx - cw / 2}px`, top: `${cy - ch / 2}px`, width: `${cw}px`, height: `${ch}px` });
   }
 
-  function fit() {
-    const w = museum.clientWidth, h = museum.clientHeight;
-    S = w < 700 ? 3 : 4;
-    LW = Math.ceil(w / S); LH = Math.ceil(h / S);
-    canvas.width = LW; canvas.height = LH;
-    canvas.style.width = `${LW * S}px`; canvas.style.height = `${LH * S}px`;
-    const narrow = LW < 200;
-    frameLen = narrow ? 26 : 34;
-    cx = Math.round(LW * (narrow ? 0.5 : 0.55)); cy = Math.round(LH * (narrow ? 0.62 : 0.56));
-    rx = Math.round(Math.min(LW * (narrow ? 0.36 : 0.24), LH * 0.36 / 0.62)); ry = Math.round(rx * 0.62);
-    buildFloor(); placeProps(); buildFrames();
-    if (!me.x) { me.x = cx + rx * 0.4; me.y = cy + ry + 14; }
-  }
-
-  // ---------- the visitor ----------
-  const me = { x: 0, y: 0, dir: 'down', frame: 0, t: 0, goal: null, wait: 1.2, look: -1 };
+  // ---------- the visitor walks the path ----------
+  // modes: 'entry' (s = 0..1 along the entry path), 'ring' (phi on the loop), 'spur' (t = 0..1 toward the center)
+  const me = { placed: false, mode: 'entry', s: 0, phi: joinPhi(), t: 0, x: 0, y: 0, dir: 'back', step: 0, moving: false, wait: 0, look: -1, goal: null };
   let hovered = -1, centerHover = false, armed = -1;
-  function pickGoal() {
-    me.look = (Math.max(me.look, 0) + 1 + Math.floor(Math.random() * 2)) % works.length;
-    me.goal = frames[me.look] ? frames[me.look].stand.slice() : null;
+  const SPEED = 80;   // px per second along the stones
+  function pathPos() {
+    if (me.mode === 'entry') { const k = me.s * (entry.length - 1), i = Math.min(entry.length - 2, Math.floor(k)), f = k - i; return [entry[i][0] + (entry[i + 1][0] - entry[i][0]) * f, entry[i][1] + (entry[i + 1][1] - entry[i][1]) * f]; }
+    if (me.mode === 'spur') { const a = ringPt(Math.PI * 0.5), b = [cx, cy + ry * 0.36]; return [a[0] + (b[0] - a[0]) * me.t, a[1] + (b[1] - a[1]) * me.t]; }
+    return ringPt(me.phi);
   }
+  function setGoal(goal) { me.goal = goal; me.wait = 0; }
+  function nextWander() { me.look = (Math.max(me.look, 0) + 1 + Math.floor(Math.random() * 2)) % works.length; setGoal({ work: me.look }); }
+  const angDiff = (a, b) => { let d = (b - a) % TAU; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; return d; };
   function stepVisitor(dt) {
-    if (reduce) { me.dir = 'up'; me.frame = 0; return; }
-    if (!me.goal) { me.wait -= dt; me.frame = 0; if (me.wait <= 0) pickGoal(); return; }
-    const dx = me.goal[0] - me.x, dy = me.goal[1] - me.y, d = Math.hypot(dx, dy), sp = 26 * dt;
-    if (d <= sp) {
-      me.x = me.goal[0]; me.y = me.goal[1]; me.goal = null; me.frame = 0;
-      me.dir = me.look >= 0 && frames[me.look] ? frames[me.look].face : 'down';   // turn to face the work
-      me.wait = 1.6 + Math.random() * 1.8; return;
+    const before = pathPos();
+    me.moving = false;
+    if (!me.goal) { me.wait -= dt; if (me.wait <= 0 && !reduce) nextWander(); }
+    else {
+      const move = SPEED * dt;
+      if (me.mode === 'entry') {
+        me.s = Math.min(1, me.s + move / entryLen); me.moving = true;
+        if (me.s >= 1) { me.mode = 'ring'; me.phi = joinPhi(); }
+      } else if (me.mode === 'spur') {
+        const len = ry * 0.7 + 1, toCenter = me.goal.center;
+        me.t = Math.max(0, Math.min(1, me.t + (toCenter ? 1 : -1) * move / len)); me.moving = true;
+        if (toCenter && me.t >= 1) arrive('front');
+        if (!toCenter && me.t <= 0) me.mode = 'ring';
+      } else {
+        const target = me.goal.center ? Math.PI * 0.5 : workSprites[me.goal.work] ? workSprites[me.goal.work].a : me.phi;
+        const d = angDiff(me.phi, target), arc = (rx * rPath + ry * rPath) / 2, dphi = move / arc;
+        if (Math.abs(d) <= dphi) {
+          me.phi = target;
+          if (me.goal.center) { me.mode = 'spur'; me.t = 0; } else arrive(workSprites[me.goal.work].face);
+        } else { me.phi += Math.sign(d) * dphi; me.moving = true; }
+      }
     }
-    me.x += (dx / d) * sp; me.y += (dy / d) * sp;
-    me.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
-    me.t += dt; me.frame = 1 + (Math.floor(me.t / 0.16) % 2);
+    const [x, y] = pathPos(), dx = x - before[0], dy = y - before[1];
+    if (me.moving && Math.hypot(dx, dy) > 0.01) {
+      me.dir = Math.abs(dx) > Math.abs(dy) * 1.2 ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'front' : 'back');
+      me.step += dt * 11;
+    }
+    me.x = x; me.y = y;
   }
+  function arrive(face) { me.goal = null; me.moving = false; me.dir = face; me.wait = 1.8 + Math.random() * 2; }
 
   // ---------- drawing ----------
-  function draw() {
-    ctx.drawImage(floor, 0, 0);
-    if (centerHover) { fillEllipse(ctx, cx, cy, 16, 10, 'rgba(182,45,38,0.18)'); }
+  function draw(now) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.drawImage(ground, 0, 0, W, H);
+    if (centerHover) {
+      ctx.save(); ctx.translate(cx, cy); ctx.scale(1, ry / rx);
+      const cg = ctx.createRadialGradient(0, 0, 0, 0, 0, rx * 0.34);
+      cg.addColorStop(0, 'rgba(255,206,150,0.85)'); cg.addColorStop(1, 'rgba(255,206,150,0)');
+      ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(0, 0, rx * 0.34, 0, TAU); ctx.fill(); ctx.restore();
+    }
     const items = [];
-    frames.forEach((f) => items.push({ y: f.base, draw: () => {
-      ctx.fillStyle = 'rgba(70,52,40,0.14)';
-      for (const [x, y] of f.px) ctx.fillRect(x + 2, y + 3, 1, 1);        // shadow on the floor
-      for (const [x, y, c] of f.px) { ctx.fillStyle = c; ctx.fillRect(x, y, 1, 1); }
-      if (hovered === f.i) { ctx.fillStyle = '#e0b04a'; for (const [x, y] of f.outline) ctx.fillRect(x, y, 1, 1); }
-    } }));
-    props.forEach((p) => items.push({ y: p.y, draw: () => blit(PROPS[p.k], p.x, p.y, true) }));
-    items.push({ y: me.y, draw: () => blit(visitor(me.dir, me.frame), me.x, me.y, true) });
+    workSprites.forEach((wk) => items.push({ y: wk.y, draw: () => place(hovered === wk.i ? wk.lit : wk.plain) }));
+    props.forEach((p) => items.push({ y: p.y, draw: () => place(p.img) }));
+    items.push({ y: me.y, draw: () => drawFigure(ctx, me.x, me.y, narrow ? 1 : 1.25, me.dir, me.step, me.moving && !reduce) });
     items.sort((a, b) => a.y - b.y).forEach((it) => it.draw());
   }
 
   let last = performance.now(), running = true;
   function loop(now) {
     if (!running) return;
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    stepVisitor(dt); draw();
+    const dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now;   // the first frame can be stamped a hair early
+    stepVisitor(dt); draw(now);
     requestAnimationFrame(loop);
   }
 
   // ---------- labels ----------
   function focusWork(i) {
     hovered = i;
-    const f = frames[i], st = works[i];
+    const wk = workSprites[i], st = works[i];
     tag.innerHTML = st.querySelector('.art-tag').innerHTML;
     const cta = tag.querySelector('.at-cta');
     if (cta) cta.textContent = noHover ? 'Tap again to see it in the gallery' : 'Click to see it in the gallery';
     tag.classList.add('show');
     // hang the label beside the work, on the side away from the center
     const r = museum.getBoundingClientRect(), tw = tag.offsetWidth, th = tag.offsetHeight;
-    const fx = ((f.box.x0 + f.box.x1) / 2) * S + r.left, fy = ((f.box.y0 + f.box.y1) / 2) * S + r.top;
-    let x = fx < (cx * S + r.left) ? fx - tw - (frameLen / 2) * S : fx + (frameLen / 2) * S;
+    const fx = wk.x + r.left, fy = (wk.box.y0 + wk.box.y1) / 2 + r.top;
+    let x = wk.x < cx ? fx - wk.w / 2 - tw - 18 : fx + wk.w / 2 + 18;
     let y = fy - th / 2;
     x = Math.max(12, Math.min(innerWidth - tw - 12, x)); y = Math.max(76, Math.min(innerHeight - th - 12, y));
     tag.style.left = `${x}px`; tag.style.top = `${y}px`;
-    if (!reduce) { me.goal = f.stand.slice(); me.look = i; }
+    if (!reduce) { me.look = i; setGoal({ work: i }); }
   }
   function blurWork(i) { if (hovered === i) { hovered = -1; tag.classList.remove('show'); } }
-  center.addEventListener('pointerenter', () => { centerHover = true; if (!reduce) { me.goal = [cx + 4, cy + 16]; me.look = -1; } });
+  center.addEventListener('pointerenter', () => { centerHover = true; if (!reduce) setGoal({ center: true }); });
   center.addEventListener('pointerleave', () => { centerHover = false; });
   center.addEventListener('focus', () => { centerHover = true; });
   center.addEventListener('blur', () => { centerHover = false; });
@@ -285,7 +408,7 @@
       try { if (location.hash !== '#gallery') history.pushState({ room: i }, '', '#gallery'); } catch (e) { /* sandboxed previews can't change history */ }
     };
     if (reduce) return go();
-    museum.style.transformOrigin = `${cx * S}px ${cy * S}px`;
+    museum.style.transformOrigin = `${cx}px ${cy}px`;
     view.classList.add('leaving');
     setTimeout(() => { go(); view.classList.remove('leaving'); }, 520);
   }
@@ -302,10 +425,9 @@
 
   addEventListener('resize', fit);
   fit();
+  if (reduce) { me.mode = 'ring'; me.phi = joinPhi(); }
+  else setGoal({ work: 0 });     // walk in along the path to the first work
   requestAnimationFrame(loop);
   // arriving at #gallery (a reload or the back button) opens the room once gallery.js has loaded
   setTimeout(() => { if (location.hash === '#gallery') enter(0); }, 0);
-
-  // the pixel visitor, shared with the gallery room (seen from behind there)
-  window.PKSprites = { visitor, PAL };
 })();
